@@ -1,20 +1,10 @@
-import db from '../config/sql/models/index.model'
-import customizeUser, { hashPassword } from '../ultils/customizeUser'
-import handleJwt from '../ultils/handleJwt'
 import { v4 as uuidv4 } from 'uuid'
-import { random_bg_color } from '../ultils/random'
+import db from '../configs/sql/models/index.model'
+import customizeUser, { hashPassword } from '../utils/customizeUser'
+import handleJwt from '../utils/handleJwt'
+import { random_bg_color } from '../utils/random'
 const host = process.env.BACKEND_URL
 
-import fs from 'fs'
-import path from 'path'
-
-const boxes_path = path.resolve('public/data', 'backgroundUser.json')
-const rawdata = fs.readFileSync(boxes_path)
-let data = JSON.parse(rawdata.toString())
-
-const random = parseInt(Math.random() * data.length)
-
-require('dotenv').config()
 const secret = process.env.SECRET
 const expiresIn = process.env.EXPIRESD_IN
 

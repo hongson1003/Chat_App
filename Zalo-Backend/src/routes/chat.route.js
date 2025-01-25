@@ -1,112 +1,112 @@
-import chatController from "../controllers/chat.controller";
-import userMiddleware from "../middleware/user.middleware";
+import chatController from '../controllers/chat.controller'
+import userMiddleware from '../middlewares/user.middleware'
 
 const InitRoutesChat = (router) => {
   router
-    .route("/access")
+    .route('/access')
     .post(userMiddleware.checkJWT, chatController.accessChat)
-    .get(userMiddleware.checkJWT, chatController.getAccessChat);
+    .get(userMiddleware.checkJWT, chatController.getAccessChat)
   router
-    .route("/private")
-    .get(userMiddleware.checkJWT, chatController.findOneByPrivate);
-
-  router
-    .route("/not-read")
-    .get(userMiddleware.checkJWT, chatController.findNotReadChat);
+    .route('/private')
+    .get(userMiddleware.checkJWT, chatController.findOneByPrivate)
 
   router
-    .route("/pagination")
-    .get(userMiddleware.checkJWT, chatController.findManyChatPagination);
-
-  router.route("/seen").put(userMiddleware.checkJWT, chatController.seenChat);
-
-  router.route("/pin").put(userMiddleware.checkJWT, chatController.pinChat);
+    .route('/not-read')
+    .get(userMiddleware.checkJWT, chatController.findNotReadChat)
 
   router
-    .route("/total-together")
-    .get(userMiddleware.checkJWT, chatController.getTotalTogether);
+    .route('/pagination')
+    .get(userMiddleware.checkJWT, chatController.findManyChatPagination)
+
+  router.route('/seen').put(userMiddleware.checkJWT, chatController.seenChat)
+
+  router.route('/pin').put(userMiddleware.checkJWT, chatController.pinChat)
 
   router
-    .route("/group")
+    .route('/total-together')
+    .get(userMiddleware.checkJWT, chatController.getTotalTogether)
+
+  router
+    .route('/group')
     .post(userMiddleware.checkJWT, chatController.createGroupChat)
     .put(userMiddleware.checkJWT, chatController.updateGroupChat)
-    .get(userMiddleware.checkJWT, chatController.findManyGroups);
+    .get(userMiddleware.checkJWT, chatController.findManyGroups)
 
   router
-    .route("/delete")
-    .delete(userMiddleware.checkJWT, chatController.deleteChat);
+    .route('/delete')
+    .delete(userMiddleware.checkJWT, chatController.deleteChat)
 
   router
-    .route("/group/out")
-    .put(userMiddleware.checkJWT, chatController.outGroupChat);
+    .route('/group/out')
+    .put(userMiddleware.checkJWT, chatController.outGroupChat)
 
   router
-    .route("/message")
-    .post(userMiddleware.checkJWT, chatController.sendMessage);
+    .route('/message')
+    .post(userMiddleware.checkJWT, chatController.sendMessage)
   router
-    .route("/message/pagination")
-    .get(userMiddleware.checkJWT, chatController.findManyMessagePagination);
+    .route('/message/pagination')
+    .get(userMiddleware.checkJWT, chatController.findManyMessagePagination)
 
   router
-    .route("/background/pagination")
-    .get(userMiddleware.checkJWT, chatController.findManyBackgroundPagination);
+    .route('/background/pagination')
+    .get(userMiddleware.checkJWT, chatController.findManyBackgroundPagination)
 
   router
-    .route("/background")
-    .put(userMiddleware.checkJWT, chatController.setBackgroundForChat);
+    .route('/background')
+    .put(userMiddleware.checkJWT, chatController.setBackgroundForChat)
 
   router
-    .route("/feeling", userMiddleware.checkJWT)
+    .route('/feeling', userMiddleware.checkJWT)
     .post(chatController.addFeeling)
-    .put(chatController.clearReactions);
+    .put(chatController.clearReactions)
   router
-    .route("/messages/total", userMiddleware.checkJWT)
-    .get(chatController.getTotalMessages);
+    .route('/messages/total', userMiddleware.checkJWT)
+    .get(chatController.getTotalMessages)
   router
-    .route("/message/recall")
-    .put(userMiddleware.checkJWT, chatController.recallMessage);
+    .route('/message/recall')
+    .put(userMiddleware.checkJWT, chatController.recallMessage)
   router
-    .route("/message/deleteMessage")
-    .put(userMiddleware.checkJWT, chatController.deleteMessage);
+    .route('/message/deleteMessage')
+    .put(userMiddleware.checkJWT, chatController.deleteMessage)
   router
-    .route("/message/pinMessage")
-    .put(userMiddleware.checkJWT, chatController.pinMessage);
+    .route('/message/pinMessage')
+    .put(userMiddleware.checkJWT, chatController.pinMessage)
   router
-    .route("/message/unPinMessage")
-    .put(userMiddleware.checkJWT, chatController.unPinMessage);
+    .route('/message/unPinMessage')
+    .put(userMiddleware.checkJWT, chatController.unPinMessage)
   router
-    .route("/addMembers")
-    .put(userMiddleware.checkJWT, chatController.addMembers);
+    .route('/addMembers')
+    .put(userMiddleware.checkJWT, chatController.addMembers)
   router
-    .route("/message/deleteMemer")
-    .put(userMiddleware.checkJWT, chatController.deleteMember);
+    .route('/message/deleteMemer')
+    .put(userMiddleware.checkJWT, chatController.deleteMember)
   router
-    .route("/message/getAllPicture")
-    .get(userMiddleware.checkJWT, chatController.findManyImagePagination);
+    .route('/message/getAllPicture')
+    .get(userMiddleware.checkJWT, chatController.findManyImagePagination)
   router
-    .route("/message/getAllFile")
-    .get(userMiddleware.checkJWT, chatController.findManyFilePagination);
+    .route('/message/getAllFile')
+    .get(userMiddleware.checkJWT, chatController.findManyFilePagination)
   // disband by leader
   router
-    .route("/grantGroupLeader")
-    .put(userMiddleware.checkJWT, chatController.disbandByLeader);
+    .route('/grantGroupLeader')
+    .put(userMiddleware.checkJWT, chatController.disbandByLeader)
   router
-    .route("/getListGroupMember")
-    .get(userMiddleware.checkJWT, chatController.getListGroupMember);
-
-  router
-    .route("/notify")
-    .post(userMiddleware.checkJWT, chatController.notifyMessage);
+    .route('/getListGroupMember')
+    .get(userMiddleware.checkJWT, chatController.getListGroupMember)
 
   router
-    .route("/group/grant")
-    .put(userMiddleware.checkJWT, chatController.grantGroupChat);
+    .route('/notify')
+    .post(userMiddleware.checkJWT, chatController.notifyMessage)
 
   router
-    .route("/group/dissolution")
-    .post(userMiddleware.checkJWT, chatController.dissolutionGroupChat);
+    .route('/group/grant')
+    .put(userMiddleware.checkJWT, chatController.grantGroupChat)
 
-  return router;
-};
+  router
+    .route('/group/dissolution')
+    .post(userMiddleware.checkJWT, chatController.dissolutionGroupChat)
 
-module.exports = InitRoutesChat;
+  return router
+}
+
+module.exports = InitRoutesChat

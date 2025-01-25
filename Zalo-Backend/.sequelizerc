@@ -1,9 +1,7 @@
-// .sequelizerc
-
-const path = require('path');
+const path = require('path')
 module.exports = {
-    'config': path.resolve('src/config/sql/config', 'config.js'),
-    'models-path': path.resolve('src/config/sql', 'models'),
-    'seeders-path': path.resolve('src/config/sql', 'seeders'),
-    'migrations-path': path.resolve('src/config/sql', 'migrations')
-};
+  config: path.resolve('src/configs/sql/config', 'config.js'),
+  'models-path': path.resolve('src/configs/sql', 'models'),
+  'seeders-path': path.resolve('src/configs/sql', 'seeders'),
+  'migrations-path': path.resolve('src/configs/sql', 'migrations'),
+}
