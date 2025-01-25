@@ -1,4 +1,4 @@
-const configEnv = require('../../../../config')
+const configEnv = require('../../../config')
 
 const config = {
   development: {

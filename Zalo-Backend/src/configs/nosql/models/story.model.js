@@ -1,20 +1,24 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const mongoose = require('mongoose')
+const { Schema } = mongoose
 
-const StoryModel = Schema({
+const StoryModel = Schema(
+  {
     _id: Schema.Types.ObjectId,
     image: String,
     music: String,
     video: String,
-    tags: [{
+    tags: [
+      {
         type: Schema.Types.ObjectId,
-        ref: 'User'
-    }]
-}, {
+        ref: 'User',
+      },
+    ],
+  },
+  {
     timestamps: true,
-}
-);
+  }
+)
 
-const Story = mongoose.model('Story', StoryModel);
+const Story = mongoose.model('Story', StoryModel)
 
-module.exports = Story;
+module.exports = Story

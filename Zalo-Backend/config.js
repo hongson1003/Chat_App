@@ -1,19 +1,19 @@
-const dotenv = require('dotenv')
-const fs = require('fs')
+const dotenv = require('dotenv');
+const fs = require('fs');
 
-dotenv.config()
+dotenv.config();
 
-const env = process.env.NODE_ENV || 'development'
-const envFile = `.env.${env}`
+const env = process.env.NODE_ENV || 'development';
+const envFile = `.env.${env}`;
 
 if (fs.existsSync(envFile)) {
-  dotenv.config({ path: envFile })
+  dotenv.config({ path: envFile });
 } else {
-  console.warn(`⚠️  Environment file ${envFile} not found!`)
+  console.warn(`⚠️  Environment file ${envFile} not found!`);
 }
 
 module.exports = {
-  node_env: process.env.NODE_ENV || 'development',
+  nodeEnv: process.env.NODE_ENV || 'development',
   sql: {
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
@@ -26,4 +26,4 @@ module.exports = {
     username: process.env.NOSQL_USERNAME,
     password: process.env.NOSQL_PASSWORD,
   },
-}
+};

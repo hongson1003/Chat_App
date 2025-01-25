@@ -7,7 +7,7 @@
   },
   "scripts": {
     "db:migrate": "npx sequelize-cli db:migrate",
-    "start": "nodemon server.js --exec babel-node"
+    "start": "nodemon server.js --exec babel-node -r module-alias/register"
   },
   "dependencies": {
     "axios": "0.15.3",
@@ -36,6 +36,16 @@
     "socket.io": "^4.7.4",
     "uuid": "^3.0.1",
     "validator": "7.0.0"
+  },
+  "_moduleAliases": {
+    "@configs": "src/configs",
+    "@utils": "src/utils",
+    "@models": "src/models",
+    "@middlewares": "src/middlewares",
+    "@services": "src/services",
+    "@routes": "src/routes",
+    "@controllers": "src/controllers",
+    "@config": "./config"
   },
   "author": "HongSon",
   "license": "ISC",
