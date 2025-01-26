@@ -1,11 +1,11 @@
 import { TokenExpiredError } from 'jsonwebtoken';
-import handleJwt from '../utils/handleJwt';
+import { jwtHandler } from '@utils';
 require('dotenv').config();
 
 const secret = process.env.SECRET;
 
 const checkJWT = async (req, res, next) => {
-  let token = handleJwt.extractToken(req);
+  let token = jwtHandler.extractToken(req);
   const refresh_token = req.cookies['refresh_token'];
   if (!token || !refresh_token) {
     return res.status(401).json({
@@ -14,7 +14,7 @@ const checkJWT = async (req, res, next) => {
     });
   }
   try {
-    let decoded = handleJwt.verify(token, secret);
+    let decoded = jwtHandler.verify(token, secret);
     req.user = decoded?.data;
     if (decoded) {
       next();

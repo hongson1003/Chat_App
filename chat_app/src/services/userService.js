@@ -1,7 +1,7 @@
 import { db } from '@configs/sql/models';
 import { appKeys } from '@constants';
+import { userHandler } from '@utils';
 import { Op } from 'sequelize';
-import customizeUser from '../utils/customizeUser';
 import emailService from './emailService';
 
 const getAllUsers = async () => {
@@ -61,7 +61,7 @@ const getUserByPhone = async (phoneNumber) => {
         phoneNumber,
       },
     });
-    const myUser = customizeUser.standardUser(user);
+    const myUser = userHandler.standardUser(user);
     if (user)
       return {
         errCode: 0,
@@ -77,7 +77,7 @@ const getUserByPhone = async (phoneNumber) => {
 const newInfoContact = async (info) => {
   const profile = await db.ProfileContact.create(info);
   if (profile) {
-    const data = customizeUser.standardProfile(profile.dataValues);
+    const data = userHandler.standardProfile(profile.dataValues);
     if (profile)
       return {
         errCode: 0,
@@ -109,7 +109,7 @@ const getProfileByUserId = async (userId) => {
     return {
       errCode: 0,
       message: 'Get success',
-      data: customizeUser.standardProfile(data),
+      data: userHandler.standardProfile(data),
     };
   } catch (error) {
     throw error;
@@ -275,8 +275,8 @@ const findFriendShip = async (user1Id, user2Id) => {
     if (friendShip) {
       const sender = friendShip.sender;
       const receiver = friendShip.receiver;
-      const standardSender = customizeUser.standardUser(sender);
-      const standardReceiver = customizeUser.standardUser(receiver);
+      const standardSender = userHandler.standardUser(sender);
+      const standardReceiver = userHandler.standardUser(receiver);
       friendShip.sender = standardSender;
       friendShip.receiver = standardReceiver;
 
@@ -471,8 +471,8 @@ const findAllNotifications = async (userId) => {
         const friendShip = notification.friendShip;
         const sender = friendShip.sender;
         const receiver = friendShip.receiver;
-        const standardSender = customizeUser.standardUser(sender);
-        const standardReceiver = customizeUser.standardUser(receiver);
+        const standardSender = userHandler.standardUser(sender);
+        const standardReceiver = userHandler.standardUser(receiver);
         friendShip.sender = standardSender;
         friendShip.receiver = standardReceiver;
         return notification;
@@ -539,8 +539,8 @@ const findAllInvitedFriend = async (userId) => {
         const friendShip = notification.friendShip;
         const sender = friendShip.sender;
         const receiver = friendShip.receiver;
-        const standardSender = customizeUser.standardUser(sender);
-        const standardReceiver = customizeUser.standardUser(receiver);
+        const standardSender = userHandler.standardUser(sender);
+        const standardReceiver = userHandler.standardUser(receiver);
         friendShip.sender = standardSender;
         friendShip.receiver = standardReceiver;
         return notification;
@@ -607,8 +607,8 @@ const findAllSentInvitedFriend = async (userId) => {
         const friendShip = notification.friendShip;
         const sender = friendShip.sender;
         const receiver = friendShip.receiver;
-        const standardSender = customizeUser.standardUser(sender);
-        const standardReceiver = customizeUser.standardUser(receiver);
+        const standardSender = userHandler.standardUser(sender);
+        const standardReceiver = userHandler.standardUser(receiver);
         friendShip.sender = standardSender;
         friendShip.receiver = standardReceiver;
         return notification;
@@ -706,8 +706,8 @@ const findFriendsLimit = async (userId, limit) => {
     const standardFriends = friends.map((friend) => {
       const sender = friend.sender;
       const receiver = friend.receiver;
-      const standardUser1 = customizeUser.standardUser(sender);
-      const standardUser2 = customizeUser.standardUser(receiver);
+      const standardUser1 = userHandler.standardUser(sender);
+      const standardUser2 = userHandler.standardUser(receiver);
       friend.sender = standardUser1;
       friend.receiver = standardUser2;
       return friend;
@@ -809,7 +809,7 @@ const updateUserInfor = async (newInfor) => {
       // Save the updated user infor
       const userData = await user.save();
       const profileData = await userInfor.save();
-      const data = customizeUser.standardUser(userData.dataValues);
+      const data = userHandler.standardUser(userData.dataValues);
       data.info = profileData.dataValues;
 
       return {
@@ -866,9 +866,7 @@ const updateOnline = async (userId, time) => {
       user.lastedOnline = time;
       await user.save();
 
-      const standardUser = customizeUser.standardUser(
-        user.get({ plain: true })
-      );
+      const standardUser = userHandler.standardUser(user.get({ plain: true }));
 
       return {
         errCode: 0,

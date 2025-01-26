@@ -6,7 +6,7 @@
     "node": ">= 7.6.0"
   },
   "scripts": {
-    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:migrate": "node babel-sequelize.js db:migrate",
     "start": "nodemon server.js --exec babel-node -r module-alias/register"
   },
   "dependencies": {

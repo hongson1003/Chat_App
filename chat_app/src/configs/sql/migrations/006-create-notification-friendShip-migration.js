@@ -1,5 +1,5 @@
-'use strict'
-const STATUS_FRIENDSHIP = require('../../../utils/types').STATUS_FRIENDSHIP
+'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -32,9 +32,9 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DATE,
       },
-    })
+    });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('NotificationFriendShip')
+    await queryInterface.dropTable('NotificationFriendShip');
   },
-}
+};

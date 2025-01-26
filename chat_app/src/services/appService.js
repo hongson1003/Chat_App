@@ -1,12 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import db from '../configs/sql/models/index';
-import customizeUser, { hashPassword } from '../utils/customizeUser';
-import handleJwt from '../utils/handleJwt';
-import { random_bg_color } from '../utils/random';
-const host = process.env.BACKEND_URL;
+import { db } from '@configs/sql/models';
+import { jwtHandler, userHandler } from '@utils';
 
 const secret = process.env.SECRET;
-const expiresIn = process.env.EXPIRESD_IN;
+const expiresIn = process.env.EXPIRES_IN;
 
 const register = async ({ userName, phoneNumber, password: plainPassword }) => {
   try {
@@ -24,7 +21,7 @@ const register = async ({ userName, phoneNumber, password: plainPassword }) => {
     //create new user;
     const avatarRandom = random_bg_color();
     let refresh_token = uuidv4();
-    let password = hashPassword(plainPassword);
+    let password = userHandler.hashPassword(plainPassword);
     const user = await db.User.create({
       userName,
       phoneNumber,
@@ -40,7 +37,7 @@ const register = async ({ userName, phoneNumber, password: plainPassword }) => {
       coverImage: host + data[random]?.url + '',
     });
     if (user && profile) {
-      let userAfterCustomize = customizeUser.standardUser(user.dataValues);
+      let userAfterCustomize = userHandler.standardUser(user.dataValues);
       return {
         errCode: 0,
         message: 'Created',
@@ -66,11 +63,11 @@ const verifyUser = async (id, phoneNumber) => {
       },
       raw: false,
     });
-    let user = customizeUser.standardUser(userRaw?.dataValues);
+    let user = userHandler.standardUser(userRaw?.dataValues);
     if (Object.keys(user).length !== 0) {
       const deletedAvatar = { ...user };
       delete deletedAvatar.avatar;
-      let access_token = handleJwt.signJwt(deletedAvatar, secret, expiresIn);
+      let access_token = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
       let refresh_token = uuidv4();
       userRaw.refresh_token = refresh_token;
       userRaw.lastedOnline = null;
@@ -102,12 +99,9 @@ const login = async (phoneNumber, password) => {
       },
     });
     if (userDB) {
-      const user = customizeUser.standardUser(userDB);
+      const user = userHandler.standardUser(userDB);
       // validate user;
-      let checkPassword = customizeUser.checkPassword(
-        password,
-        userDB.password
-      );
+      let checkPassword = userHandler.checkPassword(password, userDB.password);
       if (checkPassword) {
         return {
           errCode: 0,
@@ -141,10 +135,10 @@ const updateToken = async (refresh_token_old) => {
     const user = userRaw?.dataValues;
     if (user) {
       const refresh_token = uuidv4();
-      const userClient = customizeUser.standardUser(user);
+      const userClient = userHandler.standardUser(user);
       const deletedAvatar = { ...userClient };
       delete deletedAvatar.avatar;
-      const token = handleJwt.signJwt(deletedAvatar, secret, expiresIn);
+      const token = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
       userRaw.refresh_token = refresh_token;
       userRaw.lastedOnline = null;
       await userRaw.save();
@@ -178,9 +172,9 @@ const updatePassword = async (id, phoneNumber, password) => {
       raw: false,
     });
     if (userDB) {
-      userDB.password = hashPassword(password);
+      userDB.password = userHandler.hashPassword(password);
       await userDB.save();
-      const user = customizeUser.standardUser(userDB.dataValues);
+      const user = userHandler.standardUser(userDB.dataValues);
       return {
         errCode: 0,
         message: 'Update password success',
@@ -206,14 +200,14 @@ const changePassword = async (id, oldPassword, newPassword) => {
       raw: false,
     });
     if (userDB) {
-      let checkPassword = customizeUser.checkPassword(
+      let checkPassword = userHandler.checkPassword(
         oldPassword,
         userDB.password
       );
       if (checkPassword) {
-        userDB.password = hashPassword(newPassword);
+        userDB.password = userHandler.hashPassword(newPassword);
         await userDB.save();
-        const user = customizeUser.standardUser(userDB.dataValues);
+        const user = userHandler.standardUser(userDB.dataValues);
         return {
           errCode: 0,
           message: 'Change password success',

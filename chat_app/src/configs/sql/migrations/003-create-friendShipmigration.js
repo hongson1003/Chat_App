@@ -1,5 +1,7 @@
-'use strict'
-const STATUS_FRIENDSHIP = require('../../../utils/types').STATUS_FRIENDSHIP
+'use strict';
+
+const appKeys = require('@constants').appKeys;
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -29,7 +31,7 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: STATUS_FRIENDSHIP.PENDING,
+        defaultValue: appKeys.STATUS_FRIENDSHIP.PENDING,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -37,9 +39,9 @@ module.exports = {
       updatedAt: {
         type: Sequelize.DATE,
       },
-    })
+    });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('FriendShip')
+    await queryInterface.dropTable('FriendShip');
   },
-}
+};

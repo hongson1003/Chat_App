@@ -1,6 +1,5 @@
-import handleJwt from '../utils/handleJwt';
+import { jwtHandler } from '@utils';
 import { TokenExpiredError } from 'jsonwebtoken';
-import customizeUser from '../utils/customizeUser';
 import { userService, appService } from '@services';
 require('dotenv').config();
 const SECRET = process.env.SECRET;
@@ -67,7 +66,7 @@ const check = async (req, res, next) => {
       messag: 'No refresh_token & access_token',
     });
   try {
-    let decoded = handleJwt.verify(access_token, SECRET);
+    let decoded = jwtHandler.verify(access_token, SECRET);
     const userDecoded = decoded?.data;
     const userRes = await userService.getUserById(userDecoded.id);
     return res.status(200).json({

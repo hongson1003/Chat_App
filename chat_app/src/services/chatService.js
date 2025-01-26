@@ -1,7 +1,7 @@
 import { Chat, Message } from '@configs/nosql/models';
-import _ from 'lodash';
-import CustomizeChat from '../utils/customizeChat.js';
 import { appKeys } from '@constants';
+import { chatHandler } from '@utils';
+import _ from 'lodash';
 import { getUserById } from './userService.js';
 
 function objectId() {
@@ -36,8 +36,8 @@ const accessChat = async (data, user) => {
       seenBy: [data.participants[0]],
     });
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -113,8 +113,8 @@ const findNotReadChat = async (userId) => {
         model: 'Message', // Tham chiếu Message model để lấy dữ liệu
       })
       .sort({ updatedAt: -1 });
-    const mapUsers = await CustomizeChat.getMapUserTargetId(chats);
-    let newChats = CustomizeChat.handleAddUserToParticipants(chats, mapUsers);
+    const mapUsers = await chatHandler.getMapUserTargetId(chats);
+    let newChats = chatHandler.handleAddUserToParticipants(chats, mapUsers);
     newChats = newChats.map((chat) => {
       if (chat.lastedMessage) {
         chat.lastedMessage.sender = mapUsers[String(chat.lastedMessage.sender)];
@@ -153,8 +153,8 @@ const findOnePrivateChat = async (user1Id, user2Id) => {
       ],
     });
     if (chat) {
-      const mapUsers = await CustomizeChat.getMapUserTargetId([chat]);
-      const [newChats] = CustomizeChat.handleAddUserToParticipants(
+      const mapUsers = await chatHandler.getMapUserTargetId([chat]);
+      const [newChats] = chatHandler.handleAddUserToParticipants(
         [chat],
         mapUsers
       );
@@ -201,8 +201,8 @@ const findManyChatPagination = async (userId, page, limit) => {
       })
       .sort({ updatedAt: -1 });
 
-    const mapUsers = await CustomizeChat.getMapUserTargetId(chats);
-    let newChats = CustomizeChat.handleAddUserToParticipants(chats, mapUsers);
+    const mapUsers = await chatHandler.getMapUserTargetId(chats);
+    let newChats = chatHandler.handleAddUserToParticipants(chats, mapUsers);
     newChats = newChats.map((chat) => {
       if (chat.lastedMessage) {
         chat.lastedMessage.sender = mapUsers[String(chat.lastedMessage.sender)];
@@ -253,8 +253,8 @@ const findManyGroups = async (userId) => {
         model: 'Message', // Tham chiếu Message model để lấy dữ liệu
       })
       .sort({ updatedAt: -1 });
-    const mapUsers = await CustomizeChat.getMapUserTargetId(chats);
-    let newChats = CustomizeChat.handleAddUserToParticipants(chats, mapUsers);
+    const mapUsers = await chatHandler.getMapUserTargetId(chats);
+    let newChats = chatHandler.handleAddUserToParticipants(chats, mapUsers);
     newChats = newChats.map((chat) => {
       if (chat.lastedMessage) {
         chat.lastedMessage.sender = mapUsers[String(chat.lastedMessage.sender)];
@@ -282,8 +282,8 @@ const createGroupChat = async (data) => {
   try {
     const chat = new Chat(data);
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -318,7 +318,7 @@ const sendMessage = async (data) => {
     chat.seenBy.push(data.sender);
     await chat.save();
     // const newMessage = await result.populate('chat');
-    const mapUsers = await CustomizeChat.getMapUserTargetId([chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([chat]);
     newMessage = { ...newMessage.toObject() };
     newMessage.sender = mapUsers[String(result.sender)];
 
@@ -356,7 +356,7 @@ const findManyMessagePagination = async (chatId, limit) => {
       .skip(total - limit)
       .limit(limit);
 
-    const mapUsers = await CustomizeChat.getMapUserTargetId(
+    const mapUsers = await chatHandler.getMapUserTargetId(
       messages.map((item) => item.chat)
     );
     let newMessages = messages.map((item) => {
@@ -409,7 +409,7 @@ const addFeeling = async (_id, userId, icon) => {
       message.reactions.push({ userId, icon });
     }
     const result = await message.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result.chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([result.chat]);
     const newMessage = { ...result.toObject() };
     newMessage.sender = mapUsers[String(result.sender)];
 
@@ -485,7 +485,7 @@ const recallMessage = async (_id, userId) => {
     message.unViewList.push(userId);
     const result = await message.save();
     const data = await result.populate('chat');
-    const mapUsers = await CustomizeChat.getMapUserTargetId([data.chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([data.chat]);
     const newMessage = { ...data.toObject() };
     newMessage.sender = mapUsers[String(data.sender)];
     if (result) {
@@ -526,7 +526,7 @@ const deleteMessage = async (messageId, id) => {
     message.isDelete = true;
     const result = await message.save();
     const data = await result.populate('chat');
-    const mapUsers = await CustomizeChat.getMapUserTargetId([data.chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([data.chat]);
     const newMessage = { ...data.toObject() };
     newMessage.sender = mapUsers[String(data.sender)];
     if (result) {
@@ -573,7 +573,7 @@ const pinMessage = async (messageId, chatId) => {
     const result = await message.save();
 
     const newMessage = await result.populate('chat');
-    const mapUsers = await CustomizeChat.getMapUserTargetId([newMessage.chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([newMessage.chat]);
     newMessage.sender = mapUsers[String(newMessage.sender)];
 
     if (result) {
@@ -607,7 +607,7 @@ const unPinMessage = async (messageId) => {
     const result = await message.save();
 
     const newMessage = await result.populate('chat');
-    const mapUsers = await CustomizeChat.getMapUserTargetId([newMessage.chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([newMessage.chat]);
     newMessage.sender = mapUsers[String(newMessage.sender)];
 
     if (result) {
@@ -658,8 +658,8 @@ const addMembers = async (chatId, members, id) => {
     const mergedParticipants = _.union(participants, members);
     chat.participants = mergedParticipants;
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -718,8 +718,8 @@ const deleteMember = async (memberId, chatId, id) => {
     }
     const result = await chat.save();
     // trả về chat mới
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -771,8 +771,8 @@ const disbandByLeader = async (memberId, userId, chatId) => {
       chat.status = false;
     }
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -806,8 +806,8 @@ const updateGroupChat = async (data) => {
     if (data.name) chat.name = data.name;
     if (data.groupPhoto) chat.groupPhoto = data.groupPhoto;
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -882,7 +882,7 @@ const replyMessage = async (messsageCurrentId, messagePrevId) => {
     let result = await currentMessage.save();
     result = await result.populate('reply');
     let newMessage = { ...result.toObject() };
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result.chat]);
+    const mapUsers = await chatHandler.getMapUserTargetId([result.chat]);
     newMessage.sender = mapUsers[String(result.sender)];
     newMessage.reply.sender =
       mapUsers[String(result.reply.sender) || { id: item.reply.sender }];
@@ -913,8 +913,8 @@ const getAccessChat = async (chatId) => {
         message: 'Chat not found!',
       };
     }
-    const mapUsers = await CustomizeChat.getMapUserTargetId([chat]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([chat]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [chat],
       mapUsers
     );
@@ -1006,8 +1006,8 @@ const outGroupChat = async (chatId, userId) => {
     });
 
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -1063,8 +1063,8 @@ const grantGroupChat = async (chatId, memberId, userId) => {
     }
     chat.administrator = memberId;
     const result = await chat.save();
-    const mapUsers = await CustomizeChat.getMapUserTargetId([result]);
-    const [newChats] = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId([result]);
+    const [newChats] = chatHandler.handleAddUserToParticipants(
       [result],
       mapUsers
     );
@@ -1244,8 +1244,8 @@ const getTotalTogether = async (userId, friendId) => {
       path: 'lastedMessage', // Tham chiếu trường 'id' lồng nhau
       model: 'Message', // Tham chiếu Message model để lấy dữ liệu
     });
-    const mapUsers = await CustomizeChat.getMapUserTargetId(totalChats);
-    let newChats = CustomizeChat.handleAddUserToParticipants(
+    const mapUsers = await chatHandler.getMapUserTargetId(totalChats);
+    let newChats = chatHandler.handleAddUserToParticipants(
       totalChats,
       mapUsers
     );
