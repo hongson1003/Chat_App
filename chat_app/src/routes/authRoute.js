@@ -1,20 +1,21 @@
+import { appRoutes } from '@constants';
 import { appController } from '@controllers';
 import { userGuardHandler } from '@middlewares';
 
 const InitRoutesAuthentication = (router) => {
-  router.route('/').post(appController.register);
+  router.route(appRoutes.ROOT).post(appController.register);
 
-  router.route('/login').post(appController.login);
+  router.route(appRoutes.LOGIN).post(appController.login);
 
-  router.route('/logout').post(appController.logout);
+  router.route(appRoutes.LOGOUT).post(appController.logout);
 
-  router.route('/check').post(appController.check);
+  router.route(appRoutes.CHECK).post(appController.check);
 
-  router.route('/verify').post(appController.verifyUser);
-  router.route('/reset-password').post(appController.resetPassword);
+  router.route(appRoutes.VERIFY).post(appController.verifyUser);
+  router.route(appRoutes.RESET_PASSWORD).post(appController.resetPassword);
 
   router
-    .route('/change-password')
+    .route(appRoutes.CHANGE_PASSWORD)
     .put(userGuardHandler.checkJWT, appController.changePassword);
 
   return router;

@@ -1,28 +1,27 @@
+import { appRoutes } from '@constants';
 import { userController } from '@controllers';
 import { userGuardHandler } from '@middlewares';
 
 const IntRoutesUsers = (router) => {
-  router.route('/test').get(userController.testAPI);
-
-  router.route('/getMany').post(userController.getMany);
+  router.route(appRoutes.GET_MANY).post(userController.getMany);
 
   router
-    .route('/info')
+    .route(appRoutes.INFO)
     .get(userGuardHandler.checkJWT, userController.findUserById);
 
-  router.route('/user-by-phone').get(userController.findUserByPhone);
+  router.route(appRoutes.USER_BY_PHONE).get(userController.findUserByPhone);
 
   router
-    .route('/profile')
+    .route(appRoutes.PROFILE)
     .post(userGuardHandler.checkJWT, userController.createInfoContact)
     .get(userGuardHandler.checkJWT, userController.getProfileByUserId);
 
   router
-    .route('/detail')
+    .route(appRoutes.DETAIL)
     .get(userGuardHandler.checkJWT, userController.findUserWithProfileById);
 
   router
-    .route('/friendShip')
+    .route(appRoutes.FRIENDSHIP)
     .get(userGuardHandler.checkJWT, userController.findFriendShip)
     .post(
       userGuardHandler.checkJWT,
@@ -31,47 +30,47 @@ const IntRoutesUsers = (router) => {
     .put(userGuardHandler.checkJWT, userController.acceptRequestAddFriend);
 
   router
-    .route('/friendShip/reject')
+    .route(appRoutes.FRIENDSHIP_REJECT)
     .put(userGuardHandler.checkJWT, userController.rejectFriendShip);
 
   router
-    .route('/friendShip/unfriend')
+    .route(appRoutes.FRIENDSHIP_UNFRIEND)
     .put(userGuardHandler.checkJWT, userController.unFriend);
 
   router
-    .route('/friends')
+    .route(appRoutes.FRIENDS_LIMIT)
     .get(userGuardHandler.checkJWT, userController.findFriendsLimit);
 
   router
-    .route('/notifications/friendShip')
+    .route(appRoutes.NOTIFICATION_FRIENDSHIP)
     .get(userGuardHandler.checkJWT, userController.findAllNotifications)
     .post(userGuardHandler.checkJWT, userController.updateNotification);
 
   router
-    .route('/notifications/friendShip/invited')
+    .route(appRoutes.NOTIFICATION_FRIENDSHIP_INVITED)
     .get(userGuardHandler.checkJWT, userController.findAllInvitedFriend);
 
   router
-    .route('/notifications/friendShip/sentInvited')
+    .route(appRoutes.NOTIFICATION_FRIENDSHIP_SENT_INVITED)
     .get(userGuardHandler.checkJWT, userController.findAllSentInvitedFriend);
 
   router
-    .route('/updateInfor')
+    .route(appRoutes.UPDATE_INFO)
     .put(userGuardHandler.checkJWT, userController.updateUserInfor);
 
   router
-    .route('/avatar')
+    .route(appRoutes.AVATAR)
     .put(userGuardHandler.checkJWT, userController.updateAvatar);
   router
-    .route('/updateOnline')
+    .route(appRoutes.ONLINE)
     .put(userGuardHandler.checkJWT, userController.updateOnline);
 
   router
-    .route('/send-verify-email')
+    .route(appRoutes.SEND_VERIFY_EMAIL)
     .post(userGuardHandler.checkJWT, userController.sendverifyEmail);
 
   router
-    .route('/verify-email')
+    .route(appRoutes.VERIFY_EMAIL)
     .post(userGuardHandler.checkJWT, userController.verifyEmail);
   return router;
 };

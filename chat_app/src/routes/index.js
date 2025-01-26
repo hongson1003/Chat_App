@@ -2,19 +2,20 @@ import express from 'express';
 import InitAuthenticationRoutes from './authRoute';
 import InitUserRoutes from './userRoute';
 import InitChatRoutes from './chatRoute';
+import { appRoutes } from '@constants';
 
 const router = express.Router();
 
 const configRoutes = async (app) => {
-  app.get('/health', (req, res) => {
+  app.get(appRoutes.HEALTH, (req, res) => {
     return res.status(200).send({
       status: 'OK',
       message: 'Server is up and running',
     });
   });
-  app.use('/auth', InitAuthenticationRoutes(router));
-  app.use('/users', InitUserRoutes(router));
-  app.use('/chat', InitChatRoutes(router));
+  app.use(appRoutes.AUTH, InitAuthenticationRoutes(router));
+  app.use(appRoutes.USERS, InitUserRoutes(router));
+  app.use(appRoutes.CHATS, InitChatRoutes(router));
 };
 
 module.exports = configRoutes;
