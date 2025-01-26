@@ -1,15 +1,15 @@
 require('dotenv').config();
 require('module-alias/register');
 
+import { connectNoSql } from '@configs/nosql';
+import { connectMySql } from '@configs/sql';
+import { exceptionHandler } from '@middlewares';
+import configRoutes from '@routes';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import expressValidator from 'express-validator';
 import helmet from 'helmet';
-import { connectNoSql } from '@configs/nosql';
-import { connectMySql } from '@configs/sql';
-import handleException from '@middlewares/handleException.middleware';
-import configRoutes from '@routes';
 
 const app = express();
 
@@ -46,7 +46,7 @@ connectNoSql();
 
 configRoutes(app);
 
-app.use(handleException.notFoundHandler);
-app.use(handleException.errorHandler);
+app.use(exceptionHandler.notFoundHandler);
+app.use(exceptionHandler.errorHandler);
 
 module.exports = app;

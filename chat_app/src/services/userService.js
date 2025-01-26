@@ -1,7 +1,7 @@
-import { Op, where } from 'sequelize';
-import db, { sequelize } from '../configs/sql/models/index';
+import { db } from '@configs/sql/models';
+import { appKeys } from '@constants';
+import { Op } from 'sequelize';
 import customizeUser from '../utils/customizeUser';
-import { STATUS_FRIENDSHIP } from '../utils/types';
 import emailService from './emailService';
 
 const getAllUsers = async () => {
@@ -178,7 +178,7 @@ const sendRequestAddFriendOrRecall = async (user1Id, user2Id, content) => {
       const friendShip = await db.FriendShip.create({
         user1Id,
         user2Id,
-        status: STATUS_FRIENDSHIP.PENDING,
+        status: appKeys.STATUS_FRIENDSHIP.PENDING,
       });
       await createNofiticationFriendShip(friendShip.id, content);
       return {

@@ -1,16 +1,17 @@
-const STATUS_FRIENDSHIP = {
+export default {
+  DEVELOPMENT: 'development',
+  PRODUCTION: 'production',
+  STATUS_FRIENDSHIP: {
     PENDING: 'PENDING',
     RESOLVE: 'RESOLVE',
     REJECT: 'REJECT',
-    OLD_FRIEND: 'OLD_FRIEND'
-}
-
-const STATUS_CHAT = {
+    OLD_FRIEND: 'OLD_FRIEND',
+  },
+  STATUS_CHAT: {
     PRIVATE_CHAT: 'PRIVATE_CHAT',
-    GROUP_CHAT: 'GROUP_CHAT'
-}
-
-const MESSAGES = {
+    GROUP_CHAT: 'GROUP_CHAT',
+  },
+  MESSAGES: {
     SEND_MESSAGE_FUNC: 'SEND_MESSAGE_FUNC',
     IMAGES: 'IMAGES',
     VIDEO: 'VIDEO',
@@ -20,10 +21,5 @@ const MESSAGES = {
     FILE_FOLDER: 'FILE_FOLDER',
     NOTIFY: 'NOTIFY',
     NEW_FRIEND: 'NEW_FRIEND',
-}
-
-module.exports = {
-    STATUS_FRIENDSHIP,
-    STATUS_CHAT,
-    MESSAGES
-}
+  },
+};

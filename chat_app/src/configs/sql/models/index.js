@@ -1,9 +1,9 @@
 const configEnv = require('@config');
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import process from 'process';
 const basename = path.basename(__filename);
 import { configMySql } from '../connect';
 const config = configMySql[configEnv.nodeEnv];
@@ -11,16 +11,13 @@ const config = configMySql[configEnv.nodeEnv];
 const db = {};
 let sequelize;
 
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
+sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
+
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
@@ -47,4 +44,4 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

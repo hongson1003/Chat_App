@@ -1,7 +1,7 @@
 import { Chat, Message } from '@configs/nosql/models';
 import _ from 'lodash';
 import CustomizeChat from '../utils/customizeChat.js';
-import { MESSAGES, STATUS_CHAT } from '../utils/types.js';
+import { appKeys } from '@constants';
 import { getUserById } from './userService.js';
 
 function objectId() {
@@ -1176,7 +1176,7 @@ const findManyImagePagination = async (chatId, limit, userId) => {
   try {
     const total = await Message.find({
       chat: chatId,
-      type: MESSAGES.IMAGES,
+      type: appKeys.MESSAGES.IMAGES,
       isDelete: false,
       unViewList: {
         $nin: [userId],
@@ -1207,7 +1207,7 @@ const findManyFilePagination = async (chatId, limit) => {
   try {
     const total = await Message.find({
       chat: chatId,
-      type: MESSAGES.FILE_FOLDER,
+      type: appKeys.MESSAGES.FILE_FOLDER,
     }).limit(limit);
     if (limit > total) {
       limit = total;

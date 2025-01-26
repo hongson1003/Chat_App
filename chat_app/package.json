@@ -45,7 +45,8 @@
     "@services": "src/services",
     "@routes": "src/routes",
     "@controllers": "src/controllers",
-    "@config": "./config"
+    "@config": "./config",
+    "@constants": "src/constants"
   },
   "author": "HongSon",
   "license": "ISC",
