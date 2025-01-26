@@ -7,7 +7,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --cache --ext .js,.jsx src --report-unused-disable-directives --max-warnings 0",
-    "prepare": "husky install",
     "format": "prettier --write ."
   },
   "lint-staged": {
@@ -64,7 +63,6 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
-    "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "msw": "^1.2.2",
     "prettier": "^2.8.8",
