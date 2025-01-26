@@ -16,6 +16,7 @@ module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   secretKey: process.env.SECRET_KEY,
   expiresIn: process.env.EXPIRES_IN,
+  port: process.env.PORT || 3000,
   sql: {
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
@@ -27,5 +28,6 @@ module.exports = {
   nosql: {
     username: process.env.NOSQL_USERNAME,
     password: process.env.NOSQL_PASSWORD,
+    database: process.env.NOSQL_DATABASE,
   },
 };

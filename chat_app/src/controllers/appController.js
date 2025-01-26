@@ -1,9 +1,9 @@
 import { jwtHandler } from '@utils';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { userService, appService } from '@services';
-require('dotenv').config();
-const SECRET = process.env.SECRET;
-const MAX_AGE = process.env.MAX_AGE;
+import config from '@config';
+
+const { secretKey, expiresIn } = config;
 
 const register = async (req, res, next) => {
   let user = req.body;
@@ -63,7 +63,7 @@ const check = async (req, res, next) => {
   if (!refresh_token || !access_token)
     return res.status(200).json({
       errCode: 1,
-      messag: 'No refresh_token & access_token',
+      message: 'No refresh_token & access_token',
     });
   try {
     let decoded = jwtHandler.verify(access_token, SECRET);

@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
-const { Schema } = mongoose
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
 
 const ChatModel = Schema(
   {
@@ -57,8 +58,8 @@ const ChatModel = Schema(
   {
     timestamps: true,
   }
-)
+);
 
-const Chat = mongoose.model('Chat', ChatModel)
+const Chat = mongoose.model('Chat', ChatModel);
 
-module.exports = Chat
+module.exports = Chat;

@@ -1,8 +1,8 @@
 import { TokenExpiredError } from 'jsonwebtoken';
 import { jwtHandler } from '@utils';
-require('dotenv').config();
+import config from '@config';
 
-const secret = process.env.SECRET;
+const { secretKey } = config;
 
 const checkJWT = async (req, res, next) => {
   let token = jwtHandler.extractToken(req);

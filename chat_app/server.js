@@ -1,8 +1,9 @@
 import config from '@config';
+import { appKeys } from '@constants';
 import { userService } from '@services';
 import app from './app';
 
-app.set('port', config.port || 8096);
+app.set(appKeys.PORT, config.port || 8096);
 
 const server = app.listen(app.get('port'), () => {
   console.log(`Express running → PORT ${server.address().port}`.rainbow);

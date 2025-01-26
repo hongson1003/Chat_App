@@ -1,6 +1,7 @@
 export default {
   DEVELOPMENT: 'development',
   PRODUCTION: 'production',
+  PORT: 'port',
   STATUS_FRIENDSHIP: {
     PENDING: 'PENDING',
     RESOLVE: 'RESOLVE',
