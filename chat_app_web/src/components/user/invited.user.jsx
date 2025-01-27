@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import AvatarUser from './avatar';
+import { axios, socket } from '@/configs';
 import { Button, Flex } from 'antd';
-import './invited.user.scss';
 import moment from 'moment';
-import InforUserModal from '../modal/inforUser.modal';
-import axios from '../../utils/axios';
-import { socket } from '../../utils/io';
 import { useSelector } from 'react-redux';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { CHAT_STATUS, MESSAGES } from '../../redux/types/user.type';
 import { toast } from 'react-toastify';
+import { CHAT_STATUS, MESSAGES } from '../../redux/types/user.type';
+import { sendNotifyToChatRealTime } from '../../utils/handleChat';
+import InforUserModal from '../modal/inforUser.modal';
+import AvatarUser from './avatar';
+import './invited.user.scss';
 
 const InvitedUser = ({
   user,

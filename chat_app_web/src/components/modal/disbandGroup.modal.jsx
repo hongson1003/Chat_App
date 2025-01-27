@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
-import './disbandGroup.modal.scss';
-import { Input, Radio, Popconfirm } from 'antd';
-import AvatarUser from '../user/avatar';
-import axios from '../../utils/axios';
-import { accessChat } from '../../redux/actions/user.action';
-import { socket } from '../../utils/io';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { MESSAGES } from '../../redux/types/user.type';
+import { axios, socket } from '@/configs';
+import { Button, Input, Modal, Popconfirm, Radio } from 'antd';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { accessChat } from '../../redux/actions/user.action';
+import { MESSAGES } from '../../redux/types/user.type';
+import { sendNotifyToChatRealTime } from '../../utils/handleChat';
+import AvatarUser from '../user/avatar';
+import './disbandGroup.modal.scss';
 
 const DisbandGroupModal = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

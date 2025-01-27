@@ -1,67 +1,61 @@
+import { MergeCellsOutlined } from '@ant-design/icons';
+import data from '@emoji-mart/data/sets/14/facebook.json';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import StatusUser from '../../../components/user/status.user';
 import './chat.main.scss';
-import { MergeCellsOutlined } from '@ant-design/icons';
-import data from '@emoji-mart/data/sets/14/facebook.json';
 // import data from '../../../mocks/facebook.json';
+import { CloseOutlined } from '@ant-design/icons';
 import Picker from '@emoji-mart/react';
-import axios from '../../../utils/axios';
-import AvatarUser from '../../../components/user/avatar';
-import { Button, Menu, message } from 'antd';
-import { socket } from '../../../utils/io';
-import { toast } from 'react-toastify';
+import { Button, Input, Menu, Popconfirm, Popover } from 'antd';
 import _ from 'lodash';
 import ReactLoading from 'react-loading';
-import { STATE } from '../../../redux/types/app.type';
+import Zoom from 'react-medium-image-zoom';
+import { Document, Page } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import { useNavigate } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
+import { toast } from 'react-toastify';
+import InputSearchSticky from '../../../components/customize/inputSearchSticky';
+import ChatTogetherDrawer from '../../../components/drawer/chatTogether.drawer';
+import MemberDrawer from '../../../components/drawer/members.drawer';
+import AddMemberModal from '../../../components/modal/addMember.modal';
+import ChangeBackgroundModal from '../../../components/modal/changeBackground.modal';
+import DisbandGroupModal from '../../../components/modal/disbandGroup.modal';
+import GrantModal from '../../../components/modal/grant.modal';
+import InforGroupModal from '../../../components/modal/infoGroup.modal';
+import LeaveGroupModal from '../../../components/modal/leaveGroup.modal';
+import LinkJoinGroupModal from '../../../components/modal/linkJoinGroup.modal';
+import MicModal from '../../../components/modal/mic.modal';
+import PinsModal from '../../../components/modal/pins.modal';
+import ViewSettingModal from '../../../components/modal/securitySetting.modal';
+import ViewAllFilesModal from '../../../components/modal/viewAllFile.modal';
+import ViewAllPicturesModal from '../../../components/modal/viewAllPictures.modal';
+import ChooseFileUploadPopover from '../../../components/popover/chooseFileUpload.popover';
+import File from '../../../components/upload/file.upload';
+import AvatarUser from '../../../components/user/avatar';
+import { appConstants } from '../../../constants';
+import { changeKeySubMenu, editGroup } from '../../../redux/actions/app.action';
+import { accessChat, fetchMessages } from '../../../redux/actions/user.action';
+import { STATE } from '../../../redux/types/app.type';
 import {
   CHAT_STATUS,
   FILE_TYPE,
   MESSAGES,
 } from '../../../redux/types/user.type';
-import ChangeBackgroundModal from '../../../components/modal/changeBackground.modal';
-import MessageChat from './message.chat';
+import { getFriend, sendNotifyToChatRealTime } from '../../../utils/handleChat';
 import {
   customizeFile,
   getLinkDownloadFile,
   getPreviewImage,
   getTimeFromDate,
 } from '../../../utils/handleUltils';
-import { useNavigate } from 'react-router-dom';
-import { getFriend, sendNotifyToChatRealTime } from '../../../utils/handleChat';
-import { COLOR_BACKGROUND } from '../../../type/rootCss.type';
-import Zoom from 'react-medium-image-zoom';
-import InputSearchSticky from '../../../components/customize/inputSearchSticky';
-import ChooseFileUploadPopover from '../../../components/popover/chooseFileUpload.popover';
-import File from '../../../components/upload/file.upload';
+import MessageChat from './message.chat';
+import { axios } from '@/configs';
 const uploadPreset = import.meta.env.VITE_APP_CLOUNDINARY_UPLOAD_PRESET;
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;
 const folder = import.meta.env.VITE_APP_CLOUNDINARY_FOLDER;
-import { Document, Page } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import MicModal from '../../../components/modal/mic.modal';
-import PinsModal from '../../../components/modal/pins.modal';
-import { Input } from 'antd';
-import { Popover } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
-import { changeKeySubMenu, editGroup } from '../../../redux/actions/app.action';
-import WrapperVideo from '../../../components/customize/wrapperVideo';
-import AddMemberModal from '../../../components/modal/addMember.modal';
-import InforGroupModal from '../../../components/modal/infoGroup.modal';
-import MemberDrawer from '../../../components/drawer/members.drawer';
-import DisbandGroupModal from '../../../components/modal/disbandGroup.modal';
-import GrantModal from '../../../components/modal/grant.modal';
-import ViewAllPicturesModal from '../../../components/modal/viewAllPictures.modal';
-import ViewAllFilesModal from '../../../components/modal/viewAllFile.modal';
-import ViewAllLinksModal from '../../../components/modal/viewAllLink.modal';
-import ViewSettingModal from '../../../components/modal/securitySetting.modal';
-import LeaveGroupModal from '../../../components/modal/leaveGroup.modal';
-import ChatTogetherDrawer from '../../../components/drawer/chatTogether.drawer';
-import LinkJoinGroupModal from '../../../components/modal/linkJoinGroup.modal';
-import { accessChat, fetchMessages } from '../../../redux/actions/user.action';
-import { Popconfirm } from 'antd';
 
 const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   const chat = useSelector((state) => state.appReducer.subNav);
@@ -89,8 +83,12 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   const [listFileMessage, setListFileMessage] = useState([]);
   // Menu
   const [current, setCurrent] = useState('');
-  const [headerColor, setHeaderColor] = useState(COLOR_BACKGROUND.BLACK);
-  const [messageColor, setMessageColor] = useState(COLOR_BACKGROUND.BLACK);
+  const [headerColor, setHeaderColor] = useState(
+    appConstants.COLOR_BACKGROUND.BLACK
+  );
+  const [messageColor, setMessageColor] = useState(
+    appConstants.COLOR_BACKGROUND.BLACK
+  );
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const scroolFirst = useRef(false);
   const scroolToTopRef = useRef(false);

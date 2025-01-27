@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Popover } from 'antd';
-import './chat.popover.scss';
+import { axios } from '@/configs';
+import { Popconfirm, Popover } from 'antd';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import axios from '../../utils/axios';
-import { Popconfirm } from 'antd';
 import { toast } from 'react-toastify';
+import './chat.popover.scss';
 
 const content = ({ chat, onClose }) => {
   const user = useSelector((state) => state.appReducer.userInfo.user);

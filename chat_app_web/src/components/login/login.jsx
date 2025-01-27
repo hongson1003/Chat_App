@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react';
-import './login.scss';
 import { Tabs } from 'antd';
-import LoginPhone from './phone.login';
+import React from 'react';
 import LoginQR from '../login/qr.login';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import './login.scss';
+import LoginPhone from './phone.login';
 
 const items = [
   {

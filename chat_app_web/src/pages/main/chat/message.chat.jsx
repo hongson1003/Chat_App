@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import './message.chat.scss';
 import { Popover } from 'antd';
-import EmoijPopup from './emoijPopup.chat';
-import Tym from '../../../components/customize/tym';
 import _ from 'lodash';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import axios from '../../../utils/axios';
-import { socket } from '../../../utils/io';
-import { MESSAGES, METHOD_MESSAGE } from '../../../redux/types/user.type';
+import Tym from '../../../components/customize/tym';
 import ForwardModal from '../../../components/modal/forward.modal';
+import { MESSAGES, METHOD_MESSAGE } from '../../../redux/types/user.type';
 import { sendNotifyToChatRealTime } from '../../../utils/handleChat';
-import { toast } from 'react-toastify';
+import EmoijPopup from './emoijPopup.chat';
+import './message.chat.scss';
+import { axios, socket } from '@/configs';
 
 const items = [
   {
@@ -370,23 +368,24 @@ const MessageChat = ({
           <div className="message-reply">
             <p className="reply-name">{message.reply.sender.userName}</p>
             {/* handle content */}
-            {message.reply.type === MESSAGES.TEXT ? (
-              <p className="message-reply-content">{message.reply.content}</p>
-            ) : message.reply.type === MESSAGES.IMAGES ? (
-              <img src={message.reply.urls[0]} alt="image" />
-            ) : message.reply.type === MESSAGES.VIDEO ? (
-              <video src={message.reply.urls[0]} controls></video>
-            ) : message.reply.type === MESSAGES.FILE_FOLDER ? (
-              <p>{message.reply.files[0].name}</p>
-            ) : message.reply.type === MESSAGES.AUDIO ? (
-              <audio src={message.reply.urls[0]} controls></audio>
-            ) : message.reply.type === MESSAGES.STICKER ? (
-              <img
-                className="sticker-reply"
-                src={message.reply.sticker}
-                alt="sticker"
-              />
-            ) : null // handle file // handle video
+            {
+              message.reply.type === MESSAGES.TEXT ? (
+                <p className="message-reply-content">{message.reply.content}</p>
+              ) : message.reply.type === MESSAGES.IMAGES ? (
+                <img src={message.reply.urls[0]} alt="image" />
+              ) : message.reply.type === MESSAGES.VIDEO ? (
+                <video src={message.reply.urls[0]} controls></video>
+              ) : message.reply.type === MESSAGES.FILE_FOLDER ? (
+                <p>{message.reply.files[0].name}</p>
+              ) : message.reply.type === MESSAGES.AUDIO ? (
+                <audio src={message.reply.urls[0]} controls></audio>
+              ) : message.reply.type === MESSAGES.STICKER ? (
+                <img
+                  className="sticker-reply"
+                  src={message.reply.sticker}
+                  alt="sticker"
+                />
+              ) : null // handle file // handle video
             }
           </div>
         )}

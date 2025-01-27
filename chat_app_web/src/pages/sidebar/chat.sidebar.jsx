@@ -1,17 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios from '../../utils/axios';
-import ChatUser from '../../components/user/chat.user';
-import { socket } from '../../utils/io';
-import { toast } from 'react-toastify';
-import { STATE } from '../../redux/types/app.type';
-import { accessChat, fetchChatsFunc } from '../../redux/actions/user.action';
-import { useDispatch, useSelector } from 'react-redux';
+import { axios, socket } from '@/configs';
 import _ from 'lodash';
-import { editGroup } from '../../redux/actions/app.action';
-import './chat.sidebar.scss';
-import { formatTimeAgo, getFriend } from '../../utils/handleChat';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import ChatPopover from '../../components/popover/chat.popover';
+import ChatUser from '../../components/user/chat.user';
+import { editGroup } from '../../redux/actions/app.action';
+import { accessChat, fetchChatsFunc } from '../../redux/actions/user.action';
+import { STATE } from '../../redux/types/app.type';
 import { FILTER } from '../../redux/types/user.type';
+import { formatTimeAgo, getFriend } from '../../utils/handleChat';
+import './chat.sidebar.scss';
 
 const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   const [chats, setChats] = useState([]);

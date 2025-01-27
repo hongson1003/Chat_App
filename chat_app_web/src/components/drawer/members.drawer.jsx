@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { axios, socket } from '@/configs';
+import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Drawer, Popover } from 'antd';
-import './members.drawer.scss';
-import AvatarUser from '../user/avatar';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { editGroup } from '../../redux/actions/app.action';
+import { MESSAGES } from '../../redux/types/user.type';
+import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import AddMemberModal from '../modal/addMember.modal';
 import InforUserModal from '../modal/inforUser.modal';
-import axios from '../../utils/axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { editGroup } from '../../redux/actions/app.action';
-import { socket } from '../../utils/io';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { MESSAGES } from '../../redux/types/user.type';
-import { toast } from 'react-toastify';
+import AvatarUser from '../user/avatar';
+import './members.drawer.scss';
 
 const Content = ({
   friendData,

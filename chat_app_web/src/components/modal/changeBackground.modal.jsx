@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { axios } from '@/configs';
 import { Button, Flex, Modal } from 'antd';
-import axios from '../../utils/axios';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from 'react';
 import './changeBackground.modal.scss';
 
 const ChangeBackgroundModal = ({ chat, children, handleChangeBackground }) => {

@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Input, Modal } from 'antd';
-import axios from '../../utils/axios';
-import './forward.modal.scss';
-import { Checkbox } from 'antd';
+import { axios, socket } from '@/configs';
+import { Button, Checkbox, Input, Modal } from 'antd';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { CHAT_STATUS } from '../../redux/types/user.type';
 import { getFriend } from '../../utils/handleChat';
-import { useSelector } from 'react-redux';
 import AvatarUser from '../user/avatar';
-import { socket } from '../../utils/io';
+import './forward.modal.scss';
 const CheckboxGroup = Checkbox.Group;
-import _ from 'lodash';
-import { toast } from 'react-toastify';
 
 const ForwardModal = ({ children, message }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -3,9 +3,9 @@ import { items } from '../../sidebar/friend.sidebar';
 import './list.friend.scss';
 import { Input, Select } from 'antd';
 import ListFriends from './listFriends.friends';
-import axios from '../../../utils/axios';
 import { toast } from 'react-toastify';
 import { STATE } from '../../../redux/types/app.type';
+import { axios } from '@/configs';
 const headerData = items[0];
 
 const limit = 10;

@@ -2,9 +2,9 @@ import { Button, Flex, Input, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { PhoneOutlined } from '@ant-design/icons';
 import './addFriend.modal.scss';
-import axios from '../../utils/axios';
 import InforUserModal from './inforUser.modal';
 import { toast } from 'react-toastify';
+import { axios } from '@/configs';
 
 const AddFriendModal = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

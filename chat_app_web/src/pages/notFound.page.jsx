@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react'
-import { Result, Button, Table } from 'antd'
+import { Button, Result } from 'antd'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import './notFound.page.scss'
-import { socket } from '../utils/io'
 
 const NotFound = () => {
   return (

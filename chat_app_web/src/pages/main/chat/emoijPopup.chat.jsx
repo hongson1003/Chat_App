@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Popover, message } from 'antd';
-import './emoijPopup.chat.scss';
-import _ from 'lodash';
-import Tym from '../../../components/customize/tym';
-import axios from '../../../utils/axios';
+import { axios } from '@/configs';
+import { Popover } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import Tym from '../../../components/customize/tym';
+import './emoijPopup.chat.scss';
 
 const Content = ({
   setSelectedReaction,

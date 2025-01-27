@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
-import { Alert, Form, Input, Typography } from 'antd';
-import axios from '../../utils/axios';
+import { axios } from '@/configs';
+import { Alert, Form, Input, Modal, Typography } from 'antd';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const ChangePasswordModal = ({ children }) => {

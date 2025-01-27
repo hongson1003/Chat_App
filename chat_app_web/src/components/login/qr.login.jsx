@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { socket } from '@/configs';
 import { Flex } from 'antd';
-import './qr.login.scss';
-import QRCode from 'react-qr-code';
-import { v4 as uuidv4 } from 'uuid';
-import { socket } from '../../utils/io';
-import { loginStart } from '../../redux/actions/app.action';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
 import ReactLoading from 'react-loading';
+import QRCode from 'react-qr-code';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import { loginStart } from '../../redux/actions/app.action';
+import './qr.login.scss';
 
 const LoginQR = () => {
   const [value, setValue] = useState('');
@@ -22,25 +22,24 @@ const LoginQR = () => {
       let token = uuidv4() + JSON.stringify(Date.now());
       setValue(token);
       // fetchWaitScanner(token);
-      socket.then((socket) => {
-        socket.emit('setup', token);
-        socket.on('connected', () => {
-          setIsConnected(true);
-          socket.emit('join-qr-room', token);
-          socket.on('joined', () => {
-            socket.on('need-to-verify', (data) => {
-              // Khi người dùng quét mã
-              setIsLoading(true);
-              setTimeout(() => {
-                setIsLoading(false);
-                dispatch(loginStart(data));
-                navigate(`/verify?id=${data.id}`);
-              }, 1000);
-            });
+
+      socket.emit('setup', token);
+      socket.on('connected', () => {
+        setIsConnected(true);
+        socket.emit('join-qr-room', token);
+        socket.on('joined', () => {
+          socket.on('need-to-verify', (data) => {
+            // Khi người dùng quét mã
+            setIsLoading(true);
+            setTimeout(() => {
+              setIsLoading(false);
+              dispatch(loginStart(data));
+              navigate(`/verify?id=${data.id}`);
+            }, 1000);
           });
         });
-        onlyRender.current = true;
       });
+      onlyRender.current = true;
     }
   }, []);
   return (

@@ -1,12 +1,10 @@
+import { axios, socket } from '@/configs';
+import { Select } from 'antd';
 import React, { useEffect } from 'react';
-import './invited.friend.scss';
-import { Flex, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { items } from '../../sidebar/friend.sidebar';
+import { useSelector } from 'react-redux';
 import InvitedUser from '../../../components/user/invited.user';
-import axios from '../../../utils/axios';
-import { socket } from '../../../utils/io';
-import { toast } from 'react-toastify';
+import { items } from '../../sidebar/friend.sidebar';
+import './invited.friend.scss';
 
 const headerData = items[2];
 const options = [

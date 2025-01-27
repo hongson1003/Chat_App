@@ -8,11 +8,10 @@ import Sidebar from '../components/navigator/sidebar'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { socket } from '../utils/io'
 import { STATE } from '../redux/types/app.type'
 import { connectSocketSuccess } from '../redux/actions/app.action'
-import axios from '../utils/axios'
 import { getFriend } from '../utils/handleChat'
+import { axios, socket } from '../configs'
 
 const HomeLayout = () => {
   const navigate = useNavigate()
@@ -31,16 +30,16 @@ const HomeLayout = () => {
 
   // check authentication
   useEffect(() => {
-    console.log('state.isLogin', state.isLogin)
-    if (state.error) {
-      navigate('/outside/error')
-    }
-    if (state.isLogin === STATE.REJECT) {
-      navigate('/login')
-    } else if (state.isLogin === STATE.RESOLVE) {
-      const path = window.location.pathname
-      if (path === '/') navigate('/home')
-    }
+    // if (state.error) {
+    //   navigate('/outside/error')
+    // }
+    // if (state.isLogin === STATE.REJECT) {
+    //   navigate('/login')
+    // } else if (state.isLogin === STATE.RESOLVE) {
+    //   const path = window.location.pathname
+    //   if (path === '/') navigate('/home')
+    // }
+    navigate('/home')
   }, [state])
 
   useEffect(() => {

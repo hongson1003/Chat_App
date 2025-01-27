@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import AvatarUser from '../../../components/user/avatar';
 import { useSelector, useDispatch } from 'react-redux';
 import './listFriends.friends.scss';
-import axios from '../../../utils/axios';
 import { accessChat } from '../../../redux/actions/user.action';
 import { changeKeyMenu } from '../../../redux/actions/app.action';
 import { KEYITEMS } from '../../../utils/keyMenuItem';
 import { STATE } from '../../../redux/types/app.type';
 import FriendPopover from '../../../components/popover/friend.popover';
 import { toast } from 'react-toastify';
+import { axios } from '@/configs';
 
 const ListFriends = ({ data, fetchFriends }) => {
   const [friends, setFriends] = React.useState([]);

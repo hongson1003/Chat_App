@@ -1,17 +1,16 @@
 // routes.js
-import React from 'react';
-import { createBrowserRouter } from 'react-router-dom';
-import HomeLayout from './layouts/homeLayout';
-import LoginPage from './pages/auth/auth.loginPage';
-import HomeSubLayout from './layouts/homeSubLayout';
-import VerifyComponent from './components/verify.component';
-import ResetPassword from './components/resetPassword.component';
-import OutsideLayout from './layouts/outsideLayout';
-import ErrorPage from './pages/error.page';
-import NotFound from './pages/notFound.page';
-import TestPage from './pages/test.page';
-import VideoCallWindow from './windows/videoCall.window';
-import JoinGroup from './pages/ultils/joinGroup';
+import React from 'react'
+import { createBrowserRouter } from 'react-router-dom'
+import ResetPassword from './components/resetPassword.component'
+import VerifyComponent from './components/verify.component'
+import HomeLayout from './layouts/homeLayout'
+import HomeSubLayout from './layouts/homeSubLayout'
+import OutsideLayout from './layouts/outsideLayout'
+import LoginPage from './pages/auth/auth.loginPage'
+import ErrorPage from './pages/error.page'
+import NotFound from './pages/notFound.page'
+import TestPage from './pages/test.page'
+import JoinGroup from './pages/ultils/joinGroup'
 
 const routes = [
   {
@@ -23,10 +22,10 @@ const routes = [
         path: 'home',
         element: <HomeSubLayout />,
       },
-      {
-        path: 'video-call',
-        element: <VideoCallWindow />,
-      },
+      // {
+      //   path: 'video-call',
+      //   element: <VideoCallWindow />,
+      // },
       {
         path: 'chat/:id',
         element: <JoinGroup />,
@@ -67,6 +66,6 @@ const routes = [
     path: '*',
     element: <NotFound />,
   },
-];
+]
 
-export const router = createBrowserRouter(routes);
+export const router = createBrowserRouter(routes)

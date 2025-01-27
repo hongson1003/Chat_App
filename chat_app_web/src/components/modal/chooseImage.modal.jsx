@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
-import './chooseImage.modal.scss';
-import axios from '../../utils/axios';
+import { axios } from '@/configs';
 import { PictureOutlined } from '@ant-design/icons';
+import { Button, Modal } from 'antd';
+import { useState } from 'react';
 import Zoom from 'react-medium-image-zoom';
-import { useDispatch, useSelector } from 'react-redux';
-import { editUser } from '../../redux/actions/app.action';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useForm } from 'antd/es/form/Form';
+import { editUser } from '../../redux/actions/app.action';
+import './chooseImage.modal.scss';
 
 const uploadPreset = import.meta.env.VITE_APP_CLOUNDINARY_UPLOAD_PRESET;
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;

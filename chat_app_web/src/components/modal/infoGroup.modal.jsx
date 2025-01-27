@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { Button, Flex, Modal } from 'antd';
 import { useState } from 'react';
 import './inforUser.modal.scss';
-import axios from '../../utils/axios';
 import 'react-medium-image-zoom/dist/styles.css';
 import './infoGroup.modal.scss';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,6 +19,7 @@ import {
   sendNotifyToChatRealTime,
 } from '../../utils/handleChat';
 import { MESSAGES } from '../../redux/types/user.type';
+import { axios } from '@/configs';
 
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;
 

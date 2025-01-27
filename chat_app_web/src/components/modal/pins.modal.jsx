@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import './pins.modal.scss';
 import { MESSAGES } from '../../redux/types/user.type';
-import axios from '../../utils/axios';
-import { socket } from '../../utils/io';
 import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { axios, socket } from '@/configs';
 
 const PinsModal = ({
   children,

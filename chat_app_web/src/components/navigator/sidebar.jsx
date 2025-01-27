@@ -16,11 +16,10 @@ import {
   logoutSuccess,
 } from '../../redux/actions/app.action';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../utils/axios';
+
 import { toast } from 'react-toastify';
 import InforUserModal from '../modal/inforUser.modal';
 import WrapperItemSidebar from './wrapperItem.sidebar';
-import { socket } from '../../utils/io';
 import {
   notificationsFriends,
   fetchNotificationsFriendFunc,
@@ -30,6 +29,7 @@ import {
 import SettingModal from '../modal/setting.modal';
 import { FRIEND_ITEM_MENU } from '../../pages/sidebar/friend.sidebar';
 import { STATE } from '../../redux/types/app.type';
+import { axios, socket } from '@/configs';
 
 const Friends = () => {
   const user = useSelector((state) => state.appReducer?.userInfo?.user);

@@ -1,24 +1,21 @@
-import React, { useEffect, useRef } from 'react';
-import { Button, Flex, Modal, Input } from 'antd';
-import { useState } from 'react';
-import './inforUser.modal.scss';
-import axios from '../../utils/axios';
-import AvatarUser from '../user/avatar';
-import { InstagramOutlined, EditOutlined } from '@ant-design/icons';
-import 'react-medium-image-zoom/dist/styles.css';
-import moment from 'moment';
-import Zoom from 'react-medium-image-zoom';
-import { STATE } from '../../redux/types/app.type';
-import { useDispatch, useSelector } from 'react-redux';
-import { socket } from '../../utils/io';
-import { toast } from 'react-toastify';
-import { accessChat } from '../../redux/actions/user.action';
-import ChooseImageModal from './chooseImage.modal';
-import { DatePicker, Radio } from 'antd';
+import { axios, socket } from '@/configs';
+import { EditOutlined, InstagramOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Flex, Input, Modal, Radio } from 'antd';
 import dayjs from 'dayjs';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { editUser } from '../../redux/actions/app.action';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
+import { accessChat } from '../../redux/actions/user.action';
+import { STATE } from '../../redux/types/app.type';
 import { MESSAGES } from '../../redux/types/user.type';
+import { sendNotifyToChatRealTime } from '../../utils/handleChat';
+import AvatarUser from '../user/avatar';
+import ChooseImageModal from './chooseImage.modal';
+import './inforUser.modal.scss';
 
 const InforUserModal = ({
   children,

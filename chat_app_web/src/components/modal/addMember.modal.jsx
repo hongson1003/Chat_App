@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Input, Modal } from 'antd';
-import './addMember.modal.scss';
-import { Checkbox, Button } from 'antd';
+import { axios, socket } from '@/configs';
+import { Button, Checkbox, Input, Modal } from 'antd';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-const CheckboxGroup = Checkbox.Group;
-import axios from '../../utils/axios';
+import { editGroup } from '../../redux/actions/app.action';
+import { MESSAGES } from '../../redux/types/user.type';
 import { getFriend, sendNotifyToChatRealTime } from '../../utils/handleChat';
 import AvatarUser from '../user/avatar';
-import { editGroup } from '../../redux/actions/app.action';
-import { socket } from '../../utils/io';
-import { MESSAGES } from '../../redux/types/user.type';
-import { toast } from 'react-toastify';
+import './addMember.modal.scss';
+const CheckboxGroup = Checkbox.Group;
 
 const AddMemberModal = ({ children, chat }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

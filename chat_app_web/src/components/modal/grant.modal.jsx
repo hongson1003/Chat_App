@@ -3,12 +3,12 @@ import { Button, Modal, Popconfirm } from 'antd';
 import './grant.modal.scss';
 import AvatarUser from '../user/avatar';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from '../../utils/axios';
 import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import { editGroup } from '../../redux/actions/app.action';
-import { socket } from '../../utils/io';
+
 import { MESSAGES } from '../../redux/types/user.type';
 import { toast } from 'react-toastify';
+import { axios, socket } from '@/configs';
 
 const GrantModal = ({ children, chat }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from '../../utils/axios';
 import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import { accessChat } from '../../redux/actions/user.action';
-import { socket } from '../../utils/io';
 import { MESSAGES } from '../../redux/types/user.type';
 import { toast } from 'react-toastify';
+import { axios, socket } from '@/configs';
 const LeaveGroupModal = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const chat = useSelector((state) => state.appReducer?.subNav);

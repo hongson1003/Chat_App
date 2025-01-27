@@ -1,15 +1,14 @@
+import { axios, socket } from '@/configs';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { CHAT_STATUS } from '../../redux/types/user.type';
+import { getDetailListMembers, getFriend } from '../../utils/handleChat';
+import { accessTimeBefore } from '../../utils/handleUltils';
+import InfoGroupModal from '../modal/infoGroup.modal';
+import InforUserModal from '../modal/inforUser.modal';
 import AvatarUser from './avatar';
 import './status.user.scss';
-import InforUserModal from '../modal/inforUser.modal';
-import { CHAT_STATUS } from '../../redux/types/user.type';
-import InfoGroupModal from '../modal/infoGroup.modal';
-import { getDetailListMembers, getFriend } from '../../utils/handleChat';
-import { useSelector } from 'react-redux';
-import axios from '../../utils/axios';
-import { socket } from '../../utils/io';
-import { accessTimeBefore } from '../../utils/handleUltils';
-import { toast } from 'react-toastify';
 
 const StatusUser = ({ chat }) => {
   const user = useSelector((state) => state.appReducer.userInfo.user);

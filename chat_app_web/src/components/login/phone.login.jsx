@@ -1,39 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import { LockOutlined, PhoneOutlined } from '@ant-design/icons';
-import { Button, Form, Input } from 'antd';
-import './phone.login.scss';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { loginStart } from '../../redux/actions/app.action';
-import axios from '../../utils/axios';
-import ForgotPasswordModal from '../modal/forgotPassword.modal';
-import { toast } from 'react-toastify';
-import NewAccountModal from '../modal/newAccount.modal';
+import React, { useEffect, useState } from 'react'
+import { LockOutlined, PhoneOutlined } from '@ant-design/icons'
+import { Button, Form, Input } from 'antd'
+import './phone.login.scss'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { loginStart } from '../../redux/actions/app.action'
+import ForgotPasswordModal from '../modal/forgotPassword.modal'
+import { toast } from 'react-toastify'
+import NewAccountModal from '../modal/newAccount.modal'
+import { axios } from '../../configs'
 
 const LoginPhone = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const onFinish = async (values) => {
     try {
-      setIsLoading(true);
-      let rs = await axios.post('/auth/login', values);
-      const data = rs.data;
+      setIsLoading(true)
+      let rs = await axios.post('/auth/login', values)
+      const data = rs.data
       if (rs.errCode === 0) {
-        dispatch(loginStart(data));
-        navigate(`/verify?id=${rs?.data?.id}`);
+        dispatch(loginStart(data))
+        navigate(`/verify?id=${rs?.data?.id}`)
       } else {
-        toast.error(rs.message);
-        setPhoneNumber(values.phoneNumber);
+        toast.error(rs.message)
+        setPhoneNumber(values.phoneNumber)
       }
-      setIsLoading(false);
+      setIsLoading(false)
     } catch (error) {
-      setIsLoading(false);
-      console.log('error', error);
+      setIsLoading(false)
+      console.log('error', error)
     }
-  };
+  }
 
   return (
     <Form
@@ -87,7 +87,7 @@ const LoginPhone = () => {
         </NewAccountModal>
       </div>
     </Form>
-  );
-};
+  )
+}
 
-export default LoginPhone;
+export default LoginPhone

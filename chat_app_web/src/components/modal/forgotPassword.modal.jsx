@@ -1,12 +1,12 @@
-import { Button, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { Input } from 'antd';
-import axios from '../../utils/axios';
-import { toast } from 'react-toastify';
+import { axios } from '@/configs';
+import { Button, Input, Modal } from 'antd';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { loginStart } from '../../redux/actions/app.action';
 import { STATE } from '../../redux/types/app.type';
+import React from 'react';
 
 const style = {
   title: {

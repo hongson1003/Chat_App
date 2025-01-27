@@ -7,7 +7,7 @@ import ChangePasswordModal from './changePassword.modal';
 import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { STATE } from '../../redux/types/app.type';
-import axios from '../../utils/axios';
+import { axios, socket } from '@/configs';
 import { useSelector } from 'react-redux';
 import { FILTER, SETTING } from '../../redux/types/user.type';
 

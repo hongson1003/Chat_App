@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Drawer } from 'antd';
-import './viewAll.chat.drawer.scss';
-import { Tabs } from 'antd';
-import axios from '../../utils/axios';
+import React from 'react';
+import { axios } from '@/configs';
+import { Drawer, Image, Tabs } from 'antd';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Image } from 'antd';
-import { toast } from 'react-toastify';
+import './viewAll.chat.drawer.scss';
 
 const items = [
   {

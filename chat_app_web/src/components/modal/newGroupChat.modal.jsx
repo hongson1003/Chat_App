@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'antd';
 import './newGroupChat.modal.scss';
 import { Radio, Drawer, Input, theme } from 'antd';
-import axios from '../../utils/axios';
 import AvatarUser from '../user/avatar';
 import { getFriend, sendNotifyToChatRealTime } from '../../utils/handleChat';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +10,7 @@ import ChooseImageModal from './chooseImage.modal';
 import { toast } from 'react-toastify';
 import { CHAT_STATUS, MESSAGES } from '../../redux/types/user.type';
 import { accessChat } from '../../redux/actions/user.action';
-import { socket } from '../../utils/io';
+import { axios, socket } from '@/configs';
 
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;
 

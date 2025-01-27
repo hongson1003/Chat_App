@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { axios } from '@/configs';
+import { Button, Form, Input } from 'antd';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { Button, Checkbox, Form, Input } from 'antd';
 import './resetPassword.component.scss';
-import axios from '../utils/axios';
 
 const ResetPassword = () => {
   const state = useSelector((state) => state.appReducer);

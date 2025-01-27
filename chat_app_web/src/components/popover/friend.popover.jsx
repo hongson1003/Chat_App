@@ -1,9 +1,8 @@
-import React from 'react';
-import { Button, Popover } from 'antd';
-import './friend.popover.scss';
-import InforUserModal from '../modal/inforUser.modal';
-import axios from '../../utils/axios';
+import { axios } from '@/configs';
+import { Popover } from 'antd';
 import { toast } from 'react-toastify';
+import InforUserModal from '../modal/inforUser.modal';
+import './friend.popover.scss';
 
 const FriendPopover = ({ children, user, fetchFriends }) => {
   const handleBlockUser = () => {
