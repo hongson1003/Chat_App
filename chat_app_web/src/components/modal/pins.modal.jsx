@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Modal } from 'antd';
-import './pins.modal.scss';
-import { MESSAGES } from '../../redux/types/user.type';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { chatHandler } from '@/utils';
+import { Modal } from 'antd';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import './pins.modal.scss';
 
 const PinsModal = ({
   children,
@@ -32,10 +31,10 @@ const PinsModal = ({
         messageId: message._id,
       });
       if (res.errCode === 0) {
-        const notifyRes = await sendNotifyToChatRealTime(
+        const notifyRes = await chatHandler.sendNotifyToChatRealTime(
           res.data?.chat?._id,
           `${user.userName} đã bỏ ghim 1 tin nhắn`,
-          MESSAGES.NOTIFY
+          appConstants.MESSAGES.NOTIFY
         );
         socket.then((socket) => {
           socket.emit('pin-message', res.data?.chat?._id);

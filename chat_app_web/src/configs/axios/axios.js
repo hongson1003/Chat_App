@@ -1,61 +1,55 @@
-import axios from 'axios'
-import axiosRetry from 'axios-retry'
+import { appActions, store } from '@/redux';
+import axios from 'axios';
+import axiosRetry from 'axios-retry';
+import { configEnvs } from '../env';
 
-let isRefresh_token = false
-let newToken = null
-
-import { loginSuccess } from '../../redux/actions/app.action'
-import store from '../../redux/store'
+let isRefreshToken = false;
+let newToken = null;
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_APP_API_URL,
+  baseURL: configEnvs.BASE_API_URL,
   withCredentials: true,
-})
+});
 
-instance.defaults.headers.common['Authorization'] = ''
+instance.defaults.headers.common['Authorization'] = '';
 
 export const setAuthorizationAxios = (token) => {
   if (token) {
-    newToken = token
-    instance.defaults.headers.common['Authorization'] = 'Bearer ' + token
+    newToken = token;
+    instance.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   } else {
-    instance.defaults.headers.common['Authorization'] = ''
+    instance.defaults.headers.common['Authorization'] = '';
   }
-}
+};
 
 axiosRetry(instance, {
-  retries: 3, // number of retries
+  retries: 3,
   retryDelay: (retryCount) => {
-    console.log(`retry attempt: ${retryCount}`)
-    return retryCount * 500 // time interval between retries
+    console.log(`retry attempt: ${retryCount}`);
+    return retryCount * 500;
   },
   retryCondition: async (error) => {
-    // if retry condition is not specified, by default idempotent requests are retried
-    const status = error.response?.status
+    const status = error.response?.status;
     if (status === 401) {
-      if (!isRefresh_token) {
-        isRefresh_token = true
-        // call api refresh token
+      if (!isRefreshToken) {
+        isRefreshToken = true;
         try {
-          let rs = await instance.post('/auth/check')
+          let rs = await instance.post('/auth/check');
           if (rs.errCode === 100) {
-            // if success then set new token
-            setAuthorizationAxios(rs.data.access_token)
-            // dispatch action login success to redux
-            store.dispatch(loginSuccess(rs.data))
-            // end dispatch
-            isRefresh_token = false
-            return true
+            setAuthorizationAxios(rs.data.access_token);
+            store.dispatch(appActions.loginSuccess(rs.data));
+            isRefreshToken = false;
+            return true;
           }
         } catch (refreshError) {
-          return true
+          return true;
         }
       }
-      return true
+      return true;
     }
-    return false
+    return false;
   },
-})
+});
 
 // Add a request interceptor
 instance.interceptors.request.use(
@@ -63,15 +57,15 @@ instance.interceptors.request.use(
     // Do something before request is sent
     // console.log('config.header', config.headers)
     if (newToken) {
-      config.headers.Authorization = 'Bearer ' + newToken
+      config.headers.Authorization = 'Bearer ' + newToken;
     }
-    return config
+    return config;
   },
   function (error) {
     // Do something with request error
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 // Add a response interceptor
 instance.interceptors.response.use(
@@ -79,13 +73,13 @@ instance.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
 
-    return response?.errCode === 0 ? response : response.data
+    return response?.errCode === 0 ? response : response.data;
   },
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-export default instance
+export default instance;

@@ -1,7 +1,7 @@
+import { appConstants } from '@/constants';
+import { Button } from 'antd';
 import React from 'react';
 import './file.upload.scss';
-import { Button } from 'antd';
-import { FILE_TYPE } from '../../redux/types/user.type';
 
 const File = ({ url, name, children, type, size, className }) => {
   return (
@@ -9,13 +9,13 @@ const File = ({ url, name, children, type, size, className }) => {
       {children}
       <div className="description">
         <div className="icon">
-          {type === FILE_TYPE.PDF ? (
+          {type === appConstants.FILE_TYPE.PDF ? (
             <i className="fa-regular fa-file-pdf"></i>
-          ) : type === FILE_TYPE.WORD ? (
+          ) : type === appConstants.FILE_TYPE.WORD ? (
             <i className="fa-regular fa-file-word"></i>
-          ) : type === FILE_TYPE.EXCEL ? (
+          ) : type === appConstants.FILE_TYPE.EXCEL ? (
             <i className="fa-regular fa-file-word"></i>
-          ) : type === FILE_TYPE.JAR ? (
+          ) : type === appConstants.FILE_TYPE.JAR ? (
             <i className="fa-regular fa-file-jar"></i>
           ) : (
             <i className="fa-regular fa-file"></i>

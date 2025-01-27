@@ -1,11 +1,11 @@
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { userActions } from '@/redux';
+import { chatHandler } from '@/utils';
 import { Button, Input, Modal, Popconfirm, Radio } from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { accessChat } from '../../redux/actions/user.action';
-import { MESSAGES } from '../../redux/types/user.type';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import AvatarUser from '../user/avatar';
 import './disbandGroup.modal.scss';
 
@@ -29,15 +29,15 @@ const DisbandGroupModal = ({ children }) => {
         memberId: value.id,
         chatId: chat._id,
       });
-      await sendNotifyToChatRealTime(
+      await chatHandler.sendNotifyToChatRealTime(
         chat._id,
         `${user?.userName} đã rời nhóm, ${value.userName} đã trở thành nhóm trưởng.`,
-        MESSAGES.NOTIFY
+        appConstants.MESSAGES.NOTIFY
       );
       if (res.errCode === 0) {
         socket.then((socket) => {
           socket.emit('transfer-disband-group', res.data);
-          dispatch(accessChat(null));
+          dispatch(userActions.accessChat(null));
           stateUser.fetchChats();
         });
       }

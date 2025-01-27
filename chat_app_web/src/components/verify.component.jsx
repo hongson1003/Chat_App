@@ -1,4 +1,5 @@
-import { auth, axios } from '@/configs';
+import { auth, axios, setAuthorizationAxios } from '@/configs';
+import { appActions, appActionKeys } from '@/redux';
 import { Button, Flex } from 'antd';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { useEffect, useRef, useState } from 'react';
@@ -8,8 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import AvatarUser from '../components/user/avatar';
-import { loginSuccess } from '../redux/actions/app.action';
-import { STATE } from '../redux/types/app.type';
 import './verify.component.scss';
 
 const VerifyComponent = (props) => {
@@ -27,7 +26,7 @@ const VerifyComponent = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (state?.isLogin === STATE.RESOLVE) {
+    if (state?.isLogin === appActionKeys.STATE.RESOLVE) {
       navigate('/');
     }
     if (state?.userInfo) {
@@ -128,7 +127,7 @@ const VerifyComponent = (props) => {
       });
       if (rs.errCode === 0) {
         setAuthorizationAxios(rs.data.access_token);
-        return loginSuccess(rs.data);
+        return appActions.loginSuccess(rs.data);
       }
     } catch (error) {
       console.log(error);

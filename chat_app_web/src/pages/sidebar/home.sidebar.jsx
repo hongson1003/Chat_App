@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import { appConstants } from '@/constants';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import ChatSidebar from './chat.sidebar';
+import FriendSideBar from './friend.sidebar';
 import SearchMessage from './home.message.search';
 import './home.message.sidebar.scss';
-import { useSelector } from 'react-redux';
-import { KEYITEMS } from '../../utils/keyMenuItem';
-import FriendSideBar from './friend.sidebar';
-import ChatSidebar from './chat.sidebar';
-import { FILTER } from '../../redux/types/user.type';
 
 const SidebarHome = ({ children }) => {
   const stateApp = useSelector((state) => state?.appReducer);
-  const [current, setCurrent] = useState(FILTER.EMPTY);
-  const [statusChat, setStatusChat] = useState(FILTER.ALL);
+  const [current, setCurrent] = useState(appConstants.FILTER.EMPTY);
+  const [statusChat, setStatusChat] = useState(appConstants.FILTER.ALL);
 
   const renderContent = () => {
     switch (stateApp?.nav) {
-      case KEYITEMS.PHONEBOOK:
+      case appConstants.NAV_ITEMS_KEY.PHONE_BOOK:
         return <FriendSideBar />;
-      case KEYITEMS.MESSAGE:
+      case appConstants.NAV_ITEMS_KEY.MESSAGE:
         return (
           <ChatSidebar
             current={current}

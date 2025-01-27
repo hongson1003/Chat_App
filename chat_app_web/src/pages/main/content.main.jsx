@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import Welcome from './main.welcome';
-import ChatMain from '../main/chat/chat.main';
 import ReactLoading from 'react-loading';
-import { KEYITEMS } from '../../utils/keyMenuItem';
+import { useSelector } from 'react-redux';
+import DragDrop from '../../components/customize/dropImage';
+import ChatMain from '../main/chat/chat.main';
 import { FRIEND_ITEM_MENU } from '../sidebar/friend.sidebar';
+import GroupFriend from './friend/group.friend';
 import InvitedFriend from './friend/invited.friend';
 import ListFriend from './friend/list.friend';
-import GroupFriend from './friend/group.friend';
-import { STATE } from '../../redux/types/app.type';
-import DragDrop from '../../components/customize/dropImage';
+import Welcome from './main.welcome';
+import { appConstants } from '@/constants';
 
 const ContentMain = ({ drawerMethods }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +30,7 @@ const ContentMain = ({ drawerMethods }) => {
     const subNav = stateApp?.subNav;
     if (nav) {
       switch (nav) {
-        case stateUser?.selectedChat && KEYITEMS.MESSAGE:
+        case stateUser?.selectedChat && appConstants.NAV_ITEMS_KEY.MESSAGE:
           return (
             <DragDrop>
               <ChatMain drawerMethods={drawerMethods} />
@@ -49,7 +48,7 @@ const ContentMain = ({ drawerMethods }) => {
               return <></>;
           }
         case 'ms':
-          if (subNav?.key === STATE.ACCESS_CHAT) {
+          if (subNav?.key === appTypes.STATE.ACCESS_CHAT) {
             return (
               <DragDrop fileTypes={['JPG', 'PNG', 'GIF']}>
                 <ChatMain drawerMethods={drawerMethods} />

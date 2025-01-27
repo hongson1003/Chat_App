@@ -1,10 +1,9 @@
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { chatHandler, timeHandler, userHandler } from '@/utils';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { CHAT_STATUS } from '../../redux/types/user.type';
-import { getDetailListMembers, getFriend } from '../../utils/handleChat';
-import { accessTimeBefore } from '../../utils/handleUltils';
 import InfoGroupModal from '../modal/infoGroup.modal';
 import InforUserModal from '../modal/inforUser.modal';
 import AvatarUser from './avatar';
@@ -28,7 +27,7 @@ const StatusUser = ({ chat }) => {
   };
 
   useEffect(() => {
-    const friendId = getFriend(user, chat.participants)?.id;
+    const friendId = userHandler.getFriend(user, chat.participants)?.id;
     if (chat && friendId) {
       fetchFriendShip(friendId);
     }
@@ -36,7 +35,7 @@ const StatusUser = ({ chat }) => {
 
   useEffect(() => {
     if (chat) {
-      setStatusUser(getFriend(user, chat.participants));
+      setStatusUser(userHandler.getFriend(user, chat.participants));
     }
   }, [chat]);
 
@@ -71,7 +70,7 @@ const StatusUser = ({ chat }) => {
 
   return (
     <div className="status-user-container">
-      {chat?.type === CHAT_STATUS.PRIVATE_CHAT ? (
+      {chat?.type === appConstants.CHAT_STATUS.PRIVATE_CHAT ? (
         <InforUserModal
           friendData={getFriend(user, chat.participants)}
           type={'button'}
@@ -79,9 +78,9 @@ const StatusUser = ({ chat }) => {
           refuseAction
         >
           <AvatarUser
-            image={getFriend(user, chat.participants)?.avatar}
+            image={userHandler.getFriend(user, chat.participants)?.avatar}
             size={50}
-            name={getFriend(user, chat.participants)?.userName}
+            name={userHandler.getFriend(user, chat.participants)?.userName}
             isOnline={statusUser?.lastedOnline === null ? true : false}
           />
         </InforUserModal>
@@ -98,7 +97,10 @@ const StatusUser = ({ chat }) => {
                       <AvatarUser
                         image={item.avatar}
                         size={25}
-                        name={getFriend(user, chat.participants)?.userName}
+                        name={
+                          userHandler.getFriend(user, chat.participants)
+                            ?.userName
+                        }
                       />
                     </React.Fragment>
                   );
@@ -108,7 +110,7 @@ const StatusUser = ({ chat }) => {
         </InfoGroupModal>
       )}
       <div className="status">
-        {chat?.type === CHAT_STATUS.GROUP_CHAT ? (
+        {chat?.type === appConstants.CHAT_STATUS.GROUP_CHAT ? (
           <>
             <p className="username">{chat?.name}</p>
             <p className="connected-time">
@@ -116,19 +118,20 @@ const StatusUser = ({ chat }) => {
                 <i className="fa-regular fa-user"></i>
               </span>
               <span>
-                {getDetailListMembers(chat?.participants).total} thành viên
+                {chatHandler.getDetailListMembers(chat?.participants).total}{' '}
+                thành viên
               </span>
             </p>
           </>
         ) : (
           <>
             <p className="username">
-              {getFriend(user, chat?.participants)?.userName}
+              {userHandler.getFriend(user, chat?.participants)?.userName}
             </p>
             <p className="connected-time">
               {statusUser?.lastedOnline === null
                 ? 'Đang hoạt động'
-                : accessTimeBefore(statusUser?.lastedOnline)}
+                : timeHandler.accessTimeBefore(statusUser?.lastedOnline)}
             </p>
           </>
         )}

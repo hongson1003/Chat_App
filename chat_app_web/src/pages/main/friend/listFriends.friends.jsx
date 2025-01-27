@@ -1,14 +1,11 @@
-import React, { useEffect } from 'react';
-import AvatarUser from '../../../components/user/avatar';
-import { useSelector, useDispatch } from 'react-redux';
-import './listFriends.friends.scss';
-import { accessChat } from '../../../redux/actions/user.action';
-import { changeKeyMenu } from '../../../redux/actions/app.action';
-import { KEYITEMS } from '../../../utils/keyMenuItem';
-import { STATE } from '../../../redux/types/app.type';
-import FriendPopover from '../../../components/popover/friend.popover';
-import { toast } from 'react-toastify';
 import { axios } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions, userActions } from '@/redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import FriendPopover from '../../../components/popover/friend.popover';
+import AvatarUser from '../../../components/user/avatar';
+import './listFriends.friends.scss';
 
 const ListFriends = ({ data, fetchFriends }) => {
   const [friends, setFriends] = React.useState([]);
@@ -35,8 +32,8 @@ const ListFriends = ({ data, fetchFriends }) => {
         status: true,
       });
       if (res.errCode !== -1) {
-        dispatch(changeKeyMenu(KEYITEMS.MESSAGE));
-        dispatch(accessChat(res.data));
+        dispatch(appActions.changeKeyMenu(appConstants.NAV_ITEMS_KEY.MESSAGE));
+        dispatch(userActions.accessChat(res.data));
       }
     } catch (error) {
       console.log(error);

@@ -1,11 +1,11 @@
 import { axios } from '@/configs';
+import { appActions } from '@/redux';
 import { PictureOutlined } from '@ant-design/icons';
 import { Button, Modal } from 'antd';
 import { useState } from 'react';
 import Zoom from 'react-medium-image-zoom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { editUser } from '../../redux/actions/app.action';
 import './chooseImage.modal.scss';
 
 const uploadPreset = import.meta.env.VITE_APP_CLOUNDINARY_UPLOAD_PRESET;
@@ -104,7 +104,7 @@ const ChooseImageModal = ({
     try {
       const res = await axios.put('/users/avatar', { avatar: base64 });
       if (res.errCode === 0) {
-        dispatch(editUser(res.data));
+        dispatch(appActions.editUser(res.data));
       }
     } catch (error) {
       console.error('Failed to upload avatar:', error);

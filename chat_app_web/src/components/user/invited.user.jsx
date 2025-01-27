@@ -1,10 +1,10 @@
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { chatHandler } from '@/utils';
 import { Button, Flex } from 'antd';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { CHAT_STATUS, MESSAGES } from '../../redux/types/user.type';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import InforUserModal from '../modal/inforUser.modal';
 import AvatarUser from './avatar';
 import './invited.user.scss';
@@ -25,15 +25,15 @@ const InvitedUser = ({
       if (res.errCode === 0) {
         toast.success('Đã thêm bạn bè thành công');
         const resChat = await axios.post('/chat/access', {
-          type: CHAT_STATUS.PRIVATE_CHAT,
+          type: appConstants.CHAT_STATUS.PRIVATE_CHAT,
           participants: [me.id, user.id],
           seenBy: [me.id, user.id],
         });
         if (resChat.errCode === 0 || resChat.errCode === 2) {
-          await sendNotifyToChatRealTime(
+          await chatHandler.sendNotifyToChatRealTime(
             resChat.data._id,
             'Hai bạn đã trở thành bạn bè, hãy nhắn tin cho nhau để hiểu rõ nhau hơn ╮ (. ❛ ᴗ ❛.) ╭',
-            MESSAGES.NEW_FRIEND
+            appConstants.MESSAGES.NEW_FRIEND
           );
           socket.then((socket) => {
             socket.emit('join-room', resChat.data._id);

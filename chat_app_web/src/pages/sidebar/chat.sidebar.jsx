@@ -1,21 +1,19 @@
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions, userActions } from '@/redux';
+import { timeHandler, userHandler } from '@/utils';
 import _ from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import ChatPopover from '../../components/popover/chat.popover';
 import ChatUser from '../../components/user/chat.user';
-import { editGroup } from '../../redux/actions/app.action';
-import { accessChat, fetchChatsFunc } from '../../redux/actions/user.action';
-import { STATE } from '../../redux/types/app.type';
-import { FILTER } from '../../redux/types/user.type';
-import { formatTimeAgo, getFriend } from '../../utils/handleChat';
 import './chat.sidebar.scss';
 
 const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   const [chats, setChats] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [status, setStatus] = useState(STATE.PENDING);
+  const [status, setStatus] = useState(appTypes.STATE.PENDING);
   const user = useSelector((state) => state.appReducer?.userInfo?.user);
   const dispatch = useDispatch();
   const chat = useSelector((state) => state.appReducer?.subNav);
@@ -49,7 +47,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
         // filter
         let filterChats = res.data;
 
-        if (statusChat === FILTER.NOT_READ) {
+        if (statusChat === appConstants.FILTER.NOT_READ) {
           filterChats = filterChats.filter(
             (item) => !item.seenBy.includes(user.id)
           );
@@ -57,7 +55,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
 
         if (currentSearch) {
           filterChats = filterChats.filter((item) => {
-            const friend = getFriend(user, item.participants);
+            const friend = userHandler.getFriend(user, item.participants);
             return (item.name || friend?.userName)
               .toLowerCase()
               .includes(currentSearch.toLowerCase());
@@ -65,20 +63,20 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
         }
 
         setChats(filterChats);
-        setStatus(STATE.RESOLVE);
+        setStatus(appTypes.STATE.RESOLVE);
       } else {
-        setStatus(STATE.REJECT);
+        setStatus(appTypes.STATE.REJECT);
       }
     } catch (error) {
-      setStatus(STATE.REJECT);
+      setStatus(appTypes.STATE.REJECT);
       console.log('error', error);
       toast.error('Có lỗi xảy ra');
     }
   }, [chat, currentSearch, statusChat]);
 
   useEffect(() => {
-    if (statusChat === FILTER.NOT_READ && chats.length === 0) {
-      setStatusChat(FILTER.ALL);
+    if (statusChat === appConstants.FILTER.NOT_READ && chats.length === 0) {
+      setStatusChat(appConstants.FILTER.ALL);
     }
   }, [chats]);
 
@@ -135,7 +133,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
 
   const handleAddMemberSocket = (data) => {
     if (chat?._id === data._id) {
-      dispatch(editGroup(data));
+      dispatch(appActions.editGroup(data));
     }
     fetchChats();
   };
@@ -170,11 +168,11 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
     if (chat?._id === data._id) {
       const participants = data.participants;
       if (!participants.find((item) => item.id === user.id)) {
-        dispatch(accessChat(null));
+        dispatch(userActions.accessChat(null));
         fetchChats();
         toast.warn('Bạn đã bị xóa khỏi nhóm ' + data.name);
       } else {
-        dispatch(editGroup(data));
+        dispatch(appActions.editGroup(data));
       }
     } else {
       toast.warn('Bạn đã bị xóa khỏi nhóm ' + data.name);
@@ -185,7 +183,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   const handleDissolutionChat = (data) => {
     fetchChats();
     if (chat?._id === data._id) {
-      dispatch(accessChat(null));
+      dispatch(userActions.accessChat(null));
       toast.warn('Nhóm ' + data.name + ' đã bị giải tán');
     }
   };
@@ -221,7 +219,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   }, [userState]);
 
   const handleSelectChat = (nextChat) => {
-    dispatch(accessChat(nextChat));
+    dispatch(userActions.accessChat(nextChat));
   };
 
   const handleSelectChatDebouce = useCallback(
@@ -240,7 +238,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   return (
     <div className="chat-sidebar" ref={containerRef}>
       {chats?.length > 0 &&
-        status === STATE.RESOLVE &&
+        status === appTypes.STATE.RESOLVE &&
         chats.map((item, index) => {
           return (
             <div
@@ -281,7 +279,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
                   <p className="time">
                     {
                       // handle time
-                      formatTimeAgo(item?.updatedAt)
+                      timeHandler.formatTimeAgo(item?.updatedAt)
                     }
                   </p>
                 )}
@@ -294,7 +292,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
             </div>
           );
         })}
-      {status === STATE.REJECT && (
+      {status === appTypes.STATE.REJECT && (
         <div
           style={{
             padding: '10px',

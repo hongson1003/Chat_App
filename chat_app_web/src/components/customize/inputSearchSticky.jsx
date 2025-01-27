@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './inputSearchSticky.scss';
-import { MESSAGES } from '../../redux/types/user.type';
 
 const InputSearchSticky = ({ children, content, sendMessage, style }) => {
   // const [list, setList] = React.useState([]);

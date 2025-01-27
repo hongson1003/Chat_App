@@ -1,58 +1,57 @@
-import React, { useEffect, useState } from 'react'
-import './group.friend.scss'
-import { items } from '../../sidebar/friend.sidebar'
-import { Input, Select } from 'antd'
-import AvatarUser from '../../../components/user/avatar'
-import { getFriend } from '../../../utils/handleChat'
-import { useDispatch, useSelector } from 'react-redux'
-import { accessChat } from '../../../redux/actions/user.action'
-import { changeKeyMenu } from '../../../redux/actions/app.action'
-import { KEYITEMS } from '../../../utils/keyMenuItem'
-import { axios } from '../../../configs'
+import { axios } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions, userActions } from '@/redux';
+import { chatHandler } from '@/utils';
+import { Input, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import AvatarUser from '../../../components/user/avatar';
+import { items } from '../../sidebar/friend.sidebar';
+import './group.friend.scss';
 
-const headerData = items[1]
+const headerData = items[1];
 
 const GroupFriend = () => {
-  const [groups, setGroups] = useState([])
-  const [search, setSearch] = useState('')
-  const [selectedName, setSelectedName] = useState(null)
-  const [selectedFilter, setSelectedFilter] = useState(null)
-  const user = useSelector((state) => state.appReducer?.userInfo?.user)
+  const [groups, setGroups] = useState([]);
+  const [search, setSearch] = useState('');
+  const [selectedName, setSelectedName] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState(null);
+  const user = useSelector((state) => state.appReducer?.userInfo?.user);
 
   const [options, setOptions] = useState([
     { value: 'nameAsc', label: 'Tên tăng dần' },
     { value: 'nameDesc', label: 'Tên giảm dần' },
-  ])
+  ]);
   const [filters, setFilters] = useState([
     { value: 'all', label: 'Tất cả' },
     { value: 'online', label: 'Online' },
     { value: 'offline', label: 'Offline' },
-  ])
+  ]);
 
   const fetchGroups = async () => {
     try {
-      const res = await axios.get('/chat/group')
+      const res = await axios.get('/chat/group');
       if (res.errCode === 0) {
-        setGroups(res.data)
+        setGroups(res.data);
       }
     } catch (error) {
-      console.error('Failed to fetch groups:', error)
+      console.error('Failed to fetch groups:', error);
     }
-  }
+  };
 
   const handleSelectNameChange = (value) => {
-    setSelectedName(value)
+    setSelectedName(value);
     // Add logic to sort friends by name
-  }
+  };
 
   const handleSelectFilterChange = (value) => {
-    setSelectedFilter(value)
+    setSelectedFilter(value);
     // Add logic to filter friends
-  }
+  };
 
   useEffect(() => {
-    fetchGroups()
-  }, [])
+    fetchGroups();
+  }, []);
 
   return (
     <div className="groups-container friend-ultils-container">
@@ -107,20 +106,20 @@ const GroupFriend = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default GroupFriend
+export default GroupFriend;
 
 // Assuming ListFriends is a separate component that you have imported or defined elsewhere.
 const ListGroups = ({ data }) => {
-  const user = useSelector((state) => state.appReducer?.userInfo?.user)
-  const dispatch = useDispatch()
+  const user = useSelector((state) => state.appReducer?.userInfo?.user);
+  const dispatch = useDispatch();
 
   const handleAccessChat = (group) => {
-    dispatch(changeKeyMenu(KEYITEMS.MESSAGE))
-    dispatch(accessChat(group))
-  }
+    dispatch(appActions.changeKeyMenu(appConstants.NAV_ITEMS_KEY.MESSAGE));
+    dispatch(userActions.accessChat(group));
+  };
 
   return (
     <div className="list-groups">
@@ -144,10 +143,13 @@ const ListGroups = ({ data }) => {
                           width: '50%',
                           height: '50%',
                         }}
-                        name={getFriend(user, group.participants)?.userName}
+                        name={
+                          chatHandler.getFriend(user, group.participants)
+                            ?.userName
+                        }
                       />
                     </React.Fragment>
-                  )
+                  );
                 })
               )}
             </div>
@@ -158,5 +160,5 @@ const ListGroups = ({ data }) => {
         </div>
       ))}
     </div>
-  )
-}
+  );
+};

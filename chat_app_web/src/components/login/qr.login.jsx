@@ -6,7 +6,7 @@ import QRCode from 'react-qr-code';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { loginStart } from '../../redux/actions/app.action';
+import { appActions } from '@/redux';
 import './qr.login.scss';
 
 const LoginQR = () => {
@@ -33,7 +33,7 @@ const LoginQR = () => {
             setIsLoading(true);
             setTimeout(() => {
               setIsLoading(false);
-              dispatch(loginStart(data));
+              dispatch(appActions.loginStart(data));
               navigate(`/verify?id=${data.id}`);
             }, 1000);
           });

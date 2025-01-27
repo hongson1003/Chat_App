@@ -1,18 +1,20 @@
+import { axios } from '@/configs';
+import { appConstants } from '@/constants';
+import { Input, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { items } from '../../sidebar/friend.sidebar';
 import './list.friend.scss';
-import { Input, Select } from 'antd';
 import ListFriends from './listFriends.friends';
-import { toast } from 'react-toastify';
-import { STATE } from '../../../redux/types/app.type';
-import { axios } from '@/configs';
 const headerData = items[0];
 
 const limit = 10;
 
 const ListFriend = () => {
   const [friends, setFriends] = React.useState([]);
-  const [stateFriends, setStateFriends] = React.useState(STATE.PENDING);
+  const [stateFriends, setStateFriends] = React.useState(
+    appConstants.STATE.PENDING
+  );
   const [page, setPage] = React.useState(1);
   const [search, setSearch] = React.useState('');
   const [selectedName, setSelectedName] = useState(null);
@@ -43,14 +45,14 @@ const ListFriend = () => {
       const res = await axios.get(`/users/friends?page=${page}&limit=${limit}`);
       if (res.errCode === 0) {
         setFriends(res.data);
-        setStateFriends(STATE.RESOLVE);
+        setStateFriends(appConstants.STATE.RESOLVE);
       } else {
-        setStateFriends(STATE.REJECT);
+        setStateFriends(appConstants.STATE.REJECT);
         toast.warn(res.message);
       }
     } catch (error) {
       console.log(error);
-      setStateFriends(STATE.REJECT);
+      setStateFriends(appConstants.STATE.REJECT);
     }
   };
 
@@ -89,7 +91,9 @@ const ListFriend = () => {
         <span className="icon">{headerData.icon}</span>
         <span className="label">{headerData.label}</span>
       </header>
-      {stateFriends !== STATE.REJECT && friends && friends.length > 0 ? (
+      {stateFriends !== appConstants.STATE.REJECT &&
+      friends &&
+      friends.length > 0 ? (
         <div className="friends-body">
           <div className="friends-main">
             <div className="interactaction">

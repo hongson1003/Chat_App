@@ -1,15 +1,13 @@
+import { axios } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActionKeys } from '@/redux';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Button, Input, Menu, Modal, Radio, Select, Space, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Button, Input, Modal } from 'antd';
-import { Menu } from 'antd';
-import './setting.modal.scss';
-import { Radio, Space, Select, Switch } from 'antd';
-import ChangePasswordModal from './changePassword.modal';
-import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { toast } from 'react-toastify';
-import { STATE } from '../../redux/types/app.type';
-import { axios, socket } from '@/configs';
 import { useSelector } from 'react-redux';
-import { FILTER, SETTING } from '../../redux/types/user.type';
+import { toast } from 'react-toastify';
+import ChangePasswordModal from './changePassword.modal';
+import './setting.modal.scss';
 
 const items = [
   {
@@ -107,7 +105,7 @@ export const PrivacySetting = () => {
           const { data } = res;
           if (data.email) {
             setEmail(data.email);
-            setStatus(STATE.RESOLVE);
+            setStatus(appActionKeys.STATE.RESOLVE);
           }
         }
       } else {
@@ -282,7 +280,7 @@ export const RolePrivate = () => {
           <div className="item">
             <p className="name">Cho phép nhắn tin</p>
             <Select
-              defaultValue={FILTER.ALL}
+              defaultValue={appConstants.FILTER.ALL}
               style={{
                 width: 150,
               }}
@@ -330,7 +328,7 @@ export const RolePrivate = () => {
             <p className="name">Mã QR của tôi</p>
             <Switch
               defaultChecked
-              onChange={() => onChange(SETTING.SHOW_DATE)}
+              onChange={() => onChange(appConstants.SETTING.SHOW_DATE)}
             />
           </div>
           <div className="item">

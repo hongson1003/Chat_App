@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import { stringHandler } from '@/utils';
 import { Avatar } from 'antd';
+import React from 'react';
 import Zoom from 'react-medium-image-zoom';
-import { getFirstLetters } from '../../utils/handleUltils';
 
 const styleCSS = {
   position: 'absolute',
@@ -34,7 +34,7 @@ const AvatarUser = (props) => {
               xl: size,
             }}
           >
-            {getFirstLetters(name)}
+            {stringHandler.getFirstLetters(name)}
           </Avatar>
         </Zoom>
       ) : (
@@ -49,7 +49,7 @@ const AvatarUser = (props) => {
             backgroundColor: image,
           }}
         >
-          {getFirstLetters(name)}
+          {stringHandler.getFirstLetters(name)}
         </Avatar>
       )}
       {children}

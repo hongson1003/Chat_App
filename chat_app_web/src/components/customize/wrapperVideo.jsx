@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { getFriend } from '../../utils/handleChat';
-import { socket } from '../../utils/io';
 
 const WrapperVideo = ({ children }) => {
   const chat = useSelector((state) => state.appReducer.subNav);

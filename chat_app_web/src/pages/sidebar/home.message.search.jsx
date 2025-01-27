@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Input } from 'antd';
-import './home.message.search.scss';
+import { appConstants } from '@/constants';
 import { UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import { Menu } from 'antd';
-import AddFriendModal from '../../components/modal/addFriend.modal';
-import { KEYITEMS } from '../../utils/keyMenuItem';
+import { Button, Input, Menu } from 'antd';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import AddFriendModal from '../../components/modal/addFriend.modal';
 import NewGroupChatModal from '../../components/modal/newGroupChat.modal';
-import { FILTER } from '../../redux/types/user.type';
+import './home.message.search.scss';
 
 const items1 = [
   {
     label: <span>Tất cả</span>,
-    key: FILTER.ALL,
+    key: appConstants.FILTER.ALL,
   },
   {
     label: <span>Chưa đọc</span>,
-    key: FILTER.NOT_READ,
+    key: appConstants.FILTER.NOT_READ,
   },
 ];
 
@@ -88,7 +85,7 @@ const SearchMessage = ({
           </NewGroupChatModal>
         </div>
       </div>
-      {state?.nav === KEYITEMS.MESSAGE && (
+      {state?.nav === appConstants.NAV_ITEMS_KEY.MESSAGE && (
         <div className="sidebar-nav-classify">
           <Menu
             onClick={onClick}

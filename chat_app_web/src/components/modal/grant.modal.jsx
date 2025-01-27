@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
 import { Button, Modal, Popconfirm } from 'antd';
-import './grant.modal.scss';
-import AvatarUser from '../user/avatar';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { editGroup } from '../../redux/actions/app.action';
+import AvatarUser from '../user/avatar';
+import './grant.modal.scss';
 
-import { MESSAGES } from '../../redux/types/user.type';
-import { toast } from 'react-toastify';
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions } from '@/redux';
+import { chatHandler } from '@/utils';
+import { toast } from 'react-toastify';
 
 const GrantModal = ({ children, chat }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,13 +28,13 @@ const GrantModal = ({ children, chat }) => {
         memberId: selected.id,
       });
 
-      await sendNotifyToChatRealTime(
+      await chatHandler.sendNotifyToChatRealTime(
         chat._id,
         `🎉 ${selected.userName} đã trở thành trưởng nhóm 🎉`,
-        MESSAGES.NOTIFY
+        appConstants.MESSAGES.NOTIFY
       );
       if (res.errCode === 0) {
-        dispatch(editGroup(res.data));
+        dispatch(appActions.editGroup(res.data));
         socket.then((socket) => {
           socket.emit('grant', res.data);
         });

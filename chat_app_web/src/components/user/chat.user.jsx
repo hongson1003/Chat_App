@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import AvatarUser from './avatar';
-import { useDispatch, useSelector } from 'react-redux';
 import './chat.user.scss';
-import { accessChat } from '../../redux/actions/user.action';
-import { CHAT_STATUS, MESSAGES } from '../../redux/types/user.type';
-import { getFriend } from '../../utils/handleChat';
-import _ from 'lodash';
+import { appConstants } from '@/constants';
+import { userHandler } from '@/utils';
 
 const ChatUser = ({ chat }) => {
   const user = useSelector((state) => state.appReducer?.userInfo?.user);
   return (
     <div className={'chat-user-container'}>
       <div className="chat-left">
-        {chat?.type === CHAT_STATUS.PRIVATE_CHAT ? (
+        {chat?.type === appConstants.CHAT_STATUS.PRIVATE_CHAT ? (
           <AvatarUser
-            image={getFriend(user, chat.participants)?.avatar}
+            image={userHandler.getFriend(user, chat.participants)?.avatar}
             size={50}
-            name={getFriend(user, chat.participants)?.userName}
+            name={userHandler.getFriend(user, chat.participants)?.userName}
           />
         ) : (
           <div className="avatar-group">
@@ -33,7 +31,9 @@ const ChatUser = ({ chat }) => {
                         width: '50%',
                         height: '50%',
                       }}
-                      name={getFriend(user, chat.participants)?.userName}
+                      name={
+                        userHandler.getFriend(user, chat.participants)?.userName
+                      }
                     />
                   </React.Fragment>
                 );
@@ -44,7 +44,7 @@ const ChatUser = ({ chat }) => {
 
         <div className="right">
           <div className="top">
-            {chat?.type === CHAT_STATUS.GROUP_CHAT ? (
+            {chat?.type === appConstants.CHAT_STATUS.GROUP_CHAT ? (
               <>
                 <div className="group-name">
                   <img
@@ -62,7 +62,7 @@ const ChatUser = ({ chat }) => {
             ) : (
               <>
                 <p className="name">
-                  {getFriend(user, chat.participants)?.userName}
+                  {userHandler.getFriend(user, chat.participants)?.userName}
                 </p>
                 {chat.listPin.includes(user.id) && (
                   <p className="pin">
@@ -76,17 +76,18 @@ const ChatUser = ({ chat }) => {
             <div className="bottom">
               <p>
                 {chat.lastedMessage?.sender?.userName}:<> </>
-                {chat?.lastedMessage?.type === MESSAGES.TEXT
+                {chat?.lastedMessage?.type === appConstants.MESSAGES.TEXT
                   ? chat.lastedMessage?.content
-                  : chat.lastedMessage?.type === MESSAGES.IMAGES
+                  : chat.lastedMessage?.type === appConstants.MESSAGES.IMAGES
                   ? 'Đã gửi ảnh'
-                  : chat.lastedMessage?.type === MESSAGES.FILE_FOLDER
+                  : chat.lastedMessage?.type ===
+                    appConstants.MESSAGES.FILE_FOLDER
                   ? 'Đã gửi file'
-                  : chat.lastedMessage?.type === MESSAGES.VIDEO
+                  : chat.lastedMessage?.type === appConstants.MESSAGES.VIDEO
                   ? 'Đã gửi video'
-                  : chat.lastedMessage?.type === MESSAGES.STICKER
+                  : chat.lastedMessage?.type === appConstants.MESSAGES.STICKER
                   ? 'Đã gửi sticker'
-                  : chat.lastedMessage?.type === MESSAGES.AUDIO
+                  : chat.lastedMessage?.type === appConstants.MESSAGES.AUDIO
                   ? 'Đã gửi audio'
                   : ''}
               </p>

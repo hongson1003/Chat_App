@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { accessChat } from '../../redux/actions/user.action';
-import { MESSAGES } from '../../redux/types/user.type';
-import { toast } from 'react-toastify';
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { userActions } from '@/redux';
+import { chatHandler } from '@/utils';
+import { Button, Modal } from 'antd';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 const LeaveGroupModal = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const chat = useSelector((state) => state.appReducer?.subNav);
@@ -23,15 +23,15 @@ const LeaveGroupModal = ({ children }) => {
       });
       if (res.errCode === 0) {
         toast.warn('Rời nhóm thành công');
-        await sendNotifyToChatRealTime(
+        await chatHandler.sendNotifyToChatRealTime(
           chat._id,
           `${user.userName} đã rời nhóm`,
-          MESSAGES.NOTIFY
+          appConstants.MESSAGES.NOTIFY
         );
         socket.then((socket) => {
           socket.emit('leave-group', { chatId: chat._id, userId: user.id });
         });
-        dispatch(accessChat(null));
+        dispatch(userActions.accessChat(null));
         stateUser.fetchChats();
       }
       setIsModalOpen(false);

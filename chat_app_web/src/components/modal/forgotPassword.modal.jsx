@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { loginStart } from '../../redux/actions/app.action';
-import { STATE } from '../../redux/types/app.type';
+import { appActions, appActionKeys } from '@/redux';
 import React from 'react';
 
 const style = {
@@ -43,8 +42,8 @@ const ForgotPasswordModal = ({ children, phoneNumberProp }) => {
       );
       if (rs.errCode === 0 && rs?.data) {
         const data = rs.data;
-        data.status = STATE.FORGOT_PASSWORD;
-        dispatch(loginStart(data));
+        data.status = appActionKeys.STATE.FORGOT_PASSWORD;
+        dispatch(appActions.loginStart(data));
         navigate(`/verify?id=${rs?.data?.id}`);
         setIsModalOpen(false);
       } else {

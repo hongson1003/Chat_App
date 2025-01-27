@@ -1,18 +1,18 @@
+import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { chatHandler } from '@/utils';
 import { Popover } from 'antd';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Tym from '../../../components/customize/tym';
 import ForwardModal from '../../../components/modal/forward.modal';
-import { MESSAGES, METHOD_MESSAGE } from '../../../redux/types/user.type';
-import { sendNotifyToChatRealTime } from '../../../utils/handleChat';
 import EmoijPopup from './emoijPopup.chat';
 import './message.chat.scss';
-import { axios, socket } from '@/configs';
 
 const items = [
   {
-    key: METHOD_MESSAGE.COPY,
+    key: appConstants.METHOD_MESSAGE.COPY,
     item: () => (
       <div className="item-popover-message">
         <i className="fa-regular fa-copy"></i>
@@ -21,7 +21,7 @@ const items = [
     ),
   },
   {
-    key: METHOD_MESSAGE.PIN,
+    key: appConstants.METHOD_MESSAGE.PIN,
     item: () => (
       <div className="item-popover-message">
         <i className="fa-solid fa-thumbtack"></i>
@@ -30,7 +30,7 @@ const items = [
     ),
   },
   {
-    key: METHOD_MESSAGE.VIEW_DETAIL,
+    key: appConstants.METHOD_MESSAGE.VIEW_DETAIL,
     item: () => (
       <div className="item-popover-message">
         <i className="fa-solid fa-circle-info"></i>
@@ -39,7 +39,7 @@ const items = [
     ),
   },
   {
-    key: METHOD_MESSAGE.DELETE_ALL,
+    key: appConstants.METHOD_MESSAGE.DELETE_ALL,
     item: () => (
       <div className="item-popover-message error-item">
         <i className="fa-solid fa-trash-can"></i>
@@ -48,7 +48,7 @@ const items = [
     ),
   },
   {
-    key: METHOD_MESSAGE.DELETE_MYSEFL,
+    key: appConstants.METHOD_MESSAGE.DELETE_MYSEFL,
     item: () => (
       <div className="item-popover-message error-item">
         <i className="fa-regular fa-square-minus"></i>
@@ -109,10 +109,10 @@ const content = ({
         chat: message.chat,
       });
       if (res.errCode === 0) {
-        await sendNotifyToChatRealTime(
+        await chatHandler.sendNotifyToChatRealTime(
           res.data?.chat?._id,
           `${user.userName} đã ghim 1 tin nhắn`,
-          MESSAGES.NOTIFY
+          appConstants.MESSAGES.NOTIFY
         );
         socket.then((socket) => {
           socket.emit('pin-message', res.data?.chat?._id);
@@ -133,19 +133,19 @@ const content = ({
   const handleOnClick = (Element) => {
     const { key } = Element;
     switch (key) {
-      case METHOD_MESSAGE.COPY:
+      case appConstants.METHOD_MESSAGE.COPY:
         handleCopy();
         break;
-      case METHOD_MESSAGE.PIN:
+      case appConstants.METHOD_MESSAGE.PIN:
         handlePinMessage(message._id);
         break;
-      case METHOD_MESSAGE.VIEW_DETAIL:
+      case appConstants.METHOD_MESSAGE.VIEW_DETAIL:
         console.log('Xem chi tiết');
         break;
-      case METHOD_MESSAGE.DELETE_ALL:
+      case appConstants.METHOD_MESSAGE.DELETE_ALL:
         deleteMessage(message._id);
         break;
-      case METHOD_MESSAGE.DELETE_MYSEFL:
+      case appConstants.METHOD_MESSAGE.DELETE_MYSEFL:
         deleteMessageMySelf(message._id);
         break;
       default:
@@ -169,7 +169,10 @@ const content = ({
       {items &&
         items.length > 0 &&
         items.map((Element) => {
-          if (Element.key === METHOD_MESSAGE.DELETE_ALL && !isDelete) {
+          if (
+            Element.key === appConstants.METHOD_MESSAGE.DELETE_ALL &&
+            !isDelete
+          ) {
             return null;
           }
           return (
@@ -369,17 +372,17 @@ const MessageChat = ({
             <p className="reply-name">{message.reply.sender.userName}</p>
             {/* handle content */}
             {
-              message.reply.type === MESSAGES.TEXT ? (
+              message.reply.type === appConstants.MESSAGES.TEXT ? (
                 <p className="message-reply-content">{message.reply.content}</p>
-              ) : message.reply.type === MESSAGES.IMAGES ? (
+              ) : message.reply.type === appConstants.MESSAGES.IMAGES ? (
                 <img src={message.reply.urls[0]} alt="image" />
-              ) : message.reply.type === MESSAGES.VIDEO ? (
+              ) : message.reply.type === appConstants.MESSAGES.VIDEO ? (
                 <video src={message.reply.urls[0]} controls></video>
-              ) : message.reply.type === MESSAGES.FILE_FOLDER ? (
+              ) : message.reply.type === appConstants.MESSAGES.FILE_FOLDER ? (
                 <p>{message.reply.files[0].name}</p>
-              ) : message.reply.type === MESSAGES.AUDIO ? (
+              ) : message.reply.type === appConstants.MESSAGES.AUDIO ? (
                 <audio src={message.reply.urls[0]} controls></audio>
-              ) : message.reply.type === MESSAGES.STICKER ? (
+              ) : message.reply.type === appConstants.MESSAGES.STICKER ? (
                 <img
                   className="sticker-reply"
                   src={message.reply.sticker}

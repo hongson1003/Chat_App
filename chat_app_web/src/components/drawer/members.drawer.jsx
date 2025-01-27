@@ -1,11 +1,10 @@
 import { axios, socket } from '@/configs';
+import { appActions, userActionKeys } from '@/redux';
+import { chatHandler } from '@/utils';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Drawer, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editGroup } from '../../redux/actions/app.action';
-import { MESSAGES } from '../../redux/types/user.type';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import AddMemberModal from '../modal/addMember.modal';
 import InforUserModal from '../modal/inforUser.modal';
 import AvatarUser from '../user/avatar';
@@ -73,15 +72,15 @@ const MemberDrawer = ({ children, chat }) => {
         memberId: member.id,
       });
       if (res.errCode === 0) {
-        sendNotifyToChatRealTime(
+        chatHandler.sendNotifyToChatRealTime(
           chat._id,
           `${user.userName} đã xóa ${member.userName} ra khỏi nhóm !`,
-          MESSAGES.NOTIFY
+          userActionKeys.MESSAGES.NOTIFY
         );
         socket.then((socket) => {
           socket.emit('delete-member', res.data);
         });
-        dispatch(editGroup(res.data));
+        dispatch(appActions.editGroup(res.data));
         setParticipants(
           participants.filter((participant) => participant.id !== member.id)
         );

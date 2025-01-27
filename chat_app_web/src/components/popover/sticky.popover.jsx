@@ -1,8 +1,8 @@
+import { appConstants } from '@/constants';
 import { Popover } from 'antd';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { StoreComponent, UnifiedComponent } from 'stipop-react-sdk';
-import { MESSAGES } from '../../redux/types/user.type';
 import './sticky.popover.scss';
 
 const content = ({ handleClose, openStore, setOpenStore }) => {
@@ -13,7 +13,7 @@ const content = ({ handleClose, openStore, setOpenStore }) => {
     const { url } = stickerData;
     const { sendMessageFunc } = userState;
     handleClose();
-    await sendMessageFunc(url, MESSAGES.STICKER);
+    await sendMessageFunc(url, appConstants.MESSAGES.STICKER);
   };
 
   const handleStoreClick = async (value) => {

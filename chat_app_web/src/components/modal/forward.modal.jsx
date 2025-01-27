@@ -1,12 +1,12 @@
 import { axios, socket } from '@/configs';
+import { userHandler } from '@/utils';
 import { Button, Checkbox, Input, Modal } from 'antd';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { CHAT_STATUS } from '../../redux/types/user.type';
-import { getFriend } from '../../utils/handleChat';
 import AvatarUser from '../user/avatar';
 import './forward.modal.scss';
+import { appConstants } from '@/constants';
 const CheckboxGroup = Checkbox.Group;
 
 const ForwardModal = ({ children, message }) => {
@@ -62,11 +62,11 @@ const ForwardModal = ({ children, message }) => {
       let members = '';
       checkedList.forEach((item) => {
         const chat = JSON.parse(item);
-        if (chat.type === CHAT_STATUS.GROUP_CHAT) {
+        if (chat.type === appConstants.CHAT_STATUS.GROUP_CHAT) {
           members = members.concat(chat.name);
         } else {
           members = members.concat(
-            getFriend(user, chat.participants)?.userName
+            userHandler.getFriend(user, chat.participants)?.userName
           );
         }
         members = members.concat(', ');
@@ -131,7 +131,7 @@ const ForwardModal = ({ children, message }) => {
               {plainOptions && plainOptions.length > 0 && (
                 <CheckboxGroup
                   options={plainOptions.map((item) => {
-                    if (item.type === CHAT_STATUS.GROUP_CHAT) {
+                    if (item.type === appConstants.CHAT_STATUS.GROUP_CHAT) {
                       return {
                         label: (
                           <div className="group-checkbox">
@@ -146,13 +146,20 @@ const ForwardModal = ({ children, message }) => {
                         label: (
                           <div className="group-checkbox">
                             <AvatarUser
-                              image={getFriend(user, item.participants)?.avatar}
+                              image={
+                                userHandler.getFriend(user, item.participants)
+                                  ?.avatar
+                              }
                               name={
-                                getFriend(user, item.participants)?.userName
+                                userHandler.getFriend(user, item.participants)
+                                  ?.userName
                               }
                             />
                             <p>
-                              {getFriend(user, item.participants)?.userName}
+                              {
+                                userHandler.getFriend(user, item.participants)
+                                  ?.userName
+                              }
                             </p>
                           </div>
                         ),

@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import StatusUser from '../../../components/user/status.user';
 import './chat.main.scss';
 // import data from '../../../mocks/facebook.json';
+import { axios } from '@/configs';
+import { appActions, userActions } from '@/redux';
+import { stringHandler, timeHandler, userHandler } from '@/utils';
 import { CloseOutlined } from '@ant-design/icons';
 import Picker from '@emoji-mart/react';
 import { Button, Input, Menu, Popconfirm, Popover } from 'antd';
@@ -36,23 +39,7 @@ import ChooseFileUploadPopover from '../../../components/popover/chooseFileUploa
 import File from '../../../components/upload/file.upload';
 import AvatarUser from '../../../components/user/avatar';
 import { appConstants } from '../../../constants';
-import { changeKeySubMenu, editGroup } from '../../../redux/actions/app.action';
-import { accessChat, fetchMessages } from '../../../redux/actions/user.action';
-import { STATE } from '../../../redux/types/app.type';
-import {
-  CHAT_STATUS,
-  FILE_TYPE,
-  MESSAGES,
-} from '../../../redux/types/user.type';
-import { getFriend, sendNotifyToChatRealTime } from '../../../utils/handleChat';
-import {
-  customizeFile,
-  getLinkDownloadFile,
-  getPreviewImage,
-  getTimeFromDate,
-} from '../../../utils/handleUltils';
 import MessageChat from './message.chat';
-import { axios } from '@/configs';
 const uploadPreset = import.meta.env.VITE_APP_CLOUNDINARY_UPLOAD_PRESET;
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;
 const folder = import.meta.env.VITE_APP_CLOUNDINARY_FOLDER;
@@ -71,7 +58,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   const receiveOnly = useRef(false);
   const [typing, setTyping] = useState(false);
   const sendTyping = useRef(false);
-  const [sent, setSent] = useState(STATE.RESOLVE);
+  const [sent, setSent] = useState(appConstants.appConstants.STATE.RESOLVE);
   const footer = useRef(null);
   const [footerHeight, setFooterHeight] = useState(0);
   const textAreaRef = useRef(null);
@@ -132,7 +119,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
 
   useEffect(() => {
     if (!chat._id) {
-      dispatch(changeKeySubMenu(''));
+      dispatch(appActions.changeKeySubMenu(''));
     }
     textAreaRef.current.focus();
   }, [chat]);
@@ -143,7 +130,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
 
   const handleTransferDisbandGroup = (data) => {
     fetchMessagePaginate();
-    dispatch(editGroup(data));
+    dispatch(appActions.editGroup(data));
   };
 
   const handleLeaveGroup = (data) => {
@@ -151,7 +138,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       const participants = chat.participants.filter(
         (item) => item.id !== data.userId
       );
-      dispatch(editGroup({ ...chat, participants }));
+      dispatch(appActions.editGroup({ ...chat, participants }));
     }
   };
 
@@ -228,7 +215,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         socket.then((socket) => {
           socket.emit('dissolutionGroupChat', chat);
           setTimeout(() => {
-            dispatch(accessChat(null));
+            dispatch(userActions.accessChat(null));
           }, 500);
         });
         userState.fetchChats();
@@ -242,7 +229,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   const cancel = (e) => {};
 
   const handleGrant = (data) => {
-    dispatch(editGroup(data));
+    dispatch(appActions.editGroup(data));
   };
 
   useEffect(() => {
@@ -265,7 +252,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   // get file
   useEffect(() => {
     if (file) {
-      const preview = getPreviewImage(file);
+      const preview = stringHandler.getPreviewImage(file);
       sendImage(preview, file);
       setTimeout(() => {
         scroolRef.current.scrollTop = scroolRef.current.scrollHeight;
@@ -396,7 +383,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   const handleDissolutionChat = (data) => {
     userState.fetchChats();
     if (chat?._id === data._id) {
-      dispatch(accessChat(null));
+      dispatch(userActions.accessChat(null));
     }
   };
 
@@ -529,7 +516,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       const createMessage = {
         _id: ObjectId,
         chat: chat,
-        type: MESSAGES.IMAGES,
+        type: appConstants.MESSAGES.IMAGES,
         sender: user,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -539,7 +526,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         reactions: [],
       };
       setMessages((prev) => [...prev, createMessage]);
-      setSent(STATE.PENDING);
+      setSent(appConstants.appConstants.STATE.PENDING);
       // upload ảnh lên cloudinary
       const url = await uploadToCloudiry(file);
       // save vào db
@@ -547,21 +534,21 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         ...createMessage,
         urls: [url],
       });
-      setSent(STATE.RESOLVE);
+      setSent(appConstants.appConstants.STATE.RESOLVE);
       if (res.errCode === 0) {
         userState.fetchChats();
         socket.then((socket) => {
-          setSent(STATE.RESOLVE);
+          setSent(appConstants.appConstants.STATE.RESOLVE);
           socket.emit('send-message', res.data);
           socket.emit('finish-typing', chat._id);
         });
       } else {
-        setSent(STATE.REJECT);
+        setSent(appConstants.appConstants.STATE.REJECT);
         toast.warn('Không thể gửi tin nhắn, ' + res.message);
       }
     } catch (error) {
       console.log(error);
-      setSent(STATE.REJECT);
+      setSent(appConstants.appConstants.STATE.REJECT);
       toast.warn('Không thể gửi tin nhắn, ' + error.message);
     }
   };
@@ -572,7 +559,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       const createMessage = {
         _id: ObjectId,
         chat: chat,
-        type: MESSAGES.IMAGES,
+        type: appConstants.MESSAGES.IMAGES,
         sender: user,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -582,13 +569,13 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         reactions: [],
       };
       setMessages((prev) => [...prev, createMessage]);
-      setSent(STATE.PENDING);
+      setSent(appConstants.appConstants.STATE.PENDING);
       // save ảnh vào db
       const res = await axios.post('/chat/message', {
         ...createMessage,
         urls,
       });
-      setSent(STATE.RESOLVE);
+      setSent(appConstants.STATE.RESOLVE);
       if (res.errCode === 0) {
         userState.fetchChats();
         socket.then((socket) => {
@@ -596,12 +583,12 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
           socket.emit('finish-typing', chat._id);
         });
       } else {
-        setSent(STATE.REJECT);
+        setSent(appConstants.STATE.REJECT);
         toast.warn('Không thể gửi tin nhắn, ' + res.message);
       }
     } catch (error) {
       console.log(error);
-      setSent(STATE.REJECT);
+      setSent(appConstants.STATE.REJECT);
       toast.warn('Không thể gửi tin nhắn, ' + error.message);
     }
   };
@@ -630,7 +617,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   };
 
   useEffect(() => {
-    dispatch(fetchMessages(fetchMessagePaginate));
+    dispatch(userActions.fetchMessages(fetchMessagePaginate));
   }, [chat?._id]);
 
   const handleModifyMessage = (message) => {
@@ -733,17 +720,18 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       if (openReply) {
         createMessage.reply = messageReply;
       }
-      if (type === MESSAGES.TEXT) {
+      if (type === appConstants.MESSAGES.TEXT) {
         createMessage.content = data;
         if (listImage.length > 0) {
           createMessage.urls = [...listImage];
           setListImage([]);
         }
-      } else if (type === MESSAGES.STICKER) createMessage.sticker = data;
+      } else if (type === appConstants.MESSAGES.STICKER)
+        createMessage.sticker = data;
       setMessages((prev) => [...prev, createMessage]);
       setText('');
       setOpenReply(false);
-      setSent(STATE.PENDING);
+      setSent(appConstants.STATE.PENDING);
       const res = await axios.post('/chat/message', {
         ...createMessage,
         chatId: chat._id,
@@ -752,18 +740,18 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         socket.then((socket) => {
           socket.emit('send-message', res.data);
           socket.emit('finish-typing', chat._id);
-          setSent(STATE.RESOLVE);
+          setSent(appConstants.STATE.RESOLVE);
           userState.fetchChats();
           scroolRef.current.scrollTop = scroolRef.current.scrollHeight;
         });
         // fetchMessagePaginate();
       } else {
-        setSent(STATE.REJECT);
+        setSent(appConstants.STATE.REJECT);
         toast.warn('Không thể gửi tin nhắn, ' + res.message);
       }
     } catch (error) {
       console.log(error);
-      setSent(STATE.REJECT);
+      setSent(appConstants.STATE.REJECT);
       toast.warn('Không thể gửi tin nhắn, ' + error.message);
     }
   };
@@ -861,7 +849,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
     const value = textAreaRef.current.value;
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage(value, MESSAGES.TEXT);
+      sendMessage(value, appConstants.MESSAGES.TEXT);
       textAreaRef.current.value = '';
       setHasText(false);
     } else {
@@ -922,7 +910,10 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
 
   const handleDispatchSendMessageFunc = () => {
     if (dispatchRef.current === false) {
-      dispatch({ type: MESSAGES.SEND_MESSAGE_FUNC, payload: sendMessage });
+      dispatch({
+        type: appConstants.MESSAGES.SEND_MESSAGE_FUNC,
+        payload: sendMessage,
+      });
       dispatchRef.current = true;
     }
   };
@@ -936,10 +927,10 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       setBackgroundUrl(background.url);
       setHeaderColor(COLOR_BACKGROUND[background.headerColor]);
       setMessageColor(COLOR_BACKGROUND[background.messageColor]);
-      await sendNotifyToChatRealTime(
+      await userHandler.sendNotifyToChatRealTime(
         chat._id,
         `Đã thay đổi hình nền`,
-        MESSAGES.NOTIFY
+        appConstants.MESSAGES.NOTIFY
       );
       fetchMessagePaginate();
     } else {
@@ -957,14 +948,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          previews.push(getPreviewImage(file));
+          previews.push(stringHandler.getPreviewImage(file));
         }
       }
       const ObjectId = objectId();
       const createMessage = {
         _id: ObjectId,
         chat: chat,
-        type: MESSAGES.IMAGES,
+        type: appConstants.MESSAGES.IMAGES,
         sender: user,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -974,7 +965,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         reactions: [],
       };
       setMessages((prev) => [...prev, createMessage]);
-      setSent(STATE.PENDING);
+      setSent(appConstants.STATE.PENDING);
       // upload ảnh lên cloudinary
       const urls = [];
       for (let i = 0; i < files.length; i++) {
@@ -986,22 +977,22 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         ...createMessage,
         urls: urls,
       });
-      setSent(STATE.RESOLVE);
+      setSent(appConstants.STATE.RESOLVE);
       if (res.errCode === 0) {
         userState.fetchChats();
         getAllImagesMessage();
         socket.then((socket) => {
-          setSent(STATE.RESOLVE);
+          setSent(appConstants.STATE.RESOLVE);
           socket.emit('send-message', res.data);
           socket.emit('finish-typing', chat._id);
         });
       } else {
-        setSent(STATE.REJECT);
+        setSent(appConstants.STATE.REJECT);
         toast.warn('Không thể gửi tin nhắn, ' + res.message);
       }
     } catch (error) {
       console.log(error);
-      setSent(STATE.REJECT);
+      setSent(appConstants.STATE.REJECT);
       toast.warn('Không thể gửi tin nhắn, ' + error.message);
     }
   };
@@ -1009,12 +1000,12 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   const sendAudio = async (file) => {
     // preview
     try {
-      const preview = getPreviewImage(file);
+      const preview = stringHandler.getPreviewImage(file);
       const ObjectId = objectId();
       const createMessage = {
         _id: ObjectId,
         chat: chat,
-        type: MESSAGES.AUDIO,
+        type: appConstants.MESSAGES.AUDIO,
         sender: user,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -1024,7 +1015,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         reactions: [],
       };
       setMessages((prev) => [...prev, createMessage]);
-      setSent(STATE.PENDING);
+      setSent(appConstants.STATE.PENDING);
       // upload
       const url = await uploadToCloudiry(file);
       // save
@@ -1032,17 +1023,17 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         ...createMessage,
         urls: [url],
       });
-      setSent(STATE.RESOLVE);
+      setSent(appConstants.STATE.RESOLVE);
       if (res.errCode === 0) {
         socket.then((socket) => {
-          setSent(STATE.RESOLVE);
+          setSent(appConstants.STATE.RESOLVE);
           socket.emit('send-message', res.data);
           socket.emit('finish-typing', chat._id);
         });
       }
     } catch (error) {
       console.log(error);
-      setSent(STATE.REJECT);
+      setSent(appConstants.STATE.REJECT);
       toast.warn('Không thể gửi tin nhắn, ' + error.message);
     }
   };
@@ -1077,21 +1068,21 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
     try {
       const dataFiles = [];
       for (let i = 0; i < filesOrFolders.length; i++) {
-        dataFiles.push(customizeFile(filesOrFolders[i]));
+        dataFiles.push(stringHandler.customizeFile(filesOrFolders[i]));
       }
 
       const previews = [];
       if (filesOrFolders.length > 0) {
         for (let i = 0; i < filesOrFolders.length; i++) {
           const file = filesOrFolders[i];
-          previews.push(getPreviewImage(file));
+          previews.push(stringHandler.getPreviewImage(file));
         }
       }
       const ObjectId = objectId();
       const createMessage = {
         _id: ObjectId,
         chat: chat,
-        type: MESSAGES.FILE_FOLDER,
+        type: appConstants.MESSAGES.FILE_FOLDER,
         sender: user,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -1131,12 +1122,12 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
 
   const sendVideo = async (file) => {
     try {
-      const preview = getPreviewImage(file);
+      const preview = stringHandler.getPreviewImage(file);
       const ObjectId = objectId();
       const createMessage = {
         _id: ObjectId,
         chat: chat,
-        type: MESSAGES.VIDEO,
+        type: appConstants.MESSAGES.VIDEO,
         sender: user,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -1147,18 +1138,18 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
       };
 
       setMessages((prev) => [...prev, createMessage]);
-      setSent(STATE.PENDING);
+      setSent(appConstants.STATE.PENDING);
       // upload
       let url = '';
       try {
         url = await uploadToCloudiry(file);
         if (!url) {
-          setSent(STATE.REJECT);
+          setSent(appConstants.STATE.REJECT);
           toast.warn('Không thể gửi tin nhắn, ' + 'Lỗi không xác định');
           return;
         }
       } catch (error) {
-        setSent(STATE.REJECT);
+        setSent(appConstants.STATE.REJECT);
         toast.warn('Không thể gửi tin nhắn, ' + error.message);
       }
       // save
@@ -1166,18 +1157,18 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         ...createMessage,
         urls: [url],
       });
-      setSent(STATE.RESOLVE);
+      setSent(appConstants.STATE.RESOLVE);
       if (res.errCode === 0) {
         userState.fetchChats();
         socket.then((socket) => {
-          setSent(STATE.RESOLVE);
+          setSent(appConstants.STATE.RESOLVE);
           socket.emit('send-message', res.data);
           socket.emit('finish-typing', chat._id);
         });
       }
     } catch (error) {
       console.log(error);
-      setSent(STATE.REJECT);
+      setSent(appConstants.STATE.REJECT);
       toast.warn('Không thể gửi tin nhắn, ' + error.message);
     }
   };
@@ -1217,11 +1208,11 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
         <p>{messageReply?.content}</p>
         {messageReply?.sticker ||
         (messageReply?.urls?.length > 0 &&
-          messageReply.type === MESSAGES.IMAGES) ? (
+          messageReply.type === appConstants.MESSAGES.IMAGES) ? (
           <img src={messageReply?.sticker || messageReply?.urls[0]}></img>
         ) : (
           messageReply?.urls?.length > 0 &&
-          messageReply.type === MESSAGES.VIDEO && (
+          messageReply.type === appConstants.MESSAGES.VIDEO && (
             <video src={messageReply?.urls[0]} />
           )
         )}
@@ -1243,7 +1234,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
 
   const handleGetToTalChatTogethers = async () => {
     try {
-      const friend = getFriend(user, chat.participants);
+      const friend = userHandler.getFriend(user, chat.participants);
       const res = await axios.get(`/chat/total-together?friendId=${friend.id}`);
       setTotalChatTogethers(res.data);
     } catch (error) {
@@ -1253,7 +1244,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
   };
 
   useEffect(() => {
-    if (chat?._id && chat.type === CHAT_STATUS.PRIVATE_CHAT) {
+    if (chat?._id && chat.type === appConstants.CHAT_STATUS.PRIVATE_CHAT) {
       handleGetToTalChatTogethers();
     }
   }, [chat]);
@@ -1327,7 +1318,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                     ) : listMessageIsPinState[0]?.type === MESSAGES.IMAGES ? (
                       <span>Đã gửi ảnh</span>
                     ) : listMessageIsPinState[0]?.type ===
-                      MESSAGES.FILE_FOLDER ? (
+                      appConstants.MESSAGES.FILE_FOLDER ? (
                       <span>File</span>
                     ) : (
                       <span>Sticker</span>
@@ -1362,13 +1353,15 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                   if (message.unViewList.includes(user.id)) {
                     return null;
                   }
-                  if (message.type === MESSAGES.NOTIFY) {
+                  if (message.type === appConstants.MESSAGES.NOTIFY) {
                     return (
                       <div className="notify-message" key={message._id}>
                         <p>{message.content}</p>
                       </div>
                     );
-                  } else if (message.type === MESSAGES.NEW_FRIEND) {
+                  } else if (
+                    message.type === appConstants.MESSAGES.NEW_FRIEND
+                  ) {
                     return (
                       <div className="new-friend-message" key={message._id}>
                         <div className="group-avatar">
@@ -1378,8 +1371,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                             size={80}
                           />
                           <AvatarUser
-                            image={getFriend(user, chat.participants).avatar}
-                            name={getFriend(user, chat.participants).userName}
+                            image={
+                              userHandler.getFriend(user, chat.participants)
+                                .avatar
+                            }
+                            name={
+                              userHandler.getFriend(user, chat.participants)
+                                .userName
+                            }
                             size={80}
                           />
                         </div>
@@ -1394,7 +1393,9 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                         user?.id !== message.sender.id ? (
                           <div
                             className={`group-message ${
-                              message.type === MESSAGES.TEXT ? 'bg-white' : ''
+                              message.type === appConstants.MESSAGES.TEXT
+                                ? 'bg-white'
+                                : ''
                             }`}
                             style={{
                               marginBottom:
@@ -1463,13 +1464,15 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                               //     )
                               // }
                               className={
-                                message.type === MESSAGES.TEXT ||
+                                message.type === appConstants.MESSAGES.TEXT ||
                                 message.isDelete
                                   ? 'message'
-                                  : message.type === MESSAGES.AUDIO ||
-                                    message.type === MESSAGES.VIDEO
+                                  : message.type ===
+                                      appConstants.MESSAGES.AUDIO ||
+                                    message.type === appConstants.MESSAGES.VIDEO
                                   ? 'message w-500 de-bg'
-                                  : message.type === MESSAGES.FILE_FOLDER
+                                  : message.type ===
+                                    appConstants.MESSAGES.FILE_FOLDER
                                   ? 'message'
                                   : 'message de-bg'
                               }
@@ -1495,7 +1498,8 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 >
                                   {'Tin nhắn đã được thu hồi'}
                                 </p>
-                              ) : message.type === MESSAGES.TEXT ? (
+                              ) : message.type ===
+                                appConstants.MESSAGES.TEXT ? (
                                 <MessageChat
                                   handleModifyMessage={handleModifyMessage}
                                   isLeft={true}
@@ -1526,11 +1530,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   {messages[index + 1]?.sender?.id !==
                                     messages[index]?.sender?.id && (
                                     <p className="time">
-                                      {getTimeFromDate(message.createdAt)}
+                                      {timeHandler.getTimeFromDate(
+                                        message.createdAt
+                                      )}
                                     </p>
                                   )}
                                 </MessageChat>
-                              ) : message.type === MESSAGES.STICKER ? (
+                              ) : message.type ===
+                                appConstants.MESSAGES.STICKER ? (
                                 <MessageChat
                                   handleModifyMessage={handleModifyMessage}
                                   isLeft={true}
@@ -1545,11 +1552,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   {messages[index + 1]?.sender?.id !==
                                     messages[index].sender.id && (
                                     <p className="time">
-                                      {getTimeFromDate(message.createdAt)}
+                                      {timeHandler.getTimeFromDate(
+                                        message.createdAt
+                                      )}
                                     </p>
                                   )}
                                 </MessageChat>
-                              ) : message.type === MESSAGES.IMAGES ? (
+                              ) : message.type ===
+                                appConstants.MESSAGES.IMAGES ? (
                                 <MessageChat
                                   handleModifyMessage={handleModifyMessage}
                                   isLeft={true}
@@ -1571,11 +1581,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   {messages[index + 1]?.sender?.id !==
                                     messages[index].sender.id && (
                                     <p className="time">
-                                      {getTimeFromDate(message.createdAt)}
+                                      {timeHandler.getTimeFromDate(
+                                        message.createdAt
+                                      )}
                                     </p>
                                   )}
                                 </MessageChat>
-                              ) : message.type === MESSAGES.FILE_FOLDER ? (
+                              ) : message.type ===
+                                appConstants.MESSAGES.FILE_FOLDER ? (
                                 <MessageChat
                                   handleModifyMessage={handleModifyMessage}
                                   isLeft={true}
@@ -1589,13 +1602,16 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                     return (
                                       <File
                                         key={message._id + index}
-                                        url={getLinkDownloadFile(url)}
+                                        url={stringHandler.getLinkDownloadFile(
+                                          url
+                                        )}
                                         name={name}
                                         type={type}
                                         size={size}
                                         className={type}
                                       >
-                                        {type === FILE_TYPE.PDF && (
+                                        {type ===
+                                          appConstants.FILE_TYPE.PDF && (
                                           <Document
                                             file={url}
                                             onLoadSuccess={() => {}}
@@ -1609,11 +1625,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   {messages[index + 1]?.sender?.id !==
                                     messages[index].sender.id && (
                                     <p className="time">
-                                      {getTimeFromDate(message.createdAt)}
+                                      {timeHandler.getTimeFromDate(
+                                        message.createdAt
+                                      )}
                                     </p>
                                   )}
                                 </MessageChat>
-                              ) : message.type === MESSAGES.AUDIO ? (
+                              ) : message.type ===
+                                appConstants.MESSAGES.AUDIO ? (
                                 <MessageChat
                                   handleModifyMessage={handleModifyMessage}
                                   isLeft={true}
@@ -1632,12 +1651,15 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   {messages[index + 1]?.sender?.id !==
                                     messages[index].sender.id && (
                                     <p className="time">
-                                      {getTimeFromDate(message.createdAt)}
+                                      {timeHandler.getTimeFromDate(
+                                        message.createdAt
+                                      )}
                                     </p>
                                   )}
                                 </MessageChat>
                               ) : (
-                                message.type === MESSAGES.VIDEO && (
+                                message.type ===
+                                  appConstants.MESSAGES.VIDEO && (
                                   <MessageChat
                                     handleModifyMessage={handleModifyMessage}
                                     isLeft={true}
@@ -1656,7 +1678,9 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                     {messages[index + 1]?.sender?.id !==
                                       messages[index].sender.id && (
                                       <p className="time">
-                                        {getTimeFromDate(message.createdAt)}
+                                        {timeHandler.getTimeFromDate(
+                                          message.createdAt
+                                        )}
                                       </p>
                                     )}
                                   </MessageChat>
@@ -1673,12 +1697,15 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 message?.reactions?.length > 0 ? '10px' : '0px',
                             }}
                             className={
-                              message.type === MESSAGES.TEXT || message.isDelete
+                              message.type === appConstants.MESSAGES.TEXT ||
+                              message.isDelete
                                 ? 'message'
-                                : message.type === MESSAGES.AUDIO ||
-                                  message.type === MESSAGES.VIDEO
+                                : message.type ===
+                                    appConstants.MESSAGES.AUDIO ||
+                                  message.type === appConstants.MESSAGES.VIDEO
                                 ? 'message w-500 de-bg'
-                                : message.type === MESSAGES.FILE_FOLDER
+                                : message.type ===
+                                  appConstants.MESSAGES.FILE_FOLDER
                                 ? 'message'
                                 : 'message de-bg'
                             }
@@ -1715,7 +1742,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 {'Tin nhắn đã được thu hồi'}
                               </p>
                             ) : // render message
-                            message.type === MESSAGES.TEXT ? (
+                            message.type === appConstants.MESSAGES.TEXT ? (
                               <MessageChat
                                 handleModifyMessage={handleModifyMessage}
                                 isLeft={false}
@@ -1744,11 +1771,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 {messages[index + 1]?.sender?.id !==
                                   messages[index].sender?.id && (
                                   <p className="time">
-                                    {getTimeFromDate(message.createdAt)}
+                                    {timeHandler.getTimeFromDate(
+                                      message.createdAt
+                                    )}
                                   </p>
                                 )}
                               </MessageChat>
-                            ) : message.type === MESSAGES.STICKER ? (
+                            ) : message.type ===
+                              appConstants.MESSAGES.STICKER ? (
                               <MessageChat
                                 handleModifyMessage={handleModifyMessage}
                                 isLeft={false}
@@ -1763,11 +1793,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 {messages[index + 1]?.sender?.id !==
                                   messages[index].sender.id && (
                                   <p className="time">
-                                    {getTimeFromDate(message.createdAt)}
+                                    {timeHandler.getTimeFromDate(
+                                      message.createdAt
+                                    )}
                                   </p>
                                 )}
                               </MessageChat>
-                            ) : message.type === MESSAGES.IMAGES ? (
+                            ) : message.type ===
+                              appConstants.MESSAGES.IMAGES ? (
                               <MessageChat
                                 handleModifyMessage={handleModifyMessage}
                                 isLeft={false}
@@ -1789,11 +1822,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 {messages[index + 1]?.sender?.id !==
                                   messages[index].sender.id && (
                                   <p className="time">
-                                    {getTimeFromDate(message.createdAt)}
+                                    {timeHandler.getTimeFromDate(
+                                      message.createdAt
+                                    )}
                                   </p>
                                 )}
                               </MessageChat>
-                            ) : message.type === MESSAGES.FILE_FOLDER ? (
+                            ) : message.type ===
+                              appConstants.MESSAGES.FILE_FOLDER ? (
                               <MessageChat
                                 handleModifyMessage={handleModifyMessage}
                                 isLeft={false}
@@ -1807,13 +1843,15 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   return (
                                     <File
                                       key={message._id + index}
-                                      url={getLinkDownloadFile(url)}
+                                      url={stringHandler.getLinkDownloadFile(
+                                        url
+                                      )}
                                       name={name}
                                       type={type}
                                       size={size}
                                       className={type}
                                     >
-                                      {type === FILE_TYPE.PDF && (
+                                      {type === appConstants.FILE_TYPE.PDF && (
                                         <Document
                                           file={url}
                                           onLoadSuccess={() => {}}
@@ -1827,11 +1865,13 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 {messages[index + 1]?.sender?.id !==
                                   messages[index].sender.id && (
                                   <p className="time">
-                                    {getTimeFromDate(message.createdAt)}
+                                    {timeHandler.getTimeFromDate(
+                                      message.createdAt
+                                    )}
                                   </p>
                                 )}
                               </MessageChat>
-                            ) : message.type === MESSAGES.AUDIO ? (
+                            ) : message.type === appConstants.MESSAGES.AUDIO ? (
                               <MessageChat
                                 handleModifyMessage={handleModifyMessage}
                                 isLeft={false}
@@ -1850,12 +1890,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                 {messages[index + 1]?.sender?.id !==
                                   messages[index].sender.id && (
                                   <p className="time">
-                                    {getTimeFromDate(message.createdAt)}
+                                    {timeHandler.getTimeFromDate(
+                                      message.createdAt
+                                    )}
                                   </p>
                                 )}
                               </MessageChat>
                             ) : (
-                              message.type === MESSAGES.VIDEO && (
+                              message.type === appConstants.MESSAGES.VIDEO && (
                                 <MessageChat
                                   handleModifyMessage={handleModifyMessage}
                                   isLeft={false}
@@ -1874,7 +1916,9 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                                   {messages[index + 1]?.sender?.id !==
                                     messages[index].sender.id && (
                                     <p className="time">
-                                      {getTimeFromDate(message.createdAt)}
+                                      {timeHandler.getTimeFromDate(
+                                        message.createdAt
+                                      )}
                                     </p>
                                   )}
                                 </MessageChat>
@@ -1891,9 +1935,9 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                               className="message-status"
                               style={{ color: headerColor }}
                             >
-                              {sent === STATE.PENDING ? (
+                              {sent === appConstants.STATE.PENDING ? (
                                 <span>Đang gửi</span>
-                              ) : sent === STATE.RESOLVE ? (
+                              ) : sent === appConstants.STATE.RESOLVE ? (
                                 <span>
                                   <i className="fa-solid fa-check-double"></i>
                                   &nbsp; Đã nhận
@@ -1913,9 +1957,12 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
               <div className="sending">
                 <div className="message-status">
                   <span>
-                    {chat.type === CHAT_STATUS.PRIVATE_CHAT ? (
+                    {chat.type === appConstants.CHAT_STATUS.PRIVATE_CHAT ? (
                       <span className="message-status-user">
-                        {getFriend(user, chat.participants)?.userName}
+                        {
+                          userHandler.getFriend(user, chat.participants)
+                            ?.userName
+                        }
                       </span>
                     ) : (
                       <span className="message-status-user">
@@ -2040,7 +2087,9 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                       {!hasText ? (
                         <div
                           style={{ padding: '10px' }}
-                          onClick={() => sendMessage('👌', MESSAGES.TEXT)}
+                          onClick={() =>
+                            sendMessage('👌', appConstants.MESSAGES.TEXT)
+                          }
                         >
                           👌
                         </div>
@@ -2049,7 +2098,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                           onClick={() =>
                             sendMessage(
                               textAreaRef.current?.value,
-                              MESSAGES.TEXT
+                              appConstants.MESSAGES.TEXT
                             )
                           }
                         >
@@ -2088,7 +2137,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
               <div className="back-btn" onClick={handleClickMoreInfor}>
                 <i className="fa-solid fa-circle-chevron-left"></i>
               </div>
-              {chat?.type === CHAT_STATUS.PRIVATE_CHAT ? (
+              {chat?.type === appConstants.CHAT_STATUS.PRIVATE_CHAT ? (
                 <h3 className="title">Thông tin trò chuyện</h3>
               ) : (
                 <h3 className="title">Thông tin nhóm</h3>
@@ -2096,11 +2145,15 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
             </header>
             <div className="right-body">
               <div className="item-avatar">
-                {chat?.type === CHAT_STATUS.PRIVATE_CHAT ? (
+                {chat?.type === appConstants.CHAT_STATUS.PRIVATE_CHAT ? (
                   <AvatarUser
-                    image={getFriend(user, chat.participants)?.avatar}
+                    image={
+                      userHandler.getFriend(user, chat.participants)?.avatar
+                    }
                     size={50}
-                    name={getFriend(user, chat.participants)?.userName}
+                    name={
+                      userHandler.getFriend(user, chat.participants)?.userName
+                    }
                   />
                 ) : (
                   <div className="avatar-group">
@@ -2115,7 +2168,8 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                               image={item.avatar}
                               size={25}
                               name={
-                                getFriend(user, chat.participants)?.userName
+                                userHandler.getFriend(user, chat.participants)
+                                  ?.userName
                               }
                             />
                           </React.Fragment>
@@ -2124,9 +2178,11 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                     )}
                   </div>
                 )}
-                {chat?.type === CHAT_STATUS.PRIVATE_CHAT ? (
+                {chat?.type === appConstants.CHAT_STATUS.PRIVATE_CHAT ? (
                   <p className="name">
-                    <span>{getFriend(user, chat.participants)?.userName}</span>
+                    <span>
+                      {userHandler.getFriend(user, chat.participants)?.userName}
+                    </span>
                     <span
                       style={{
                         padding: '0 5px',
@@ -2181,7 +2237,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                     <p>Ghim hội thoại</p>
                   </button>
                 </div>
-                {chat.type === CHAT_STATUS.GROUP_CHAT && (
+                {chat.type === appConstants.CHAT_STATUS.GROUP_CHAT && (
                   <div className="button-wrapper">
                     <AddMemberModal chat={chat}>
                       <button className="button">
@@ -2196,7 +2252,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                     </AddMemberModal>
                   </div>
                 )}
-                {chat.type === CHAT_STATUS.GROUP_CHAT && (
+                {chat.type === appConstants.CHAT_STATUS.GROUP_CHAT && (
                   <div className="button-wrapper">
                     <LinkJoinGroupModal group={chat}>
                       <button className="button">
@@ -2208,7 +2264,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                     </LinkJoinGroupModal>
                   </div>
                 )}
-                {chat.type === CHAT_STATUS.PRIVATE_CHAT && (
+                {chat.type === appConstants.CHAT_STATUS.PRIVATE_CHAT && (
                   <div className="button-wrapper">
                     <button className="button">
                       <div className="button-icon">
@@ -2222,7 +2278,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
 
               <div className="hyphen"></div>
 
-              {chat.type === CHAT_STATUS.GROUP_CHAT && (
+              {chat.type === appConstants.CHAT_STATUS.GROUP_CHAT && (
                 <div className="right-members">
                   <MemberDrawer chat={chat}>
                     <p className="title">Thành viên</p>
@@ -2235,7 +2291,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                   </MemberDrawer>
                 </div>
               )}
-              {chat.type === CHAT_STATUS.PRIVATE_CHAT && (
+              {chat.type === appConstants.CHAT_STATUS.PRIVATE_CHAT && (
                 <div className="info-list">
                   <div className="common-group">
                     <img
@@ -2280,7 +2336,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                 </div>
               }
 
-              {chat.type === CHAT_STATUS.GROUP_CHAT &&
+              {chat.type === appConstants.CHAT_STATUS.GROUP_CHAT &&
                 chat.administrator === user.id && (
                   <>
                     <div className="grant-adminstrator">
@@ -2291,7 +2347,7 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                   </>
                 )}
 
-              {chat.type === CHAT_STATUS.GROUP_CHAT && (
+              {chat.type === appConstants.CHAT_STATUS.GROUP_CHAT && (
                 <div className="leave-group">
                   {chat?.administrator === user?.id ? (
                     <div className="group-important-delete">

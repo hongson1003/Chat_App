@@ -1,4 +1,6 @@
 import { axios, socket } from '@/configs';
+import { appActionKeys, userActionKeys, userActions } from '@/redux';
+import { chatHandler } from '@/utils';
 import { EditOutlined, InstagramOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Flex, Input, Modal, Radio } from 'antd';
 import dayjs from 'dayjs';
@@ -8,11 +10,6 @@ import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { editUser } from '../../redux/actions/app.action';
-import { accessChat } from '../../redux/actions/user.action';
-import { STATE } from '../../redux/types/app.type';
-import { MESSAGES } from '../../redux/types/user.type';
-import { sendNotifyToChatRealTime } from '../../utils/handleChat';
 import AvatarUser from '../user/avatar';
 import ChooseImageModal from './chooseImage.modal';
 import './inforUser.modal.scss';
@@ -40,7 +37,7 @@ const InforUserModal = ({
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState(null);
   const [image, setImage] = useState(null);
-  const [editing, setEditing] = useState(STATE.PENDING);
+  const [editing, setEditing] = useState(appActionKeys.STATE.PENDING);
   const dateFormat = 'YYYY/MM/DD';
   const [backgroundCoverPreview, setBackgroundCoverPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -146,7 +143,7 @@ const InforUserModal = ({
       if (res.errCode === 0) {
         toast.success('Cập nhật thông tin thành công');
         dispatch(
-          editUser({
+          userActions.editUser({
             ...user,
             userName: data?.userName,
           })
@@ -301,7 +298,7 @@ const InforUserModal = ({
         socket.then((socket) => {
           socket.emit('new-chat', res.data);
         });
-        dispatch(accessChat(res.data));
+        dispatch(userActionKeys.accessChat(res.data));
         handleCancel();
       }
     } catch (error) {
@@ -326,16 +323,16 @@ const InforUserModal = ({
           participants: [user?.id, friendData?.id],
         });
         if (accessRes.errCode === 0) {
-          await sendNotifyToChatRealTime(
+          await chatHandler.sendNotifyToChatRealTime(
             accessRes.data._id,
             'Hai bạn đã trở thành bạn bè, hãy nhắn tin cho nhau để hiểu rõ nhau hơn ╮ (. ❛ ᴗ ❛.) ╭',
-            MESSAGES.NEW_FRIEND
+            userActionKeys.MESSAGES.NEW_FRIEND
           );
           socket.then((socket) => {
             socket.emit('join-room', accessRes.data._id);
             socket.emit('new-chat', accessRes.data);
           });
-          dispatch(accessChat(accessRes.data));
+          dispatch(userActionKeys.accessChat(accessRes.data));
         }
         toast.success('Chấp nhận lời mời kết bạn thành công');
       } else {

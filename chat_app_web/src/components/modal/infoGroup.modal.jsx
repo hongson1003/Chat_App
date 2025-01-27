@@ -1,25 +1,18 @@
-import React, { useEffect, useRef } from 'react';
-import { Button, Flex, Modal } from 'antd';
-import { useState } from 'react';
-import './inforUser.modal.scss';
-import 'react-medium-image-zoom/dist/styles.css';
-import './infoGroup.modal.scss';
-import { useSelector, useDispatch } from 'react-redux';
-import AvatarUser from '../../components/user/avatar';
-import Zoom from 'react-medium-image-zoom';
-import { accessChat } from '../../redux/actions/user.action';
-import { InstagramOutlined } from '@ant-design/icons';
-import ChooseImageModal from './chooseImage.modal';
-import { editGroup } from '../../redux/actions/app.action';
-import { Input } from 'antd';
-import LeaveGroupModal from './leaveGroup.modal';
-import DisbandGroupModal from './disbandGroup.modal';
-import {
-  getDetailListMembers,
-  sendNotifyToChatRealTime,
-} from '../../utils/handleChat';
-import { MESSAGES } from '../../redux/types/user.type';
 import { axios } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions, userActions } from '@/redux';
+import { chatHandler } from '@/utils';
+import { InstagramOutlined } from '@ant-design/icons';
+import { Button, Input, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import 'react-medium-image-zoom/dist/styles.css';
+import { useDispatch, useSelector } from 'react-redux';
+import AvatarUser from '../../components/user/avatar';
+import ChooseImageModal from './chooseImage.modal';
+import DisbandGroupModal from './disbandGroup.modal';
+import './infoGroup.modal.scss';
+import './inforUser.modal.scss';
+import LeaveGroupModal from './leaveGroup.modal';
 
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;
 
@@ -65,10 +58,10 @@ const InforGroupModal = ({ children, selectChat }) => {
             body: file,
           }
         );
-        await sendNotifyToChatRealTime(
+        await chatHandler.sendNotifyToChatRealTime(
           chat?._id,
           `${user?.userName} đã thay đổi ảnh nhóm`,
-          MESSAGES.NOTIFY
+          appConstants.MESSAGES.NOTIFY
         );
         const { secure_url } = await response.json();
         setGroupPhoto(secure_url);
@@ -87,14 +80,14 @@ const InforGroupModal = ({ children, selectChat }) => {
         name,
       });
       if (chat?.groupPhoto !== groupPhoto && !file) {
-        sendNotifyToChatRealTime(
+        chatHandler.sendNotifyToChatRealTime(
           chat?._id,
           `${user?.userName} đã thay đổi ảnh nhóm`,
           MESSAGES.NOTIFY
         );
       }
       if (res.errCode === 0) {
-        dispatch(editGroup(res.data));
+        dispatch(appActions.editGroup(res.data));
         stateUser.fetchChats();
       }
       setIsLoading(false);
@@ -111,7 +104,7 @@ const InforGroupModal = ({ children, selectChat }) => {
   };
 
   const handleOnSend = () => {
-    dispatch(accessChat(selectChat || chat));
+    dispatch(userActions.accessChat(selectChat || chat));
     handleCancel();
   };
 
@@ -204,7 +197,10 @@ const InforGroupModal = ({ children, selectChat }) => {
           </div>
           <div className="members">
             <p className="title">
-              Thành viên {`(${getDetailListMembers(chat?.participants).total})`}
+              Thành viên{' '}
+              {`(${
+                chatHandler.getDetailListMembers(chat?.participants).total
+              })`}
             </p>
             <div className="members-items">
               {chat?.participants?.map((item, index) => {

@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
-import './newGroupChat.modal.scss';
-import { Radio, Drawer, Input, theme } from 'antd';
-import AvatarUser from '../user/avatar';
-import { getFriend, sendNotifyToChatRealTime } from '../../utils/handleChat';
-import { useSelector, useDispatch } from 'react-redux';
-import { getDetailListMembers } from '../../utils/handleChat';
-import ChooseImageModal from './chooseImage.modal';
-import { toast } from 'react-toastify';
-import { CHAT_STATUS, MESSAGES } from '../../redux/types/user.type';
-import { accessChat } from '../../redux/actions/user.action';
 import { axios, socket } from '@/configs';
+import { userActions } from '@/redux';
+import { chatHandler } from '@/utils';
+import { Button, Drawer, Input, Modal, Radio, theme } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import AvatarUser from '../user/avatar';
+import ChooseImageModal from './chooseImage.modal';
+import './newGroupChat.modal.scss';
 
 const cloudName = import.meta.env.VITE_APP_CLOUNDINARY_CLOUD_NAME;
 
@@ -105,14 +102,14 @@ const NewGroupChatModal = ({ children }) => {
       setIsLoading(false);
       if (resCreateGroupRes.errCode === 0) {
         // gởi notify cho các thành viên
-        await sendNotifyToChatRealTime(
+        await chatHandler.sendNotifyToChatRealTime(
           resCreateGroupRes.data._id,
           `${user.userName} đã tạo nhóm chat ${name} ️🎉`,
           MESSAGES.NOTIFY
         );
         socket.then((socket) => {
           socket.emit('join-room', resCreateGroupRes.data._id);
-          dispatch(accessChat(resCreateGroupRes.data));
+          dispatch(userActions.accessChat(resCreateGroupRes.data));
           setIsModalOpen(false);
           socket.emit('new-chat', resCreateGroupRes.data);
         });
@@ -308,8 +305,8 @@ const NewGroupChatModal = ({ children }) => {
                 title={
                   <div className="main-title">
                     <span className="dachon">
-                      Đã chọn: {getDetailListMembers(list).count}/
-                      {getDetailListMembers(list).total}
+                      Đã chọn: {chatHandler.getDetailListMembers(list).count}/
+                      {chatHandler.getDetailListMembers(list).total}
                     </span>
                     <p className="delele-all" onClick={handleRemoveAll}>
                       Xóa tất cả

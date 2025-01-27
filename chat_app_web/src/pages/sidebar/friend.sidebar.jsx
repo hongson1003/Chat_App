@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { TeamOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useDispatch } from 'react-redux';
-import { changeKeySubMenu } from '../../redux/actions/app.action';
+import { appActions } from '@/redux';
 
 export const FRIEND_ITEM_MENU = {
   LIST_FRIENDS: 'LIST_FRIENDS',
@@ -45,14 +45,14 @@ const FriendSideBar = () => {
 
   const onClick = (e) => {
     setCurrent(e.key);
-    dispatch(changeKeySubMenu(e.key));
+    dispatch(appActions.changeKeySubMenu(e.key));
   };
 
   useEffect(() => {
     if (windowSize[0] < 768) {
       setCurrent('');
     } else {
-      dispatch(changeKeySubMenu(FRIEND_ITEM_MENU.LIST_FRIENDS));
+      dispatch(appActions.changeKeySubMenu(FRIEND_ITEM_MENU.LIST_FRIENDS));
       setCurrent(FRIEND_ITEM_MENU.LIST_FRIENDS);
     }
   }, [windowSize[0]]);

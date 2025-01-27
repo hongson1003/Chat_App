@@ -1,10 +1,10 @@
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions } from '@/redux';
 import { Button, Checkbox, Input, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editGroup } from '../../redux/actions/app.action';
-import { MESSAGES } from '../../redux/types/user.type';
-import { getFriend, sendNotifyToChatRealTime } from '../../utils/handleChat';
+import { chatHandler, userHandler } from '@/utils';
 import AvatarUser from '../user/avatar';
 import './addMember.modal.scss';
 const CheckboxGroup = Checkbox.Group;
@@ -34,13 +34,13 @@ const AddMemberModal = ({ children, chat }) => {
       const contentMessage = checkedList
         .map((item) => JSON.parse(item).userName)
         .join(', ');
-      await sendNotifyToChatRealTime(
+      await chatHandler.sendNotifyToChatRealTime(
         chat._id,
         `${user?.userName} đã thêm ${contentMessage} vào nhóm.`,
-        MESSAGES.NOTIFY
+        appConstants.MESSAGES.NOTIFY
       );
       if (res.errCode === 0) {
-        dispatch(editGroup(res.data));
+        dispatch(appActions.editGroup(res.data));
         socket.then((socket) => {
           socket.emit('add-member', res.data);
           stateUser.fetchChats();
@@ -64,7 +64,9 @@ const AddMemberModal = ({ children, chat }) => {
         const data = res.data;
         const friends = [];
         data.forEach((item) => {
-          friends.push(getFriend(user, [item.sender, item.receiver]));
+          friends.push(
+            userHandler.getFriend(user, [item.sender, item.receiver])
+          );
         });
         setPlainOptions(friends);
       }

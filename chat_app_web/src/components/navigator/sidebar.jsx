@@ -1,35 +1,23 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Menu, Button } from 'antd';
-import AvatarUser from '../user/avatar';
-import { ITEMS, KEYITEMS } from '../../utils/keyMenuItem';
 import {
+  AntCloudOutlined,
   CheckSquareOutlined,
   MessageOutlined,
-  AntCloudOutlined,
 } from '@ant-design/icons';
-import './sidebar.scss';
-import { Popover } from 'antd';
+import { Button, Menu, Popover } from 'antd';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  changeKeyMenu,
-  changeKeySubMenu,
-  logoutSuccess,
-} from '../../redux/actions/app.action';
 import { useNavigate } from 'react-router-dom';
+import AvatarUser from '../user/avatar';
+import './sidebar.scss';
 
-import { toast } from 'react-toastify';
-import InforUserModal from '../modal/inforUser.modal';
-import WrapperItemSidebar from './wrapperItem.sidebar';
-import {
-  notificationsFriends,
-  fetchNotificationsFriendFunc,
-  fetchNotificationChatFunc,
-  notificationsChats,
-} from '../../redux/actions/user.action';
-import SettingModal from '../modal/setting.modal';
-import { FRIEND_ITEM_MENU } from '../../pages/sidebar/friend.sidebar';
-import { STATE } from '../../redux/types/app.type';
 import { axios, socket } from '@/configs';
+import { appConstants } from '@/constants';
+import { appActions, userActions } from '@/redux';
+import { toast } from 'react-toastify';
+import { FRIEND_ITEM_MENU } from '../../pages/sidebar/friend.sidebar';
+import InforUserModal from '../modal/inforUser.modal';
+import SettingModal from '../modal/setting.modal';
+import WrapperItemSidebar from './wrapperItem.sidebar';
 
 const Friends = () => {
   const user = useSelector((state) => state.appReducer?.userInfo?.user);
@@ -56,7 +44,7 @@ const Friends = () => {
       );
       if (res.errCode === 0) {
         setCount(res.data.length);
-        dispatch(notificationsFriends(res.data));
+        dispatch(userActions.notificationsFriends(res.data));
       } else {
       }
     } catch (error) {
@@ -73,7 +61,7 @@ const Friends = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchNotificationsFriendFunc(fetchNotifications));
+    dispatch(userActions.fetchNotificationsFriendFunc(fetchNotifications));
     if (user) {
       socket.then((socket) => {
         socket.on('need-accept-addFriend', handleNeedAcceptAddFriend);
@@ -112,7 +100,7 @@ const Messages = () => {
       const res = await axios.get('/chat/not-read');
       if (res.errCode === 0) {
         setCount(res.data.length);
-        dispatch(notificationsChats(res.data));
+        dispatch(userActions.notificationsChats(res.data));
       }
     } catch (error) {
       console.log(error);
@@ -120,9 +108,12 @@ const Messages = () => {
   };
 
   useEffect(() => {
-    if (onlyRef.current === false && appState.isLogin === STATE.RESOLVE) {
+    if (
+      onlyRef.current === false &&
+      appState.isLogin === appTypes.STATE.RESOLVE
+    ) {
       fetchChatNotRead();
-      dispatch(fetchNotificationChatFunc(fetchChatNotRead));
+      dispatch(userActions.fetchNotificationChatFunc(fetchChatNotRead));
       onlyRef.current = true;
     }
     return () => {
@@ -160,7 +151,7 @@ const Messages = () => {
 const items = [Messages, Friends, CheckSquareOutlined, AntCloudOutlined].map(
   (icon, index) => {
     return {
-      key: KEYITEMS[ITEMS[index]],
+      key: appConstants.NAV_ITEMS_KEY[appConstants.NAV_ITEMS[index]],
       icon: React.createElement(icon),
     };
   }
@@ -187,7 +178,7 @@ const Sidebar = () => {
       });
       let rs = await axios.post('/auth/logout');
       if (rs.errCode === 0) {
-        dispatch(logoutSuccess());
+        dispatch(appActions.logoutSuccess());
         navigator('/login');
       } else {
         updateOnline(null);
@@ -240,8 +231,8 @@ const Sidebar = () => {
   );
 
   const handleOnSelectItem = (e) => {
-    dispatch(changeKeyMenu(e.key));
-    dispatch(changeKeySubMenu(''));
+    dispatch(appActions.changeKeyMenu(e.key));
+    dispatch(appActions.changeKeySubMenu(''));
   };
 
   return (
