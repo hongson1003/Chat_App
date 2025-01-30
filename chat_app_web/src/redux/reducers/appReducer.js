@@ -2,7 +2,8 @@ import { appConstants } from '@/constants';
 import { appActionKeys } from '../keys';
 
 const initialState = {
-  isLogin: appConstants.STATE.PENDING,
+  state: appConstants.STATE.PENDING,
+  isLogin: false,
   userInfo: null,
   nav: appConstants.NAV_ITEMS.MESSAGE,
   subNav: null,
@@ -13,63 +14,129 @@ const initialState = {
 export default function appReducer(state = initialState, action) {
   switch (action.type) {
     case appActionKeys.LOGIN_STATUS.LOGIN_START: {
-      let stateLoginSuccess = { ...state };
-      stateLoginSuccess.userInfo = action.payload;
-      return stateLoginSuccess;
+      let stateLoginStart = { ...state };
+      stateLoginStart.userInfo = action.payload;
+      stateLoginStart.state = appActionKeys.STATE.PENDING;
+      stateLoginStart.isLogin = false;
+      return stateLoginStart;
     }
 
     case appActionKeys.LOGIN_STATUS.LOGIN_SUCCESS: {
       let stateLoginSuccess = { ...state };
-      stateLoginSuccess.isLogin = appActionKeys.STATE.RESOLVE;
+      stateLoginSuccess.isLogin = true;
       stateLoginSuccess.userInfo = action.payload;
+      stateLoginSuccess.state = appActionKeys.STATE.RESOLVE;
       return stateLoginSuccess;
     }
 
     case appActionKeys.LOGIN_STATUS.LOGIN_FAIL: {
       let stateLoginFail = { ...state };
-      stateLoginFail.isLogin = appActionKeys.STATE.REJECT;
+      stateLoginFail.isLogin = false;
+      stateLoginFail.userInfo = null;
+      stateLoginFail.state = appActionKeys.STATE.REJECT;
       return stateLoginFail;
     }
 
+    case appActionKeys.LOGOUT_STATUS.LOGOUT_START: {
+      let stateLogoutStart = { ...state };
+      stateLogoutStart.state = appActionKeys.STATE.PENDING;
+      return stateLogoutStart;
+    }
+
     case appActionKeys.LOGOUT_STATUS.LOGOUT_SUCCESS: {
-      const resetState = {
-        isLogin: appActionKeys.STATE.PENDING,
-        userInfo: null,
-        nav: KEYITEMS.MESSAGE,
-        subNav: null,
-        error: false,
-      };
+      let resetState = { ...initialState };
+      resetState.state = appActionKeys.STATE.RESOLVE;
       return resetState;
     }
+
     case appActionKeys.LOGOUT_STATUS.LOGOUT_FAIL: {
       let stateLogoutSuccess = { ...state };
+      stateLogoutSuccess.state = appActionKeys.STATE.REJECT;
       return stateLogoutSuccess;
     }
-    case appConstants.STATE.CHANGE_KEY_MENU: {
+
+    case appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_START: {
+      let stateChangeKeyMenuStart = { ...state };
+      stateChangeKeyMenuStart.state = appActionKeys.STATE.PENDING;
+      return stateChangeKeyMenuStart;
+    }
+
+    case appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_SUCCESS: {
       let stateChangeKeyMenu = { ...state };
       stateChangeKeyMenu.nav = action.payload;
+      stateChangeKeyMenu.state = appActionKeys.STATE.RESOLVE;
       return stateChangeKeyMenu;
     }
-    case appConstants.STATE.CHANGE_SUB_KEY_MENU: {
+
+    case appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_FAIL: {
+      let stateChangeKeyMenuFail = { ...state };
+      stateChangeKeyMenuFail.state = appActionKeys.STATE.REJECT;
+      return stateChangeKeyMenuFail;
+    }
+
+    case appActionKeys.CHANGE_SUB_KEY_MENU.CHANGE_SUB_KEY_MENU_START: {
       let stateChangeSubKeyMenu = { ...state };
-      stateChangeSubKeyMenu.subNav = action.payload;
+      stateChangeSubKeyMenu.state = appConstants.STATE.PENDING;
       return stateChangeSubKeyMenu;
     }
-    case appConstants.SOCKET.CONNECTED_SUCCESS: {
+
+    case appActionKeys.CHANGE_SUB_KEY_MENU.CHANGE_SUB_KEY_MENU_SUCCESS: {
+      let stateChangeSubKeyMenu = { ...state };
+      stateChangeSubKeyMenu.subNav = action.payload;
+      stateChangeSubKeyMenu.state = appConstants.STATE.RESOLVE;
+      return stateChangeSubKeyMenu;
+    }
+
+    case appActionKeys.SOCKET.SOCKET_CONNECT_START: {
+      let stateConnected = { ...state };
+      stateConnected.state = appConstants.STATE.PENDING;
+      return stateConnected;
+    }
+
+    case appActionKeys.SOCKET.CONNECTED_SUCCESS: {
       let stateConnected = { ...state };
       stateConnected.isConnectedSocket = true;
       return stateConnected;
     }
-    case appConstants.SOCKET.DISCONNECTED_SUCCESS: {
+
+    case appActionKeys.SOCKET.CONNECTED_FAIL: {
+      let stateConnected = { ...state };
+      stateConnected.state = appConstants.STATE.REJECT;
+      return stateConnected;
+    }
+
+    case appActionKeys.SOCKET.SOCKET_DISCONNECT_START: {
       let stateDisconnected = { ...state };
-      stateDisconnected.isConnectedSocket = false;
+      stateDisconnected.state = appConstants.STATE.PENDING;
       return stateDisconnected;
     }
-    case appConstants.STATE.ERROR: {
+
+    case appActionKeys.SOCKET.SOCKET_DISCONNECT_SUCCESS: {
+      let stateDisconnected = { ...state };
+      stateDisconnected.isConnectedSocket = false;
+      stateDisconnected.state = appConstants.STATE.RESOLVE;
+      return stateDisconnected;
+    }
+
+    case appActionKeys.ERROR.ERROR_START: {
       let stateError = { ...state };
-      stateError.error = true;
+      stateError.state = appConstants.STATE.PENDING;
       return stateError;
     }
+
+    case appActionKeys.ERROR.ERROR_SUCCESS: {
+      let stateError = { ...state };
+      stateError.error = true;
+      stateError.state = appConstants.STATE.RESOLVE;
+      return stateError;
+    }
+
+    case appActionKeys.ERROR.ERROR_FAIL: {
+      let stateError = { ...state };
+      stateError.state = appConstants.STATE.RESOLVE;
+      return stateError;
+    }
+
     case appConstants.STATE.ACCESS_CHAT: {
       let stateAccessChat = { ...state };
       stateAccessChat.subNav = {
@@ -78,6 +145,7 @@ export default function appReducer(state = initialState, action) {
       };
       return stateAccessChat;
     }
+
     case appConstants.STATE.EDIT_USER: {
       let stateEditUser = { ...state };
       stateEditUser.userInfo = {
