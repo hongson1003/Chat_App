@@ -6,9 +6,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import ForgotPasswordModal from '../../../modal/forgotPassword.modal';
-import NewAccountModal from '../../../modal/newAccount.modal';
-import './phone-tab.scss';
+import { PhoneTabFooter } from '../PhoneTabFooter';
 
 const PhoneTab = () => {
   const dispatch = useDispatch();
@@ -36,57 +34,51 @@ const PhoneTab = () => {
   };
 
   return (
-    <Form
-      name="normal_login"
-      className="login-form"
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      size="large"
-    >
-      <Form.Item
-        name="phoneNumber"
-        rules={[{ required: true, message: 'Please input your phone!' }]}
+    <div className="phone-tab">
+      <Form
+        name="normal_login"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        size="large"
       >
-        <Input
-          style={{ gap: '5px' }}
-          prefix={<PhoneOutlined className="site-form-item-icon" />}
-          placeholder="Số điện thoại"
-        />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[{ required: true, message: 'Please input your Password!' }]}
-      >
-        <Input.Password
-          prefix={<LockOutlined className="site-form-item-icon" />}
-          type="password"
-          placeholder="Password"
-          style={{ gap: '5px' }}
-          security="false"
-        />
-      </Form.Item>
-
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="login-form-button"
-          block
-          loading={isLoading}
+        <Form.Item
+          name="phoneNumber"
+          rules={[{ required: true, message: 'Please input your phone!' }]}
         >
-          <span>Đăng nhập</span>
-        </Button>
-      </Form.Item>
-      <div className="d-flex-center">
-        <ForgotPasswordModal phoneNumberProp={phoneNumber}>
-          <span className="forgot-pw">Quên mật khẩu</span>
-        </ForgotPasswordModal>
-        &nbsp;/&nbsp;
-        <NewAccountModal>
-          <span className="span-new-account">Tạo tài khoản</span>
-        </NewAccountModal>
-      </div>
-    </Form>
+          <Input
+            style={{ gap: '5px' }}
+            prefix={<PhoneOutlined className="site-form-item-icon" />}
+            placeholder="Số điện thoại"
+          />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: 'Please input your Password!' }]}
+        >
+          <Input.Password
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="password"
+            placeholder="Password"
+            style={{ gap: '5px' }}
+            security="false"
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+            block
+            loading={isLoading}
+          >
+            <span>Đăng nhập</span>
+          </Button>
+        </Form.Item>
+      </Form>
+
+      <PhoneTabFooter />
+    </div>
   );
 };
 

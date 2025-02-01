@@ -1,0 +1,17 @@
+.phone-tab-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  span {
+    text-align: center;
+    font-style: italic;
+    color: rgb(126, 126, 219);
+    &:hover {
+      color: #333;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
