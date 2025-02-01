@@ -1,12 +1,12 @@
 import { axios, socket } from '@/configs';
 import { appConstants } from '@/constants';
+import Tym from '@/modules/customize/tym';
+import ForwardModal from '@/modules/modal/forward.modal';
 import { chatHandler } from '@/utils';
 import { Popover } from 'antd';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Tym from '../../../components/customize/tym';
-import ForwardModal from '../../../components/modal/forward.modal';
 import EmoijPopup from './emoijPopup.chat';
 import './message.chat.scss';
 

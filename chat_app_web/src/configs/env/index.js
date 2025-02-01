@@ -1,1 +1,0 @@
-export { configEnvs } from './env';

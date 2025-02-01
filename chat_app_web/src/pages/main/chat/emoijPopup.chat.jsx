@@ -1,8 +1,8 @@
 import { axios } from '@/configs';
+import Tym from '@/modules/customize/tym';
 import { Popover } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import Tym from '../../../components/customize/tym';
 import './emoijPopup.chat.scss';
 
 const Content = ({

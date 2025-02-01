@@ -1,11 +1,11 @@
+import { AvatarUser } from '@/modules/user/components';
 import { Drawer } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import SplitPane, { Pane } from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
-import AvatarUser from '../../components/user/avatar';
-import ContentMain from '../../pages/main/content.main';
-import SidebarHome from '../../pages/sidebar/home.sidebar';
+import ContentMain from '../../components/layout/home/Main/HomeMain';
+import SidebarHome from '../../components/layout/home/Sidebar/HomeSidebar';
 import './homeSubLayout.scss';
 
 const homeSubLayout = () => {

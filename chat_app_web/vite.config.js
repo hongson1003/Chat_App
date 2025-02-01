@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'path';
 
 export default {
   esbuild: {
@@ -9,4 +9,8 @@ export default {
       '@': path.resolve(__dirname, './src'),
     },
   },
-}
+  server: {
+    host: '0.0.0.0',
+    port: 8096,
+  },
+};

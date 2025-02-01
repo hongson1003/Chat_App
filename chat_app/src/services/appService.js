@@ -1,6 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-import { db } from '@configs/sql/models';
+import db from '@/configs/sql/models';
 import { jwtHandler, userHandler } from '@utils';
+import createHttpError from 'http-errors';
+import { v4 as uuidv4 } from 'uuid';
 
 const secret = process.env.SECRET;
 const expiresIn = process.env.EXPIRES_IN;
@@ -102,23 +103,9 @@ const login = async (phoneNumber, password) => {
       const user = userHandler.standardUser(userDB);
       // validate user;
       let checkPassword = userHandler.checkPassword(password, userDB.password);
-      if (checkPassword) {
-        return {
-          errCode: 0,
-          message: 'Need verify user !',
-          data: user,
-        };
-      }
-      return {
-        errCode: 3,
-        message: 'Not equal password for user. Please check !',
-      };
-    } else {
-      return {
-        errCode: 2,
-        message: 'Hãy đăng ký tài khoản trước !',
-      };
-    }
+      if (checkPassword) return user;
+      throw createHttpError(400, 'Password not correct');
+    } else throw createHttpError(400, 'User not found');
   } catch (error) {
     throw error;
   }

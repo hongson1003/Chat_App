@@ -22,6 +22,7 @@
     "express-session": "1.15.1",
     "express-validator": "3.1.2",
     "helmet": "^3.11.0",
+    "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "module-alias": "^2.2.3",
@@ -38,15 +39,16 @@
     "validator": "7.0.0"
   },
   "_moduleAliases": {
-    "@configs": "src/configs",
-    "@utils": "src/utils",
-    "@models": "src/models",
-    "@middlewares": "src/middlewares",
-    "@services": "src/services",
-    "@routes": "src/routes",
-    "@controllers": "src/controllers",
+    "@": "./src",
+    "@configs": "./src/configs",
+    "@utils": "./src/utils",
+    "@models": "./src/models",
+    "@middlewares": "./src/middlewares",
+    "@services": "./src/services",
+    "@routes": "./src/routes",
+    "@controllers": "./src/controllers",
     "@config": "./config",
-    "@constants": "src/constants"
+    "@constants": "./src/constants"
   },
   "author": "HongSon",
   "license": "ISC",

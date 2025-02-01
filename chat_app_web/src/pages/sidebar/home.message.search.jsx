@@ -3,9 +3,9 @@ import { UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Button, Input, Menu } from 'antd';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import AddFriendModal from '../../components/modal/addFriend.modal';
-import NewGroupChatModal from '../../components/modal/newGroupChat.modal';
 import './home.message.search.scss';
+import AddFriendModal from '@/modules/modal/addFriend.modal';
+import NewGroupChatModal from '@/modules/modal/newGroupChat.modal';
 
 const items1 = [
   {

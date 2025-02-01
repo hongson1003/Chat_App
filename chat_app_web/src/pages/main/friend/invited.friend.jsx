@@ -1,8 +1,8 @@
 import { axios, socket } from '@/configs';
+import { InvitedUser } from '@/modules/user';
 import { Select } from 'antd';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import InvitedUser from '../../../components/user/invited.user';
 import { items } from '../../sidebar/friend.sidebar';
 import './invited.friend.scss';
 

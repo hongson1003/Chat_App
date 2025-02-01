@@ -1,7 +1,8 @@
-import { jwtHandler } from '@utils';
-import { TokenExpiredError } from 'jsonwebtoken';
-import { userService, appService } from '@services';
 import config from '@config';
+import { appService, userService } from '@services';
+import { jwtHandler } from '@utils';
+import createError from 'http-errors';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 const { secretKey, expiresIn } = config;
 
@@ -46,10 +47,7 @@ const login = async (req, res, next) => {
   let { phoneNumber, password } = req.body;
   try {
     if (!password || !phoneNumber)
-      return res.status(200).json({
-        errCode: 1,
-        message: 'Missing parameter',
-      });
+      throw createError(400, 'Missing parameter: password or phoneNumber');
     let rs = await appService.login(phoneNumber, password);
     return res.status(200).json(rs);
   } catch (error) {

@@ -1,25 +1,30 @@
-import { axios, socket } from '@/configs';
-import { appConstants } from '@/constants';
-import { appActions } from '@/redux';
+import { HomeSidebar } from '@/components/layout/home';
+import { axios } from '@/configs';
+import { appConstants, appRoutes } from '@/constants';
 import { Layout } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Sidebar from '../../components/navigator/sidebar';
 import './homeLayout.scss';
 const { Content, Sider } = Layout;
 
 const HomeLayout = () => {
   const navigate = useNavigate();
-  const state = useSelector((state) => {
-    return state.app;
-  });
-  console.log('🚀 ~ HomeLayout ~ state:', state);
+  const appState = useSelector((state) => state.app);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
   const pathName = window.location.pathname;
+
+  useEffect(() => {
+    if (appState.state !== appConstants.STATE.PENDING) {
+      setLoading(false);
+    }
+  }, [appState.state]);
+
+  console.log('loading', loading);
 
   const updateOnline = async (time) => {
     try {
@@ -32,17 +37,8 @@ const HomeLayout = () => {
 
   // check authentication
   useEffect(() => {
-    // if (state.error) {
-    //   navigate('/outside/error')
-    // }
-    // if (state.isLogin === STATE.REJECT) {
-    //   navigate('/login')
-    // } else if (state.isLogin === STATE.RESOLVE) {
-    //   const path = window.location.pathname
-    //   if (path === '/') navigate('/home')
-    // }
-    navigate('/home');
-  }, [state]);
+    navigate(appRoutes.LOGIN);
+  }, []);
 
   // useEffect(() => {
   //   if (state?.userInfo) {
@@ -106,13 +102,15 @@ const HomeLayout = () => {
   //   }
   // }, [state?.isConnectedSocket]);
 
+  if (loading) return <div>Loading...</div>;
+
   return (
     state.isLogin === appConstants.STATE.RESOLVE && (
       <>
         <Layout className="home-layout-container">
           {!pathName.includes('/chat') && (
             <Sider width={'calc(30px+2vw)'}>
-              <Sidebar />
+              <HomeSidebar />
             </Sider>
           )}
           <Layout>

@@ -2,15 +2,28 @@ import { MergeCellsOutlined } from '@ant-design/icons';
 import data from '@emoji-mart/data/sets/14/facebook.json';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import StatusUser from '../../../components/user/status.user';
 import './chat.main.scss';
 // import data from '../../../mocks/facebook.json';
 import { axios } from '@/configs';
+import ChatTogetherDrawer from '@/modules/drawer/chatTogether.drawer';
+import MemberDrawer from '@/modules/drawer/members.drawer';
+import AddMemberModal from '@/modules/modal/addMember.modal';
+import ChangeBackgroundModal from '@/modules/modal/changeBackground.modal';
+import DisbandGroupModal from '@/modules/modal/disbandGroup.modal';
+import GrantModal from '@/modules/modal/grant.modal';
+import InforGroupModal from '@/modules/modal/infoGroup.modal';
+import LeaveGroupModal from '@/modules/modal/leaveGroup.modal';
+import LinkJoinGroupModal from '@/modules/modal/linkJoinGroup.modal';
+import PinsModal from '@/modules/modal/pins.modal';
+import ViewSettingModal from '@/modules/modal/securitySetting.modal';
+import ViewAllFilesModal from '@/modules/modal/viewAllFile.modal';
+import ViewAllPicturesModal from '@/modules/modal/viewAllPictures.modal';
+import File from '@/modules/upload/file.upload';
+import { AvatarUser } from '@/modules/user';
 import { appActions, userActions } from '@/redux';
 import { stringHandler, timeHandler, userHandler } from '@/utils';
-import { CloseOutlined } from '@ant-design/icons';
 import Picker from '@emoji-mart/react';
-import { Button, Input, Menu, Popconfirm, Popover } from 'antd';
+import { Button, Input, Menu, Popconfirm } from 'antd';
 import _ from 'lodash';
 import ReactLoading from 'react-loading';
 import Zoom from 'react-medium-image-zoom';
@@ -18,26 +31,7 @@ import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { useNavigate } from 'react-router-dom';
-import TextareaAutosize from 'react-textarea-autosize';
 import { toast } from 'react-toastify';
-import InputSearchSticky from '../../../components/customize/inputSearchSticky';
-import ChatTogetherDrawer from '../../../components/drawer/chatTogether.drawer';
-import MemberDrawer from '../../../components/drawer/members.drawer';
-import AddMemberModal from '../../../components/modal/addMember.modal';
-import ChangeBackgroundModal from '../../../components/modal/changeBackground.modal';
-import DisbandGroupModal from '../../../components/modal/disbandGroup.modal';
-import GrantModal from '../../../components/modal/grant.modal';
-import InforGroupModal from '../../../components/modal/infoGroup.modal';
-import LeaveGroupModal from '../../../components/modal/leaveGroup.modal';
-import LinkJoinGroupModal from '../../../components/modal/linkJoinGroup.modal';
-import MicModal from '../../../components/modal/mic.modal';
-import PinsModal from '../../../components/modal/pins.modal';
-import ViewSettingModal from '../../../components/modal/securitySetting.modal';
-import ViewAllFilesModal from '../../../components/modal/viewAllFile.modal';
-import ViewAllPicturesModal from '../../../components/modal/viewAllPictures.modal';
-import ChooseFileUploadPopover from '../../../components/popover/chooseFileUpload.popover';
-import File from '../../../components/upload/file.upload';
-import AvatarUser from '../../../components/user/avatar';
 import { appConstants } from '../../../constants';
 import MessageChat from './message.chat';
 const uploadPreset = import.meta.env.VITE_APP_CLOUNDINARY_UPLOAD_PRESET;
@@ -1993,141 +1987,6 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
                 />
               )}
             </div>
-
-            <InputSearchSticky
-              content={text}
-              sendMessage={sendMessage}
-              style={listImage?.length > 0 ? { height: '170px' } : {}}
-            >
-              <div
-                style={listImage?.length > 0 ? { height: '170px' } : {}}
-                className="footer"
-                ref={footer}
-              >
-                <div className="footer-top footer-item">
-                  {/* <StickyPopover >
-                                        <div
-                                            className="item-icon"
-                                            onClick={() => handleDispatchSendMessageFunc()}
-                                        >
-                                            <img src="/images/sticker.png" />
-                                        </div>
-                                    </StickyPopover> */}
-                  <label htmlFor="message-inpt-image">
-                    <div className="item-icon">
-                      <i className="fa-regular fa-image"></i>
-                    </div>
-                  </label>
-                  <input
-                    type="file"
-                    id="message-inpt-image"
-                    hidden
-                    accept="image/png, image/gif, image/jpeg"
-                    onChange={(e) => handleOnChangeMessageImage(e)}
-                    multiple
-                  />
-
-                  <ChooseFileUploadPopover
-                    sendFileOrFolder={sendFileOrFolder}
-                    sendVideo={sendVideo}
-                    sendAudio={sendAudio}
-                  >
-                    <div className="item-icon">
-                      <i className="fa-solid fa-paperclip"></i>
-                    </div>
-                  </ChooseFileUploadPopover>
-
-                  <MicModal sendAudio={sendAudio}>
-                    <div className="item-icon">
-                      <i className="fa-solid fa-microphone"></i>
-                    </div>
-                  </MicModal>
-                </div>
-                <div
-                  className="footer-bottom footer-item"
-                  onClick={handleOnClickFooter}
-                >
-                  <Popover
-                    content={<Content />}
-                    title={
-                      <div className="title-reply">
-                        <i className="fa-solid fa-reply"></i>
-                        <p>Trả lời: {messageReply?.sender?.userName}</p>
-                        <Button onClick={handleRemoveReply}>
-                          <CloseOutlined />
-                        </Button>
-                      </div>
-                    }
-                    placement="topLeft"
-                    open={openReply}
-                  >
-                    <TextareaAutosize
-                      className="input-text"
-                      onChange={(e) => handleOnChange(e)}
-                      placeholder="Nhập tin nhắn..."
-                      onKeyDown={(e) => handleOnKeyDown(e)}
-                      autoFocus
-                      spellCheck={false}
-                      onHeightChange={(height, meta) =>
-                        handleResize(height, meta)
-                      }
-                      ref={textAreaRef}
-                      type="text"
-                    />
-                  </Popover>
-
-                  <div className="text-quick-group">
-                    <div
-                      className="item-icon emoijj"
-                      onClick={handleShowHideEmoij}
-                    >
-                      <i className="fa-regular fa-face-smile emoijj"></i>
-                    </div>
-                    <div className="item-icon emoij-like">
-                      {!hasText ? (
-                        <div
-                          style={{ padding: '10px' }}
-                          onClick={() =>
-                            sendMessage('👌', appConstants.MESSAGES.TEXT)
-                          }
-                        >
-                          👌
-                        </div>
-                      ) : (
-                        <div
-                          onClick={() =>
-                            sendMessage(
-                              textAreaRef.current?.value,
-                              appConstants.MESSAGES.TEXT
-                            )
-                          }
-                        >
-                          <i className="fa-regular fa-paper-plane"></i>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                {listImage && listImage.length > 0 && (
-                  <div className="list-images">
-                    {listImage.map((image, index) => {
-                      return (
-                        <div key={index} className="image-item">
-                          <Zoom>
-                            <img src={image} alt="image" />
-                          </Zoom>
-                          <div className="image-item-remove">
-                            <button onClick={() => handleRemoveImage(index)}>
-                              X
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </InputSearchSticky>
           </div>
         </div>
 

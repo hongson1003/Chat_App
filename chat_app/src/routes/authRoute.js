@@ -1,4 +1,4 @@
-import { appRoutes } from '@constants';
+import { appRoutes } from '@/constants';
 import { appController } from '@controllers';
 import { userGuardHandler } from '@middlewares';
 

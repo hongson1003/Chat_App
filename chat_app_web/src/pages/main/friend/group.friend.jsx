@@ -5,9 +5,9 @@ import { chatHandler } from '@/utils';
 import { Input, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AvatarUser from '../../../components/user/avatar';
 import { items } from '../../sidebar/friend.sidebar';
 import './group.friend.scss';
+import { AvatarUser } from '@/modules/user';
 
 const headerData = items[1];
 

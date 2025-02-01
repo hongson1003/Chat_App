@@ -3,9 +3,9 @@ import { appConstants } from '@/constants';
 import { appActions, userActions } from '@/redux';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import FriendPopover from '../../../components/popover/friend.popover';
-import AvatarUser from '../../../components/user/avatar';
 import './listFriends.friends.scss';
+import FriendPopover from '@/modules/popover/friend.popover';
+import { AvatarUser } from '@/modules/user';
 
 const ListFriends = ({ data, fetchFriends }) => {
   const [friends, setFriends] = React.useState([]);
