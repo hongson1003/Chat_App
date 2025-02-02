@@ -1,13 +1,14 @@
 import { HomeSidebar } from '@/components/layout/home';
 import { axios } from '@/configs';
 import { appConstants, appRoutes } from '@/constants';
-import { Layout } from 'antd';
+import { Layout, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './homeLayout.scss';
+import { SpinnerLoading } from '@/components/common';
 const { Content, Sider } = Layout;
 
 const HomeLayout = () => {
@@ -18,13 +19,11 @@ const HomeLayout = () => {
   const dispatch = useDispatch();
   const pathName = window.location.pathname;
 
-  useEffect(() => {
-    if (appState.state !== appConstants.STATE.PENDING) {
-      setLoading(false);
-    }
-  }, [appState.state]);
-
-  console.log('loading', loading);
+  // useEffect(() => {
+  //   if (appState.state !== appConstants.STATE.PENDING) {
+  //     setLoading(false);
+  //   }
+  // }, [appState.state]);
 
   const updateOnline = async (time) => {
     try {
@@ -36,9 +35,9 @@ const HomeLayout = () => {
   };
 
   // check authentication
-  useEffect(() => {
-    navigate(appRoutes.LOGIN);
-  }, []);
+  // useEffect(() => {
+  //   navigate(appRoutes.LOGIN);
+  // }, []);
 
   // useEffect(() => {
   //   if (state?.userInfo) {
@@ -102,7 +101,13 @@ const HomeLayout = () => {
   //   }
   // }, [state?.isConnectedSocket]);
 
-  if (loading) return <div>Loading...</div>;
+  if (true || loading)
+    return (
+      <div className="spinner-loading-container">
+        <SpinnerLoading />
+        <Typography.Text>Loading...</Typography.Text>
+      </div>
+    );
 
   return (
     state.isLogin === appConstants.STATE.RESOLVE && (
