@@ -1,4 +1,3 @@
 export * from './Header';
-export * from './PhoneTab';
+export * from './LoginForm';
 export * from './QrTab';
-export * from './Tabs';

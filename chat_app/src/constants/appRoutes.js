@@ -59,4 +59,5 @@ export default {
   ONLINE: '/online',
   SEND_VERIFY_EMAIL: '/send-verify-email',
   VERIFY_EMAIL: '/verify-email',
+  VERIFY_ID_TOKEN: '/verify-id-token',
 };

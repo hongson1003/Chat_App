@@ -1,1 +1,4 @@
-export { default as AuthContainer } from './AuthContainer';
+export * from './AuthContainer';
+export * from './PhoneFooterContainer';
+export * from './RegisterAccountContainer';
+export * from './PhoneTabContainer';

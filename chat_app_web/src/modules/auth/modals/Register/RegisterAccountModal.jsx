@@ -169,7 +169,9 @@ const RegisterAccountModal = ({
             </Flex>
           </Form.Item>
         ) : (
-          <Typography.Text type="success">Đã xác thực OTP</Typography.Text>
+          <Flex justify="flex-end">
+            <Typography.Text type="success">Đã xác thực OTP</Typography.Text>
+          </Flex>
         )}
       </Form>
 

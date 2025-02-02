@@ -1,3 +1,4 @@
+import { admin } from '@/configs/sdk';
 import db from '@/configs/sql/models';
 import { jwtHandler, userHandler } from '@utils';
 import createHttpError from 'http-errors';
@@ -216,6 +217,11 @@ const changePassword = async (id, oldPassword, newPassword) => {
   }
 };
 
+const verifyIdToken = async (idToken) => {
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+  return decodedToken;
+};
+
 module.exports = {
   register,
   verifyUser,
@@ -223,4 +229,5 @@ module.exports = {
   updateToken,
   updatePassword,
   changePassword,
+  verifyIdToken,
 };

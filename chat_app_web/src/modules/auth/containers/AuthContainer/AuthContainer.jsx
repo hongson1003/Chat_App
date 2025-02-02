@@ -1,12 +1,12 @@
 import React from 'react';
-import { AuthTabs } from '../components';
-import { AuthHeader } from '../components/Header';
+import { AuthHeader } from '../../components';
+import { AuthTabsContainer } from '../AuthTabsContainer';
 
 const AuthContainer = () => {
   return (
     <>
       <AuthHeader />
-      <AuthTabs />
+      <AuthTabsContainer />
     </>
   );
 };

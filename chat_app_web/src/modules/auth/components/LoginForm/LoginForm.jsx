@@ -1,36 +1,10 @@
-import { axios } from '@/configs';
-import { appActions } from '@/redux';
 import { LockOutlined, PhoneOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { PhoneTabFooter } from '../PhoneTabFooter';
+import React from 'react';
 
-const PhoneTab = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const onFinish = async (values) => {
-    try {
-      setIsLoading(true);
-      let rs = await axios.post('/auth/login', values);
-      const data = rs.data;
-      if (rs.errCode === 0) {
-        dispatch(appActions.loginStart(data));
-        navigate(`/verify?id=${rs?.data?.id}`);
-      } else {
-        toast.error(rs.message);
-        setPhoneNumber(values.phoneNumber);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log('error', error);
-    }
+const LoginForm = () => {
+  const handleOnFinish = () => {
+    console.log('handleOnFinish');
   };
 
   return (
@@ -38,7 +12,7 @@ const PhoneTab = () => {
       <Form
         name="normal_login"
         initialValues={{ remember: true }}
-        onFinish={onFinish}
+        onFinish={handleOnFinish}
         size="large"
       >
         <Form.Item
@@ -70,16 +44,13 @@ const PhoneTab = () => {
             htmlType="submit"
             className="login-form-button"
             block
-            loading={isLoading}
           >
             <span>Đăng nhập</span>
           </Button>
         </Form.Item>
       </Form>
-
-      <PhoneTabFooter />
     </div>
   );
 };
 
-export default PhoneTab;
+export default LoginForm;

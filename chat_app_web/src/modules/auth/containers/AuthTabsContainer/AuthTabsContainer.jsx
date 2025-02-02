@@ -1,8 +1,8 @@
 import { Tabs } from 'antd';
 import React from 'react';
-import { PhoneTab } from '../PhoneTab';
-import { QrTab } from '../QrTab';
-import './auth-tabs.scss';
+import { QrTab } from '../../components';
+import { PhoneTabContainer } from '../PhoneTabContainer';
+import './auth-tabs-container.scss';
 
 const items = [
   {
@@ -13,14 +13,14 @@ const items = [
   {
     key: '2',
     label: <p className="title-tab">VỚI SỐ ĐIỆN THOẠI</p>,
-    children: <PhoneTab />,
+    children: <PhoneTabContainer />,
   },
 ];
 
-const AuthTabs = () => {
+const AuthTabsContainer = () => {
   return (
     <Tabs defaultActiveKey="2" items={items} className="login-tabs" centered />
   );
 };
 
-export default AuthTabs;
+export default AuthTabsContainer;

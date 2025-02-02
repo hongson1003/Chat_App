@@ -1,7 +1,10 @@
 import config from '@config';
 import { appService, userService } from '@services';
 import { jwtHandler } from '@utils';
-import createError from 'http-errors';
+import {
+  default as createError,
+  default as createHttpError,
+} from 'http-errors';
 import { TokenExpiredError } from 'jsonwebtoken';
 
 const { secretKey, expiresIn } = config;
@@ -147,6 +150,18 @@ const changePassword = async (req, res, next) => {
   }
 };
 
+const verifyIdToken = async (req, res, next) => {
+  const { idToken } = req.query;
+  if (!idToken)
+    throw new createHttpError(400, 'Missing required parameter: idToken');
+  try {
+    let rs = await appService.verifyIdToken(idToken);
+    return res.status(200).json(rs);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   verifyUser,
@@ -155,4 +170,5 @@ module.exports = {
   logout,
   resetPassword,
   changePassword,
+  verifyIdToken,
 };

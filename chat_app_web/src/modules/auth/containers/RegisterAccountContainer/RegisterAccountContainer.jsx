@@ -1,25 +1,15 @@
-import { sendOTP, verifyOTP } from '@/configs';
-import { appRegex } from '@/constants';
-import { userService } from '@/services';
 import React from 'react';
 import { RegisterAccountModal } from '../../modals';
-import './phone-tab-footer.scss';
 
-const PhoneTabFooter = () => {
+const RegisterAccountContainer = () => {
   const [registerModalState, setRegisterModalState] = React.useState({
     open: false,
     otpSent: false,
     loading: false,
     phoneNumberIsValid: false,
     verified: false,
+    data: {},
   });
-
-  const [openForgotPasswordModal, setOpenForgotPasswordModal] =
-    React.useState(false);
-
-  const handleOnClickForgotPassword = () => {
-    console.log('handleOnClickForgotPassword');
-  };
 
   const handleOnClickRegister = () => {
     setRegisterModalState({
@@ -72,9 +62,22 @@ const PhoneTabFooter = () => {
     );
   };
 
-  const handleOnVerifyOtpSuccess = (result) => {
+  const handleOnVerifyOtpSuccess = async (result) => {
     const idToken = result._tokenResponse.idToken;
-    console.log('🚀 ~ handleOnVerifyOtpSuccess ~ idToken:', idToken);
+    try {
+      const res = await authService.verifyIdToken(idToken);
+      if (res) {
+        setRegisterModalState((prev) => ({
+          ...prev,
+          verified: true,
+          data: {
+            idToken,
+          },
+        }));
+      }
+    } catch (error) {
+      console.log('🚀 ~ handleOnVerifyOtpSuccess ~ error:', error);
+    }
   };
 
   const handleOnVerifyOtpFail = (error) => {
@@ -124,11 +127,7 @@ const PhoneTabFooter = () => {
 
   return (
     <>
-      <div className="phone-tab-footer">
-        <span onClick={handleOnClickForgotPassword}>Quên mật khẩu</span>
-        &nbsp;/&nbsp;
-        <span onClick={handleOnClickRegister}>Tạo tài khoản</span>
-      </div>
+      <span onClick={handleOnClickRegister}>Tạo tài khoản</span>
 
       <RegisterAccountModal
         open={registerModalState.open}
@@ -146,4 +145,4 @@ const PhoneTabFooter = () => {
   );
 };
 
-export default PhoneTabFooter;
+export default RegisterAccountContainer;

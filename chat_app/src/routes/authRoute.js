@@ -11,6 +11,8 @@ const InitRoutesAuthentication = (router) => {
 
   router.route(appRoutes.CHECK).post(appController.check);
 
+  router.route(appRoutes.VERIFY_ID_TOKEN).get(appController.verifyIdToken);
+
   router.route(appRoutes.VERIFY).post(appController.verifyUser);
   router.route(appRoutes.RESET_PASSWORD).post(appController.resetPassword);
 
