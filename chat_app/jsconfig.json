@@ -11,7 +11,7 @@
       "@routes/*": ["src/routes/*"],
       "@controllers/*": ["src/controllers/*"],
       "@config/*": ["config/*"],
-      "@constants/*": ["src/constants/*"]
+      "@constants/*": ["src/constants/*"],
     }
   },
   "include": ["src/**/*"]
