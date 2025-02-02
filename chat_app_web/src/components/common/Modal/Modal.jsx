@@ -10,6 +10,7 @@ const CommonModal = ({
   cancelText = 'Hủy',
   onOk,
   onCancel,
+  maskClosable = true,
 }) => {
   return (
     <Modal
@@ -20,6 +21,7 @@ const CommonModal = ({
       okText={okText}
       cancelText={cancelText}
       centered
+      maskClosable={maskClosable}
       footer={[
         <Button key="cancel" onClick={onCancel || onClose}>
           {cancelText}

@@ -59,4 +59,11 @@ export const stringHandler = {
     }
     return newFile;
   },
+
+  convertPhoneViToInternational: (phone) => {
+    if (phone.startsWith('0')) {
+      return `+84${phone.slice(1)}`;
+    }
+    return phone;
+  },
 };

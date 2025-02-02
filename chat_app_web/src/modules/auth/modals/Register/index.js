@@ -1,1 +1,1 @@
-export { default as RegisterModal } from './RegisterModal';
+export { default as RegisterAccountModal } from './RegisterAccountModal';

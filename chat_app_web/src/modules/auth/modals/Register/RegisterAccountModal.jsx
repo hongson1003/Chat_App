@@ -1,35 +1,60 @@
 import { Modal } from '@/components/common';
 import { appRegex } from '@/constants';
-import { Form, Input } from 'antd';
-import React from 'react';
+import { stringHandler } from '@/utils';
+import { CheckOutlined } from '@ant-design/icons';
+import { Button, Flex, Form, Input } from 'antd';
+import React, { useEffect } from 'react';
 
-const NewAccountModal = ({ open, onOk, onCancel }) => {
+const RegisterAccountModal = ({
+  open,
+  onOk,
+  onCancel,
+  onSendOtp,
+  otpSent,
+  onVerifyOtp,
+  loading,
+}) => {
   const [form] = Form.useForm();
 
-  // const handleRegister = async (values) => {
-  //   try {
-  //     const res = await axios.post('/auth', values);
-  //     if (res.errCode === 0) {
-  //       toast.success('Tạo tài khoản thành công');
-  //       form.resetFields();
-  //       setIsModalOpen(false);
-  //     } else {
-  //       toast.error(res.message);
-  //     }
-  //   } catch (error) {
-  //     console.log('error', error);
-  //   }
-  // };
+  useEffect(() => {
+    form.setFieldsValue({
+      username: 'Nguyen Van A',
+      phoneNumber: '0935201508',
+      password1: '123456',
+      password2: '123456',
+    });
+  }, []);
 
   const handleOk = async () => {
     form
       .validateFields()
       .then(async (values) => {
-        console.log(values);
+        console.log('values', values);
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
       });
+  };
+
+  const handleOnSendOtp = () => {
+    form
+      .validateFields(['phoneNumber'])
+      .then(async (values) => {
+        onSendOtp(
+          stringHandler.convertPhoneViToInternational(values.phoneNumber)
+        );
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  };
+
+  const handleOnChange = (text) => {
+    onVerifyOtp(text);
+  };
+
+  const sharedProps = {
+    onChange: handleOnChange,
   };
 
   return (
@@ -38,6 +63,7 @@ const NewAccountModal = ({ open, onOk, onCancel }) => {
       onOk={handleOk}
       onCancel={onCancel}
       title="Tạo tài khoản"
+      maskClosable={false}
     >
       <Form
         form={form}
@@ -58,7 +84,7 @@ const NewAccountModal = ({ open, onOk, onCancel }) => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={otpSent} />
         </Form.Item>
 
         <Form.Item
@@ -72,26 +98,29 @@ const NewAccountModal = ({ open, onOk, onCancel }) => {
             },
           ]}
         >
-          <Input />
+          <Flex gap={10} align="center">
+            <Input disabled={otpSent} />
+            <CheckOutlined />
+          </Flex>
         </Form.Item>
 
         <Form.Item
           label="Mật khẩu"
-          name="password"
+          name="password1"
           rules={[
             {
               required: true,
             },
           ]}
         >
-          <Input />
+          <Input.Password disabled={otpSent} />
         </Form.Item>
 
         {/* Field */}
         <Form.Item
           label="Nhập lại mật khẩu"
           name="password2"
-          dependencies={['password']}
+          dependencies={['password1']}
           rules={[
             {
               required: true,
@@ -108,11 +137,31 @@ const NewAccountModal = ({ open, onOk, onCancel }) => {
             }),
           ]}
         >
-          <Input />
+          <Input.Password disabled={otpSent} />
+        </Form.Item>
+
+        <Form.Item label="Mã OTP" name="otp" rules={[{ required: true }]}>
+          <Flex align="center" justify="space-between" gap={10}>
+            <Input.OTP
+              type="number"
+              formatter={(str) => str.replace(/\D/g, '0')}
+              {...sharedProps}
+              disabled={loading || !otpSent}
+            />
+            <Button onClick={handleOnSendOtp} loading={loading}>
+              {otpSent ? 'Gửi lại' : 'Gửi mã OTP'}
+            </Button>
+          </Flex>
         </Form.Item>
       </Form>
+
+      {!otpSent && (
+        <Flex justify="center" align="center" gap={5}>
+          <div id="recaptcha-container"></div>
+        </Flex>
+      )}
     </Modal>
   );
 };
 
-export default NewAccountModal;
+export default RegisterAccountModal;
