@@ -1,17 +1,17 @@
 import { sendOTP, verifyOTP } from '@/configs';
 import { appRegex } from '@/constants';
+import { userService } from '@/services';
 import React from 'react';
 import { RegisterAccountModal } from '../../modals';
 import './phone-tab-footer.scss';
-
-let confirmationResult = null;
 
 const PhoneTabFooter = () => {
   const [registerModalState, setRegisterModalState] = React.useState({
     open: false,
     otpSent: false,
     loading: false,
-    phoneNumberChecked: false,
+    phoneNumberIsValid: false,
+    verified: false,
   });
 
   const [openForgotPasswordModal, setOpenForgotPasswordModal] =
@@ -40,8 +40,6 @@ const PhoneTabFooter = () => {
   };
 
   const handleSendOtpSuccess = (confirmationResult) => {
-    confirmationResult = confirmationResult;
-
     setRegisterModalState((prev) => ({
       ...prev,
       otpSent: true,
@@ -104,11 +102,24 @@ const PhoneTabFooter = () => {
     );
   };
 
-  const handleOnCheckPhoneNumber = (phoneNumber) => {
+  const handleOnCheckPhoneNumber = async (phoneNumber) => {
     const isValid = appRegex.PHONE_NUMBER.test(phoneNumber);
-    if (!isValid) {
-      console.log('Số điện thoại không hợp lệ');
+    if (isValid) {
+      const res = await userService.getUserByPhoneNumber(phoneNumber);
+      if (res === null) {
+        setRegisterModalState((prev) => ({
+          ...prev,
+          phoneNumberIsValid: true,
+        }));
+
+        return;
+      }
     }
+
+    setRegisterModalState((prev) => ({
+      ...prev,
+      phoneNumberIsValid: false,
+    }));
   };
 
   return (
@@ -127,8 +138,9 @@ const PhoneTabFooter = () => {
         otpSent={registerModalState.otpSent}
         loading={registerModalState.loading}
         onVerifyOtp={handleVerifyOTP}
-        phoneNumberChecked={registerModalState.phoneNumberChecked}
+        phoneNumberIsValid={registerModalState.phoneNumberIsValid}
         onCheckPhoneNumber={handleOnCheckPhoneNumber}
+        verified={registerModalState.verified}
       />
     </>
   );

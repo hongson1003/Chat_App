@@ -44,7 +44,7 @@ export default {
 
   GET_MANY: '/getMany',
   INFO: '/info',
-  USER_BY_PHONE: '/user-by-phone',
+  USER_BY_PHONE: '/phone',
   PROFILE: '/profile',
   DETAIL: '/detail',
   FRIENDSHIP: '/friendShip',

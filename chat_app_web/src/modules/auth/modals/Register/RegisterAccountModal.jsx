@@ -2,8 +2,9 @@ import { Modal } from '@/components/common';
 import { appRegex } from '@/constants';
 import { stringHandler } from '@/utils';
 import { CheckOutlined } from '@ant-design/icons';
-import { Button, Flex, Form, Input } from 'antd';
-import React, { useEffect } from 'react';
+import { Button, Flex, Form, Input, Tooltip } from 'antd';
+import Typography from 'antd/es/typography/Typography';
+import React from 'react';
 
 const RegisterAccountModal = ({
   open,
@@ -15,17 +16,9 @@ const RegisterAccountModal = ({
   loading,
   verified,
   onCheckPhoneNumber,
+  phoneNumberIsValid,
 }) => {
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    form.setFieldsValue({
-      username: 'Nguyen Van A',
-      phoneNumber: '0935201508',
-      password1: '123456',
-      password2: '123456',
-    });
-  }, []);
 
   const handleOk = async () => {
     form
@@ -61,6 +54,7 @@ const RegisterAccountModal = ({
 
   const handleOnChangePhoneNumber = (e) => {
     const phoneNumber = e.target.value;
+    console.log('🚀 ~ handleOnChangePhoneNumber ~ phoneNumber:', phoneNumber);
     onCheckPhoneNumber(phoneNumber);
   };
 
@@ -92,7 +86,7 @@ const RegisterAccountModal = ({
             },
           ]}
         >
-          <Input disabled={otpSent} />
+          <Input disabled={otpSent} placeholder="Nguyễn Văn A" />
         </Form.Item>
 
         <Form.Item
@@ -112,7 +106,11 @@ const RegisterAccountModal = ({
               onChange={handleOnChangePhoneNumber}
               placeholder="093xxxxxxx"
             />
-            <CheckOutlined />
+            {phoneNumberIsValid && (
+              <Tooltip title="Số điện thoại hợp lệ">
+                <CheckOutlined />
+              </Tooltip>
+            )}
           </Flex>
         </Form.Item>
 
@@ -152,19 +150,27 @@ const RegisterAccountModal = ({
           <Input.Password disabled={otpSent} />
         </Form.Item>
 
-        <Form.Item label="Mã OTP" name="otp" rules={[{ required: true }]}>
-          <Flex align="center" justify="space-between" gap={10}>
-            <Input.OTP
-              type="number"
-              formatter={(str) => str.replace(/\D/g, '0')}
-              {...sharedProps}
-              disabled={loading || !otpSent}
-            />
-            <Button onClick={handleOnSendOtp} loading={loading}>
-              {otpSent ? 'Gửi lại' : 'Gửi mã OTP'}
-            </Button>
-          </Flex>
-        </Form.Item>
+        {!verified ? (
+          <Form.Item label="Mã OTP" name="otp" rules={[{ required: true }]}>
+            <Flex align="center" justify="space-between" gap={10}>
+              <Input.OTP
+                type="number"
+                formatter={(str) => str.replace(/\D/g, '0')}
+                {...sharedProps}
+                disabled={loading || !otpSent}
+              />
+              <Button
+                onClick={handleOnSendOtp}
+                loading={loading}
+                disabled={loading || !phoneNumberIsValid}
+              >
+                {otpSent ? 'Gửi lại' : 'Gửi mã OTP'}
+              </Button>
+            </Flex>
+          </Form.Item>
+        ) : (
+          <Typography.Text type="success">Đã xác thực OTP</Typography.Text>
+        )}
       </Form>
 
       {!otpSent && (
