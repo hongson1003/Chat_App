@@ -1,4 +1,6 @@
+import { appRegex } from '@/constants';
 import { userService } from '@services';
+import createHttpError from 'http-errors';
 
 // warning using
 const findAllUsers = async (req, res) => {
@@ -12,10 +14,17 @@ const findUserById = async (req, res, next) => {
   next();
 };
 
-const findUserByPhone = async (req, res, next) => {
-  const response = await userService.getUserByPhone(req.query.phoneNumber);
-  if (response) return res.status(200).json(response);
-  next();
+const findUserByPhoneNumber = async (req, res, next) => {
+  const phoneNumber = req.query.phoneNumber;
+
+  if (!phoneNumber) {
+    throw new createHttpError(400, 'Missing required parameter');
+  } else if (appRegex.PHONE_NUMBER.test(phoneNumber) === false) {
+    throw new createHttpError(400, 'Invalid phone number');
+  }
+
+  const response = await userService.getUserByPhoneNumber(phoneNumber);
+  return res.status(200).json(response);
 };
 
 const createInfoContact = async (req, res, next) => {
@@ -331,7 +340,7 @@ const verifyEmail = async (req, res, next) => {
 module.exports = {
   findAllUsers,
   findUserById,
-  findUserByPhone,
+  findUserByPhoneNumber,
   createInfoContact,
   getProfileByUserId,
   findUserWithProfileById,

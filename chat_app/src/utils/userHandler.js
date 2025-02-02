@@ -1,13 +1,14 @@
 import bcrypt from 'bcrypt';
 const saltRounds = 10;
+
 const keyUserRegister = [
   'id',
   'phoneNumber',
   'userName',
   'avatar',
   'lastedOnline',
-  'peerId',
 ];
+
 const keyProfile = [
   'birthdate',
   'gender',
@@ -34,6 +35,8 @@ const checkPassword = (myPlaintextPassword, hashedPassword) => {
 };
 
 const standardUser = (user) => {
+  if (!user) return null;
+
   try {
     let myUser = { ...user };
     if (myUser.avatar) {

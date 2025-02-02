@@ -7,9 +7,9 @@ export default {
   VERIFY: '/verify',
   RESET_PASSWORD: '/reset-password',
   CHANGE_PASSWORD: '/change-password',
-  AUTH: '/auth',
-  USERS: '/users',
-  CHATS: '/chats',
+  AUTH: '/api/v1/auth',
+  USERS: '/api/v1/users',
+  CHATS: '/api/v1/chats',
 
   // chat
   ACCESS: '/access',

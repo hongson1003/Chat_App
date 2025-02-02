@@ -1,8 +1,8 @@
-import { db } from '@configs/sql/models';
 import { appKeys } from '@constants';
 import { userHandler } from '@utils';
 import { Op } from 'sequelize';
 import emailService from './emailService';
+import db from '@/configs/sql/models';
 
 const getAllUsers = async () => {
   const attributes = ['id', 'userName', 'phoneNumber', 'avatar'];
@@ -54,23 +54,18 @@ const getUserById = async (id) => {
   }
 };
 
-const getUserByPhone = async (phoneNumber) => {
+const getUserByPhoneNumber = async (phoneNumber) => {
   try {
     const user = await db.User.findOne({
       where: {
         phoneNumber,
       },
     });
+
     const myUser = userHandler.standardUser(user);
-    if (user)
-      return {
-        errCode: 0,
-        message: 'Get user success',
-        data: myUser,
-      };
-    return null;
+    return myUser;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -941,7 +936,7 @@ const verifyEmail = async (email, code, userId) => {
 module.exports = {
   getAllUsers,
   getUserById,
-  getUserByPhone,
+  getUserByPhoneNumber,
   newInfoContact,
   getProfileByUserId,
   getUserWithProfileById,

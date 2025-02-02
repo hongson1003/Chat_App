@@ -13,6 +13,8 @@ const RegisterAccountModal = ({
   otpSent,
   onVerifyOtp,
   loading,
+  verified,
+  onCheckPhoneNumber,
 }) => {
   const [form] = Form.useForm();
 
@@ -49,12 +51,17 @@ const RegisterAccountModal = ({
       });
   };
 
-  const handleOnChange = (text) => {
+  const handleOnChangeOtp = (text) => {
     onVerifyOtp(text);
   };
 
   const sharedProps = {
-    onChange: handleOnChange,
+    onChange: handleOnChangeOtp,
+  };
+
+  const handleOnChangePhoneNumber = (e) => {
+    const phoneNumber = e.target.value;
+    onCheckPhoneNumber(phoneNumber);
   };
 
   return (
@@ -64,6 +71,7 @@ const RegisterAccountModal = ({
       onCancel={onCancel}
       title="Tạo tài khoản"
       maskClosable={false}
+      disableOk={!verified}
     >
       <Form
         form={form}
@@ -99,7 +107,11 @@ const RegisterAccountModal = ({
           ]}
         >
           <Flex gap={10} align="center">
-            <Input disabled={otpSent} />
+            <Input
+              disabled={otpSent}
+              onChange={handleOnChangePhoneNumber}
+              placeholder="093xxxxxxx"
+            />
             <CheckOutlined />
           </Flex>
         </Form.Item>
@@ -127,7 +139,7 @@ const RegisterAccountModal = ({
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (!value || getFieldValue('password') === value) {
+                if (!value || getFieldValue('password1') === value) {
                   return Promise.resolve();
                 }
                 return Promise.reject(

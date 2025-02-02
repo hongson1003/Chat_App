@@ -9,7 +9,9 @@ const IntRoutesUsers = (router) => {
     .route(appRoutes.INFO)
     .get(userGuardHandler.checkJWT, userController.findUserById);
 
-  router.route(appRoutes.USER_BY_PHONE).get(userController.findUserByPhone);
+  router
+    .route(appRoutes.USER_BY_PHONE)
+    .get(userController.findUserByPhoneNumber);
 
   router
     .route(appRoutes.PROFILE)

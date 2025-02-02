@@ -1,4 +1,5 @@
 import { sendOTP, verifyOTP } from '@/configs';
+import { appRegex } from '@/constants';
 import React from 'react';
 import { RegisterAccountModal } from '../../modals';
 import './phone-tab-footer.scss';
@@ -10,7 +11,9 @@ const PhoneTabFooter = () => {
     open: false,
     otpSent: false,
     loading: false,
+    phoneNumberChecked: false,
   });
+
   const [openForgotPasswordModal, setOpenForgotPasswordModal] =
     React.useState(false);
 
@@ -101,6 +104,13 @@ const PhoneTabFooter = () => {
     );
   };
 
+  const handleOnCheckPhoneNumber = (phoneNumber) => {
+    const isValid = appRegex.PHONE_NUMBER.test(phoneNumber);
+    if (!isValid) {
+      console.log('Số điện thoại không hợp lệ');
+    }
+  };
+
   return (
     <>
       <div className="phone-tab-footer">
@@ -117,6 +127,8 @@ const PhoneTabFooter = () => {
         otpSent={registerModalState.otpSent}
         loading={registerModalState.loading}
         onVerifyOtp={handleVerifyOTP}
+        phoneNumberChecked={registerModalState.phoneNumberChecked}
+        onCheckPhoneNumber={handleOnCheckPhoneNumber}
       />
     </>
   );
