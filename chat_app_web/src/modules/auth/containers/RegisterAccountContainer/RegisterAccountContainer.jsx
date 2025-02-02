@@ -1,3 +1,6 @@
+import { sendOTP, verifyOTP } from '@/configs';
+import { appConstants, appRegex } from '@/constants';
+import { authService, userService } from '@/services';
 import React from 'react';
 import { RegisterAccountModal } from '../../modals';
 
@@ -8,7 +11,7 @@ const RegisterAccountContainer = () => {
     loading: false,
     phoneNumberIsValid: false,
     verified: false,
-    data: {},
+    idToken: '',
   });
 
   const handleOnClickRegister = () => {
@@ -25,8 +28,8 @@ const RegisterAccountContainer = () => {
     });
   };
 
-  const handleOnOkRegister = () => {
-    console.log('handleOnOkRegister');
+  const handleOnOkRegister = (values) => {
+    console.log('handleOnOkRegister', values);
   };
 
   const handleSendOtpSuccess = (confirmationResult) => {
@@ -55,7 +58,7 @@ const RegisterAccountContainer = () => {
 
     sendOTP(
       phoneNumber,
-      'recaptcha-container',
+      appConstants.RECAPTCHA_CONTAINER_ID,
       handleSendOtpSuccess,
       handleSendOtpFail,
       handleSendOtpFinish
@@ -70,9 +73,7 @@ const RegisterAccountContainer = () => {
         setRegisterModalState((prev) => ({
           ...prev,
           verified: true,
-          data: {
-            idToken,
-          },
+          idToken,
         }));
       }
     } catch (error) {

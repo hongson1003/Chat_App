@@ -1,10 +1,11 @@
 import { Modal } from '@/components/common';
-import { appRegex } from '@/constants';
+import { appConstants, appRegex } from '@/constants';
 import { stringHandler } from '@/utils';
 import { CheckOutlined } from '@ant-design/icons';
-import { Button, Flex, Form, Input, Tooltip } from 'antd';
+import { Alert, Button, Flex, Form, Input, Tooltip } from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import React from 'react';
+import './register-account-modal.scss';
 
 const RegisterAccountModal = ({
   open,
@@ -20,11 +21,14 @@ const RegisterAccountModal = ({
 }) => {
   const [form] = Form.useForm();
 
+  const phoneNumber = open ? form.getFieldValue('phoneNumber') : '';
+  const isPhoneNumber = appRegex.PHONE_NUMBER.test(phoneNumber);
+
   const handleOk = async () => {
     form
       .validateFields()
       .then(async (values) => {
-        console.log('values', values);
+        onOk(values);
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -54,7 +58,6 @@ const RegisterAccountModal = ({
 
   const handleOnChangePhoneNumber = (e) => {
     const phoneNumber = e.target.value;
-    console.log('🚀 ~ handleOnChangePhoneNumber ~ phoneNumber:', phoneNumber);
     onCheckPhoneNumber(phoneNumber);
   };
 
@@ -67,6 +70,16 @@ const RegisterAccountModal = ({
       maskClosable={false}
       disableOk={!verified}
     >
+      {isPhoneNumber && !phoneNumberIsValid && (
+        <div className="register-account-modal__alert">
+          <Alert
+            message="Số điện thoại đã được sử dụng"
+            type="error"
+            showIcon
+          />
+        </div>
+      )}
+
       <Form
         form={form}
         name="dependencies"
@@ -108,7 +121,7 @@ const RegisterAccountModal = ({
             />
             {phoneNumberIsValid && (
               <Tooltip title="Số điện thoại hợp lệ">
-                <CheckOutlined />
+                <CheckOutlined style={{ fontSize: '18px' }} />
               </Tooltip>
             )}
           </Flex>
@@ -177,7 +190,7 @@ const RegisterAccountModal = ({
 
       {!otpSent && (
         <Flex justify="center" align="center" gap={5}>
-          <div id="recaptcha-container"></div>
+          <div id={appConstants.RECAPTCHA_CONTAINER_ID}></div>
         </Flex>
       )}
     </Modal>

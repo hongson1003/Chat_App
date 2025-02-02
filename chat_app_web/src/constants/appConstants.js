@@ -1,4 +1,5 @@
 export default {
+  RECAPTCHA_CONTAINER_ID: 'recaptcha-container-id',
   COLOR_BACKGROUND: {
     BLACK: '#000000',
   },
