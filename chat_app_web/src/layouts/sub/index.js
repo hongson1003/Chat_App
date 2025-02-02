@@ -1,1 +1,1 @@
-export { default as HomeSubLayout } from './homeSubLayout';
+export { default as HomeSubLayout } from './HomeSubLayout';

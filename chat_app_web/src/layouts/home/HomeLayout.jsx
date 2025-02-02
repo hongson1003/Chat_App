@@ -1,14 +1,14 @@
+import { SpinnerLoading } from '@/components/common';
 import { HomeSidebar } from '@/components/layout/home';
 import { axios } from '@/configs';
-import { appConstants, appRoutes } from '@/constants';
+import { appConstants } from '@/constants';
 import { Layout, Typography } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './homeLayout.scss';
-import { SpinnerLoading } from '@/components/common';
+import './home-layout.scss';
 const { Content, Sider } = Layout;
 
 const HomeLayout = () => {
@@ -101,7 +101,7 @@ const HomeLayout = () => {
   //   }
   // }, [state?.isConnectedSocket]);
 
-  if (true || loading)
+  if (loading)
     return (
       <div className="spinner-loading-container">
         <SpinnerLoading />

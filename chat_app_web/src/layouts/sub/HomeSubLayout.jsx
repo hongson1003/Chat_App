@@ -6,9 +6,9 @@ import SplitPane, { Pane } from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
 import ContentMain from '../../components/layout/home/Main/HomeMain';
 import SidebarHome from '../../components/layout/home/Sidebar/HomeSidebar';
-import './homeSubLayout.scss';
+import './home-sub-layout.scss';
 
-const homeSubLayout = () => {
+const HomeSubLayout = () => {
   const [sizes, setSizes] = useState(['350px', 'auto']);
   const [visibleLeft, setVisibleLeft] = useState('d-show');
   const [visibleRight, setVisibleRight] = useState('d-show');
@@ -167,4 +167,4 @@ const homeSubLayout = () => {
   );
 };
 
-export default homeSubLayout;
+export default HomeSubLayout;
