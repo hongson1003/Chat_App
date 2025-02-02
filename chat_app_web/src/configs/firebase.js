@@ -1,14 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { configEnvs } from './env';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAFn614q6SXvpNBGTqxwWBUiXiK1sId9FY',
-  authDomain: 'zalo-web.firebaseapp.com',
-  projectId: 'zalo-web',
-  storageBucket: 'zalo-web.appspot.com',
-  messagingSenderId: '397340346509',
-  appId: '1:397340346509:web:bcbd80745003ae254dbac4',
-  measurementId: 'G-WGVDH2K1EN',
+  apiKey: configEnvs.FIREBASE.API_KEY,
+  authDomain: configEnvs.FIREBASE.AUTH_DOMAIN,
+  projectId: configEnvs.FIREBASE.PROJECT_ID,
+  storageBucket: configEnvs.FIREBASE.STORAGE_BUCKET,
+  messagingSenderId: configEnvs.FIREBASE.MESSAGING_SENDER_ID,
+  appId: configEnvs.FIREBASE.APP_ID,
+  measurementId: configEnvs.FIREBASE.MEASUREMENT_ID,
 };
 
 // Initialize Firebase
