@@ -45,4 +45,4 @@ coverage/
 *.seed
 *.pid.lock
 
-*.json
+chat_app/src/configs/sdk/firebase-admin.json
