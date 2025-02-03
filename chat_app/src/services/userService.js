@@ -62,7 +62,7 @@ const getUserByPhoneNumber = async (phoneNumber) => {
       },
     });
 
-    const myUser = userHandler.standardUser(user);
+    const myUser = userHandler.toUserResponse(user);
     return myUser;
   } catch (error) {
     console.log('🚀 ~ getUserByPhoneNumber ~ error:', error);
@@ -271,8 +271,8 @@ const findFriendShip = async (user1Id, user2Id) => {
     if (friendShip) {
       const sender = friendShip.sender;
       const receiver = friendShip.receiver;
-      const standardSender = userHandler.standardUser(sender);
-      const standardReceiver = userHandler.standardUser(receiver);
+      const standardSender = userHandler.toUserResponse(sender);
+      const standardReceiver = userHandler.toUserResponse(receiver);
       friendShip.sender = standardSender;
       friendShip.receiver = standardReceiver;
 
@@ -467,8 +467,8 @@ const findAllNotifications = async (userId) => {
         const friendShip = notification.friendShip;
         const sender = friendShip.sender;
         const receiver = friendShip.receiver;
-        const standardSender = userHandler.standardUser(sender);
-        const standardReceiver = userHandler.standardUser(receiver);
+        const standardSender = userHandler.toUserResponse(sender);
+        const standardReceiver = userHandler.toUserResponse(receiver);
         friendShip.sender = standardSender;
         friendShip.receiver = standardReceiver;
         return notification;
@@ -535,8 +535,8 @@ const findAllInvitedFriend = async (userId) => {
         const friendShip = notification.friendShip;
         const sender = friendShip.sender;
         const receiver = friendShip.receiver;
-        const standardSender = userHandler.standardUser(sender);
-        const standardReceiver = userHandler.standardUser(receiver);
+        const standardSender = userHandler.toUserResponse(sender);
+        const standardReceiver = userHandler.toUserResponse(receiver);
         friendShip.sender = standardSender;
         friendShip.receiver = standardReceiver;
         return notification;
@@ -603,8 +603,8 @@ const findAllSentInvitedFriend = async (userId) => {
         const friendShip = notification.friendShip;
         const sender = friendShip.sender;
         const receiver = friendShip.receiver;
-        const standardSender = userHandler.standardUser(sender);
-        const standardReceiver = userHandler.standardUser(receiver);
+        const standardSender = userHandler.toUserResponse(sender);
+        const standardReceiver = userHandler.toUserResponse(receiver);
         friendShip.sender = standardSender;
         friendShip.receiver = standardReceiver;
         return notification;
@@ -702,10 +702,10 @@ const findFriendsLimit = async (userId, limit) => {
     const standardFriends = friends.map((friend) => {
       const sender = friend.sender;
       const receiver = friend.receiver;
-      const standardUser1 = userHandler.standardUser(sender);
-      const standardUser2 = userHandler.standardUser(receiver);
-      friend.sender = standardUser1;
-      friend.receiver = standardUser2;
+      const toUserResponse1 = userHandler.toUserResponse(sender);
+      const toUserResponse2 = userHandler.toUserResponse(receiver);
+      friend.sender = toUserResponse1;
+      friend.receiver = toUserResponse2;
       return friend;
     });
 
@@ -805,7 +805,7 @@ const updateUserInfor = async (newInfor) => {
       // Save the updated user infor
       const userData = await user.save();
       const profileData = await userInfor.save();
-      const data = userHandler.standardUser(userData.dataValues);
+      const data = userHandler.toUserResponse(userData.dataValues);
       data.info = profileData.dataValues;
 
       return {
@@ -862,12 +862,14 @@ const updateOnline = async (userId, time) => {
       user.lastedOnline = time;
       await user.save();
 
-      const standardUser = userHandler.standardUser(user.get({ plain: true }));
+      const toUserResponse = userHandler.toUserResponse(
+        user.get({ plain: true })
+      );
 
       return {
         errCode: 0,
         message: 'Update online success',
-        data: standardUser,
+        data: toUserResponse,
       };
     }
     return {

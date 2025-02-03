@@ -2,14 +2,16 @@ import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
 
-const keyUserRegister = [
+export const USER_RESPONSE_FIELDS = [
   'id',
+  'fullName',
+  'username',
   'phoneNumber',
-  'userName',
   'avatar',
   'lastedOnline',
 ];
-const keyProfile = [
+
+const PROFILE_RESPONSE_FIELDS = [
   'birthdate',
   'gender',
   'soundTrack',
@@ -35,22 +37,20 @@ const authHandler = {
     }
   },
 
-  standardUser: (user) => {
+  toUserResponse: (user) => {
     if (!user) return null;
 
-    try {
-      const myUser = { ...user };
+    const myUser = { ...user };
 
-      if (myUser.avatar) {
-        myUser.avatar = Buffer.from(myUser.avatar, 'base64').toString();
-      }
-
-      return Object.fromEntries(
-        Object.entries(myUser).filter(([key]) => keyUserRegister.includes(key))
-      );
-    } catch (error) {
-      throw error;
+    if (myUser.avatar) {
+      myUser.avatar = Buffer.from(myUser.avatar, 'base64').toString();
     }
+
+    return Object.fromEntries(
+      Object.entries(myUser).filter(([key]) =>
+        USER_RESPONSE_FIELDS.includes(key)
+      )
+    );
   },
 
   standardProfile: (profile) => {

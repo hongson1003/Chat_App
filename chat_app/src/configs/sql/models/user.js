@@ -42,7 +42,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      refresh_token: DataTypes.STRING,
       email: {
         type: DataTypes.STRING,
         allowNull: true,

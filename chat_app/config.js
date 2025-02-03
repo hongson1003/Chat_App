@@ -14,9 +14,11 @@ if (fs.existsSync(envFile)) {
 
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
-  secretKey: process.env.SECRET_KEY,
-  expiresIn: process.env.EXPIRES_IN,
   port: process.env.PORT || 3000,
+  jwt: {
+    secret: process.env.SECRET,
+    expiresIn: process.env.EXPIRES_IN,
+  },
   sql: {
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,

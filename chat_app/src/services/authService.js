@@ -1,31 +1,26 @@
 import { admin, db } from '@/configs';
-import { jwtHandler, stringHandler, userHandler } from '@/utils';
+import { authHandler, jwtHandler, stringHandler, userHandler } from '@/utils';
+import config from '@config';
 import createHttpError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 
-const secret = process.env.SECRET;
-const expiresIn = process.env.EXPIRES_IN;
+const { secret, expiresIn } = config.jwt;
 
 const verifyIdToken = async (idToken) => {
   const decodedToken = await admin.auth().verifyIdToken(idToken);
   return decodedToken;
 };
 
-const register = async ({
-  fullName,
-  phoneNumber,
-  password: plainPassword,
-  idToken,
-}) => {
-  console.log('🚀 ~ idToken:', idToken);
+const register = async ({ fullName, phoneNumber, password, idToken }) => {
   let userExists = await db.User.findOne({
     where: {
       phoneNumber,
     },
   });
+
   if (userExists)
     throw createHttpError(400, 'User already exists, please login');
-  // extract idToken from firebase
+
   const tokenExtracted = await verifyIdToken(idToken);
 
   if (
@@ -35,32 +30,39 @@ const register = async ({
     throw createHttpError(400, 'Phone number not match');
   }
 
-  //create new user;
-  let refresh_token = uuidv4();
-  let password = userHandler.hashPassword(plainPassword);
   const user = await db.User.create({
     fullName,
     phoneNumber,
     password,
-    refresh_token,
   });
-  // create profile user
-  const profile = await db.ProfileContact.create({
+
+  let accessToken = jwtHandler.signJwt(
+    {
+      phoneNumber,
+      fullName,
+    },
+    secret,
+    expiresIn
+  );
+
+  let refreshToken = jwtHandler.signJwt(
+    {
+      phoneNumber,
+      fullName,
+    },
+    secret,
+    expiresIn
+  );
+
+  await db.ProfileContact.create({
     userId: user.id,
   });
-  if (user && profile) {
-    let userAfterCustomize = userHandler.standardUser(user.dataValues);
-    return {
-      errCode: 0,
-      message: 'Created',
-      data: userAfterCustomize,
-    };
-  } else {
-    return {
-      errCode: 1,
-      message: 'Do not create',
-    };
-  }
+
+  return authHandler.toUserResponse({
+    ...user.dataValues,
+    accessToken,
+    refreshToken,
+  });
 };
 
 const verifyUser = async (id, phoneNumber) => {
@@ -72,13 +74,13 @@ const verifyUser = async (id, phoneNumber) => {
       },
       raw: false,
     });
-    let user = userHandler.standardUser(userRaw?.dataValues);
+    let user = userHandler.toUserResponse(userRaw?.dataValues);
     if (Object.keys(user).length !== 0) {
       const deletedAvatar = { ...user };
       delete deletedAvatar.avatar;
-      let access_token = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
-      let refresh_token = uuidv4();
-      userRaw.refresh_token = refresh_token;
+      let accessToken = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
+      let refreshToken = uuidv4();
+      userRaw.refreshToken = refreshToken;
       userRaw.lastedOnline = null;
       await userRaw.save();
       return {
@@ -86,8 +88,8 @@ const verifyUser = async (id, phoneNumber) => {
         message: 'Verify user success',
         data: {
           user,
-          access_token: access_token,
-          refresh_token: refresh_token,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
         },
       };
     }
@@ -108,8 +110,7 @@ const login = async (phoneNumber, password) => {
       },
     });
     if (userDB) {
-      const user = userHandler.standardUser(userDB);
-      // validate user;
+      const user = userHandler.toUserResponse(userDB);
       let checkPassword = userHandler.checkPassword(password, userDB.password);
       if (checkPassword) return user;
       throw createHttpError(400, 'Password not correct');
@@ -123,18 +124,18 @@ const updateToken = async (refresh_token_old) => {
   try {
     let userRaw = await db.User.findOne({
       where: {
-        refresh_token: refresh_token_old,
+        refreshToken: refresh_token_old,
       },
       raw: false,
     });
     const user = userRaw?.dataValues;
     if (user) {
-      const refresh_token = uuidv4();
-      const userClient = userHandler.standardUser(user);
+      const refreshToken = uuidv4();
+      const userClient = userHandler.toUserResponse(user);
       const deletedAvatar = { ...userClient };
       delete deletedAvatar.avatar;
       const token = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
-      userRaw.refresh_token = refresh_token;
+      userRaw.refreshToken = refreshToken;
       userRaw.lastedOnline = null;
       await userRaw.save();
       return {
@@ -142,8 +143,8 @@ const updateToken = async (refresh_token_old) => {
         message: 'Refresh token success',
         data: {
           user: userClient,
-          refresh_token: refresh_token,
-          access_token: token,
+          refreshToken: refreshToken,
+          accessToken: token,
         },
       };
     } else {
@@ -169,7 +170,7 @@ const updatePassword = async (id, phoneNumber, password) => {
     if (userDB) {
       userDB.password = userHandler.hashPassword(password);
       await userDB.save();
-      const user = userHandler.standardUser(userDB.dataValues);
+      const user = userHandler.toUserResponse(userDB.dataValues);
       return {
         errCode: 0,
         message: 'Update password success',
@@ -202,7 +203,7 @@ const changePassword = async (id, oldPassword, newPassword) => {
       if (checkPassword) {
         userDB.password = userHandler.hashPassword(newPassword);
         await userDB.save();
-        const user = userHandler.standardUser(userDB.dataValues);
+        const user = userHandler.toUserResponse(userDB.dataValues);
         return {
           errCode: 0,
           message: 'Change password success',

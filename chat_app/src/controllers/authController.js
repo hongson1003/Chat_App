@@ -52,10 +52,17 @@ const verifyUser = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  let { phoneNumber, password } = req.body;
+  let data = req.body;
+
+  const fieldsNotValid = authHandler.getLoginFieldsNotValid(data);
+
+  if (fieldsNotValid) {
+    const fields = fieldsNotValid.join(', ');
+    const error = createError(400, `Missing required fields: ${fields}`);
+    return next(error);
+  }
+
   try {
-    if (!password || !phoneNumber)
-      throw createError(400, 'Missing parameter: password or phoneNumber');
     let rs = await authService.login(phoneNumber, password);
     return res.status(200).json(rs);
   } catch (error) {

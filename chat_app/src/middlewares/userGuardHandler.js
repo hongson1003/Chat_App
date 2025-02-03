@@ -2,7 +2,7 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { jwtHandler } from '@utils';
 import config from '@config';
 
-const { secretKey } = config;
+const { secret } = config;
 
 const checkJWT = async (req, res, next) => {
   let token = jwtHandler.extractToken(req);
