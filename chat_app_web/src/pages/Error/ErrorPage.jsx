@@ -1,7 +1,7 @@
 import { Button, Result } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './errorPage.scss';
+import './error-page.scss';
 
 const ErrorPage = () => {
   return (

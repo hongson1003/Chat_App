@@ -2,9 +2,9 @@ import { appRoutes } from '@/constants';
 import { Button, Result } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './notFoundPage.scss';
+import './not-found-page.scss';
 
-const NotFound = () => {
+const NotFoundPage = () => {
   return (
     <div className="container">
       <Result
@@ -21,4 +21,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundPage;

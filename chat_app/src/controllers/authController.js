@@ -91,6 +91,12 @@ const login = async (req, res, next) => {
 const extractToken = async (req, res, next) => {
   const token = req.cookies['access_token'];
   const refreshToken = req.cookies['refresh_token'];
+
+  if (!token || !refreshToken) {
+    const error = createError(400, 'Missing required cookies');
+    return next(error);
+  }
+
   try {
     const user = await authService.extractToken(token);
     return res.status(200).json({

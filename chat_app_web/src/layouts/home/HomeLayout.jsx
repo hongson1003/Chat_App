@@ -1,28 +1,14 @@
 import { HomeSidebar } from '@/components/layout/home';
 import { axios } from '@/configs';
 import { Layout } from 'antd';
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './home-layout.scss';
 const { Content, Sider } = Layout;
 
 const HomeLayout = () => {
-  const navigate = useNavigate();
-  const appState = useSelector((state) => state.app);
-  const [loading, setLoading] = useState(true);
-
-  const dispatch = useDispatch();
-  const pathName = window.location.pathname;
-
-  // useEffect(() => {
-  //   if (appState.state !== appConstants.STATE.PENDING) {
-  //     setLoading(false);
-  //   }
-  // }, [appState.state]);
-
   const updateOnline = async (time) => {
     try {
       await axios.put('/users/updateOnline', { time });
@@ -102,11 +88,14 @@ const HomeLayout = () => {
   return (
     <>
       <Layout className="home-layout-container">
-        {!pathName.includes('/chat') && (
+        {/* {!pathName.includes('/chat') && (
           <Sider width={'calc(30px+2vw)'}>
             <HomeSidebar />
           </Sider>
-        )}
+        )} */}
+        <Sider width={'calc(30px+2vw)'}>
+          <HomeSidebar />
+        </Sider>
         <Layout>
           <Content>
             <Outlet />
