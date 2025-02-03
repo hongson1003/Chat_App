@@ -1,19 +1,23 @@
+import { appActions } from '@/redux';
+import { authService } from '@/services';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { LoginForm } from '../../components';
 import { PhoneFooterContainer } from '../PhoneFooterContainer';
-import { authService } from '@/services';
-import { useSelector } from 'react-redux';
 
 const PhoneTabContainer = () => {
   const appState = useSelector((state) => state.app);
-  console.log('🚀 ~ PhoneTabContainer ~ appState:', appState);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(false);
 
   const handleOnLogin = async ({ username, password }) => {
+    dispatch(appActions.loginStart());
     try {
       const res = await authService.login(username, password);
-      console.log('🚀 ~ handleOnLogin ~ res:', res);
+      dispatch(appActions.loginSuccess(res));
     } catch (error) {
       console.log('🚀 ~ handleOnLogin ~ error:', error);
+      dispatch(appActions.loginFailure(error));
     }
   };
 

@@ -16,7 +16,7 @@ export default function appReducer(state = initialState, action) {
     case appActionKeys.LOGIN_STATUS.LOGIN_START: {
       let stateLoginStart = { ...state };
       stateLoginStart.userInfo = action.payload;
-      stateLoginStart.state = appActionKeys.STATE.PENDING;
+      stateLoginStart.state = appConstants.STATE.PENDING;
       stateLoginStart.isLogin = false;
       return stateLoginStart;
     }
@@ -25,7 +25,7 @@ export default function appReducer(state = initialState, action) {
       let stateLoginSuccess = { ...state };
       stateLoginSuccess.isLogin = true;
       stateLoginSuccess.userInfo = action.payload;
-      stateLoginSuccess.state = appActionKeys.STATE.RESOLVE;
+      stateLoginSuccess.state = appConstants.STATE.RESOLVE;
       return stateLoginSuccess;
     }
 
@@ -33,44 +33,44 @@ export default function appReducer(state = initialState, action) {
       let stateLoginFail = { ...state };
       stateLoginFail.isLogin = false;
       stateLoginFail.userInfo = null;
-      stateLoginFail.state = appActionKeys.STATE.REJECT;
+      stateLoginFail.state = appConstants.STATE.REJECT;
       return stateLoginFail;
     }
 
     case appActionKeys.LOGOUT_STATUS.LOGOUT_START: {
       let stateLogoutStart = { ...state };
-      stateLogoutStart.state = appActionKeys.STATE.PENDING;
+      stateLogoutStart.state = appConstants.STATE.PENDING;
       return stateLogoutStart;
     }
 
     case appActionKeys.LOGOUT_STATUS.LOGOUT_SUCCESS: {
       let resetState = { ...initialState };
-      resetState.state = appActionKeys.STATE.RESOLVE;
+      resetState.state = appConstants.STATE.RESOLVE;
       return resetState;
     }
 
     case appActionKeys.LOGOUT_STATUS.LOGOUT_FAIL: {
       let stateLogoutSuccess = { ...state };
-      stateLogoutSuccess.state = appActionKeys.STATE.REJECT;
+      stateLogoutSuccess.state = appConstants.STATE.REJECT;
       return stateLogoutSuccess;
     }
 
     case appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_START: {
       let stateChangeKeyMenuStart = { ...state };
-      stateChangeKeyMenuStart.state = appActionKeys.STATE.PENDING;
+      stateChangeKeyMenuStart.state = appConstants.STATE.PENDING;
       return stateChangeKeyMenuStart;
     }
 
     case appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_SUCCESS: {
       let stateChangeKeyMenu = { ...state };
       stateChangeKeyMenu.nav = action.payload;
-      stateChangeKeyMenu.state = appActionKeys.STATE.RESOLVE;
+      stateChangeKeyMenu.state = appConstants.STATE.RESOLVE;
       return stateChangeKeyMenu;
     }
 
     case appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_FAIL: {
       let stateChangeKeyMenuFail = { ...state };
-      stateChangeKeyMenuFail.state = appActionKeys.STATE.REJECT;
+      stateChangeKeyMenuFail.state = appConstants.STATE.REJECT;
       return stateChangeKeyMenuFail;
     }
 
