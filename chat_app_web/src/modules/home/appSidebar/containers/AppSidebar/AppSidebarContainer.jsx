@@ -1,12 +1,12 @@
 import { Avatar } from '@/components/common';
 import { appConstants } from '@/constants';
+import { appActions } from '@/redux';
 import { AntCloudOutlined, CheckSquareOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FriendSidebar, MessageSidebar } from '../../components';
 import './app-sidebar-container.scss';
-import { appActions } from '@/redux';
 
 const items = [
   MessageSidebar,
@@ -26,6 +26,7 @@ const AppSidebarContainer = () => {
 
   const handleOnSelectItem = async (e) => {
     dispatch(appActions.changeKeyMenuStart());
+
     dispatch(appActions.changeKeyMenuSuccess(e.key));
     // dispatch(appActions.changeKeySubMenu(''));
   };

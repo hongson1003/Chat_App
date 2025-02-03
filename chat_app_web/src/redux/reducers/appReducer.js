@@ -65,6 +65,7 @@ export default function appReducer(state = initialState, action) {
       let stateChangeKeyMenu = { ...state };
       stateChangeKeyMenu.nav = action.payload;
       stateChangeKeyMenu.state = appConstants.STATE.RESOLVE;
+
       return stateChangeKeyMenu;
     }
 

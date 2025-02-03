@@ -40,7 +40,7 @@ export const appActions = {
   }),
 
   changeKeyMenuSuccess: (key) => ({
-    type: appConstants.STATE.CHANGE_KEY_MENU,
+    type: appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_SUCCESS,
     payload: key,
   }),
 
