@@ -135,6 +135,32 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
+const qrLogin = async (req, res, next) => {
+  const { accessToken, idToken } = req.body;
+  if (!accessToken || !idToken) {
+    const error = createError(400, 'Missing required parameters');
+    return next(error);
+  }
+
+  try {
+    const response = await authService.verifyQrLogin(accessToken, idToken);
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    res.cookie('refresh_token', response.refreshToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const authController = {
   register,
   login,
@@ -142,6 +168,7 @@ const authController = {
   logout,
   verifyIdToken,
   refreshToken,
+  qrLogin,
 };
 
 export default authController;

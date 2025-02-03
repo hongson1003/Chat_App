@@ -7,6 +7,8 @@ const initRoutesAuthentication = (router) => {
 
   router.route(appRoutes.LOGIN).post(authController.login);
 
+  router.route(appRoutes.QR_LOGIN).post(authController.qrLogin);
+
   router.route(appRoutes.LOGOUT).post(authController.logout);
 
   router

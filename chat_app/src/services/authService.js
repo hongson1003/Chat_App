@@ -222,6 +222,70 @@ const updateToken = async (refresh_token_old) => {
   return response;
 };
 
+const verifyQrLogin = async (token, idToken) => {
+  const decodedToken = await verifyIdToken(idToken);
+  const decodedAccessToken = jwtHandler.verify(token, secret);
+
+  if (
+    decodedToken.phone_number !==
+    stringHandler.convertPhoneViToInternational(
+      decodedAccessToken.data.phoneNumber
+    )
+  ) {
+    throw createHttpError(400, 'Phone number not match');
+  }
+
+  const { username, phoneNumber } = decodedAccessToken.data;
+
+  const user = await db.User.findOne({
+    where: {
+      username: username || phoneNumber,
+    },
+  });
+
+  await db.RefreshToken.update(
+    {
+      isActive: false,
+    },
+    {
+      where: {
+        userId: user.id,
+        isActive: true,
+      },
+    }
+  );
+
+  const accessToken = jwtHandler.signJwt(
+    {
+      username: user.username,
+    },
+    secret,
+    expiresIn * 1000
+  );
+
+  const refreshToken = jwtHandler.signJwt(
+    {
+      username: user.username,
+    },
+    secret,
+    maxAge * 1000
+  );
+
+  await db.RefreshToken.create({
+    userId: user.id,
+    token: refreshToken,
+    expiresAt: new Date(Date.now() + maxAge * 1000),
+  });
+
+  const response = authHandler.toUserResponse({
+    ...user,
+    accessToken,
+    refreshToken,
+  });
+
+  return response;
+};
+
 const authService = {
   register,
   login,
@@ -229,6 +293,7 @@ const authService = {
   updateToken,
   verifyIdToken,
   updateToken,
+  verifyQrLogin,
 };
 
 export default authService;
