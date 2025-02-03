@@ -1,5 +1,5 @@
-import { Avatar } from '@/components/common';
 import { appConstants } from '@/constants';
+import { InfoContainer } from '@/modules/home';
 import { appActions } from '@/redux';
 import { AntCloudOutlined, CheckSquareOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -28,15 +28,11 @@ const AppSidebarContainer = () => {
     dispatch(appActions.changeKeyMenuStart());
 
     dispatch(appActions.changeKeyMenuSuccess(e.key));
-    // dispatch(appActions.changeKeySubMenu(''));
   };
 
   return (
     <div className="sidebar-main">
-      <Avatar
-        src={stateApp.userInfo.avatar}
-        name={stateApp.userInfo.fullName}
-      />
+      <InfoContainer data={stateApp.userInfo} />
 
       <Menu
         theme="light"

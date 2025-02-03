@@ -12,6 +12,7 @@ const CommonModal = ({
   onCancel,
   maskClosable = true,
   disableOk = false,
+  showOkButton = true,
 }) => {
   return (
     <Modal
@@ -27,9 +28,13 @@ const CommonModal = ({
         <Button key="cancel" onClick={onCancel || onClose}>
           {cancelText}
         </Button>,
-        <Button key="ok" type="primary" onClick={onOk} disabled={disableOk}>
-          {okText}
-        </Button>,
+        <>
+          {showOkButton && (
+            <Button key="ok" type="primary" onClick={onOk} disabled={disableOk}>
+              {okText}
+            </Button>
+          )}
+        </>,
       ]}
     >
       {children}

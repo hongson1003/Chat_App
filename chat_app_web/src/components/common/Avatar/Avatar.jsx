@@ -2,25 +2,32 @@ import { stringHandler } from '@/utils';
 import { Avatar } from 'antd';
 import React from 'react';
 import Zoom from 'react-medium-image-zoom';
+import './avatar.scss';
 
-const AvatarCommon = (props) => {
-  const { src, children, zoom, size = 46, status, name } = props;
-
+const AvatarCommon = ({
+  src,
+  size = 46,
+  alt = 'avatar',
+  zoom,
+  status,
+  online = false,
+  fullName,
+}) => {
   return (
-    <div>
+    <div className="avatar-container">
       {zoom ? (
         <Zoom>
-          <Avatar src={src} size={size}>
-            {stringHandler.getFirstLetters(name)}
+          <Avatar src={src} size={size} alt={alt}>
+            {stringHandler.getFirstLetters(fullName)}
           </Avatar>
         </Zoom>
       ) : (
-        <Avatar src={src} size={size}>
-          {stringHandler.getFirstLetters(name)}
+        <Avatar src={src} size={size} alt={alt}>
+          {stringHandler.getFirstLetters(fullName)}
         </Avatar>
       )}
-      {children}
-      {status && <div className="status" />}
+
+      {status && online && <div className="status" />}
     </div>
   );
 };
