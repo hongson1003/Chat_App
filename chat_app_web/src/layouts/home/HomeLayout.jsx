@@ -6,6 +6,8 @@ import { Outlet } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './home-layout.scss';
+import Sidebar from '@/modules/navigator/sidebar';
+import { AppSidebarContainer } from '@/modules/home';
 const { Content, Sider } = Layout;
 
 const HomeLayout = () => {
@@ -94,7 +96,8 @@ const HomeLayout = () => {
           </Sider>
         )} */}
         <Sider width={'calc(30px+2vw)'}>
-          <HomeSidebar />
+          {/* <Sidebar /> */}
+          <AppSidebarContainer />
         </Sider>
         <Layout>
           <Content>

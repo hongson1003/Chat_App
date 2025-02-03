@@ -88,9 +88,9 @@ const Friends = () => {
 };
 
 const Messages = () => {
-  const chat = useSelector((state) => state.appReducer?.subNav);
+  const chat = useSelector((state) => state.app.subNav);
   const dispatch = useDispatch();
-  const appState = useSelector((state) => state.appReducer);
+  const appState = useSelector((state) => state.app);
 
   const onlyRef = useRef(false);
   const [count, setCount] = useState(0);
@@ -110,7 +110,7 @@ const Messages = () => {
   useEffect(() => {
     if (
       onlyRef.current === false &&
-      appState.isLogin === appTypes.STATE.RESOLVE
+      appState.isLogin === appConstants.STATE.RESOLVE
     ) {
       fetchChatNotRead();
       dispatch(userActions.fetchNotificationChatFunc(fetchChatNotRead));
@@ -127,19 +127,19 @@ const Messages = () => {
     }
   };
 
-  useEffect(() => {
-    if (appState.isConnectedSocket) {
-      socket.then((socket) => {
-        socket.on('receive-message', handleReceiveMessageSocket);
-      });
-    }
+  // useEffect(() => {
+  //   if (appState.isConnectedSocket) {
+  //     socket.then((socket) => {
+  //       socket.on('receive-message', handleReceiveMessageSocket);
+  //     });
+  //   }
 
-    return () => {
-      socket.then((socket) => {
-        socket.off('receive-message', handleReceiveMessageSocket);
-      });
-    };
-  }, [appState, chat]);
+  //   return () => {
+  //     socket.then((socket) => {
+  //       socket.off('receive-message', handleReceiveMessageSocket);
+  //     });
+  //   };
+  // }, [appState, chat]);
 
   return (
     <WrapperItemSidebar count={count}>
