@@ -286,6 +286,42 @@ const verifyQrLogin = async (token, idToken) => {
   return response;
 };
 
+const forgotPassword = async (phoneNumber, idToken) => {
+  const tokenExtracted = await verifyIdToken(idToken);
+
+  if (
+    tokenExtracted.phone_number !==
+    stringHandler.convertPhoneViToInternational(phoneNumber)
+  ) {
+    throw createHttpError(400, 'Phone number not match');
+  }
+
+  const user = await db.User.findOne({
+    where: {
+      phoneNumber: phoneNumber,
+    },
+  });
+
+  if (!user) {
+    throw createHttpError(400, 'User not found');
+  }
+
+  const newPassword = userHandler.generateRandomPassword();
+
+  await db.User.update(
+    {
+      password: newPassword,
+    },
+    {
+      where: {
+        phoneNumber: phoneNumber,
+      },
+    }
+  );
+
+  return newPassword;
+};
+
 const authService = {
   register,
   login,
@@ -294,6 +330,7 @@ const authService = {
   verifyIdToken,
   updateToken,
   verifyQrLogin,
+  forgotPassword,
 };
 
 export default authService;

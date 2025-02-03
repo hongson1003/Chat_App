@@ -60,6 +60,11 @@ module.exports = (sequelize, DataTypes) => {
           user.username = user.phoneNumber;
           user.lastedOnline = new Date();
         },
+        beforeUpdate: (user) => {
+          if (user.password) {
+            user.password = userHandler.hashPassword(user.password);
+          }
+        },
       },
     }
   );

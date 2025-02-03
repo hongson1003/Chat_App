@@ -12,6 +12,7 @@ export default {
   VERIFY_ID_TOKEN: '/verify-id-token',
   REFRESH_TOKEN: '/refresh-token',
   QR_LOGIN: '/qr-login',
+  FORGOT_PASSWORD: '/forgot-password',
 
   // chat
   ACCESS: '/access',

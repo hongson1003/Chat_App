@@ -161,6 +161,23 @@ const qrLogin = async (req, res, next) => {
   }
 };
 
+const forgotPassword = async (req, res, next) => {
+  const { phoneNumber, idToken } = req.body;
+
+  if (!phoneNumber) {
+    const error = createError(400, 'Missing required parameters');
+    return next(error);
+  }
+
+  try {
+    const response = await authService.forgotPassword(phoneNumber, idToken);
+
+    return res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const authController = {
   register,
   login,
@@ -169,6 +186,7 @@ const authController = {
   verifyIdToken,
   refreshToken,
   qrLogin,
+  forgotPassword,
 };
 
 export default authController;

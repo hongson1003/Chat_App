@@ -11,6 +11,8 @@ const initRoutesAuthentication = (router) => {
 
   router.route(appRoutes.LOGOUT).post(authController.logout);
 
+  router.route(appRoutes.FORGOT_PASSWORD).post(authController.forgotPassword);
+
   router
     .route(appRoutes.CHECK)
     .post(userGuardHandler.privateRoute, authController.extractToken);
