@@ -13,9 +13,11 @@
   .ant-tabs-nav-list {
     width: 100%;
     .ant-tabs-tab {
-      width: 50%;
-      margin: 0 !important;
+      flex: 1;
       justify-content: center;
     }
+  }
+  .ant-tabs-nav-operations {
+    display: none !important;
   }
 }
