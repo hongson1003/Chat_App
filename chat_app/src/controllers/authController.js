@@ -1,10 +1,24 @@
-import { authService, userService } from '@/services';
-import { authHandler, jwtHandler } from '@/utils';
+import { authService } from '@/services';
+import { authHandler } from '@/utils';
+import config from '@config';
 import {
   default as createError,
   default as createHttpError,
 } from 'http-errors';
-import { TokenExpiredError } from 'jsonwebtoken';
+
+const { maxAge } = config.jwt;
+
+const verifyIdToken = async (req, res, next) => {
+  const { idToken } = req.query;
+  if (!idToken)
+    throw new createHttpError(400, 'Missing required parameter: idToken');
+  try {
+    let rs = await authService.verifyIdToken(idToken);
+    return res.status(200).json(rs);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const register = async (req, res, next) => {
   let data = req.body;
@@ -25,27 +39,18 @@ const register = async (req, res, next) => {
 
   try {
     const response = await authService.register(data);
-    return res.status(200).json(response);
-  } catch (error) {
-    next(error);
-  }
-};
 
-const verifyUser = async (req, res, next) => {
-  const { id, phoneNumber } = req.body;
-  try {
-    let rs = await authService.verifyUser(id, phoneNumber);
-    if (rs.errCode === 0) {
-      res.cookie('access_token', rs.data.access_token, {
-        httpOnly: true,
-        maxAge: +MAX_AGE * 60000,
-      });
-      res.cookie('refresh_token', rs.data.refresh_token, {
-        httpOnly: true,
-        maxAge: +MAX_AGE * 60000,
-      });
-    }
-    return res.status(200).json(rs);
+    res.cookie('access_token', response.accessToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    res.cookie('refresh_token', response.refreshToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    return res.status(200).json(response);
   } catch (error) {
     next(error);
   }
@@ -65,6 +70,17 @@ const login = async (req, res, next) => {
 
   try {
     let response = await authService.login(username, password);
+
+    res.cookie('access_token', response.accessToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    res.cookie('refresh_token', response.refreshToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
     return res.status(200).json(response);
   } catch (error) {
     console.log('🚀 ~ login ~ error:', error);
@@ -72,42 +88,12 @@ const login = async (req, res, next) => {
   }
 };
 
-const check = async (req, res, next) => {
-  let access_token = req.cookies['access_token'];
-  const refresh_token = req.cookies['refresh_token'];
-  if (!refresh_token || !access_token)
-    return res.status(200).json({
-      errCode: 1,
-      message: 'No refresh_token & access_token',
-    });
+const extractToken = async (req, res, next) => {
+  const token = req.token;
   try {
-    let decoded = jwtHandler.verify(access_token, SECRET);
-    const userDecoded = decoded?.data;
-    const userRes = await userService.getUserById(userDecoded.id);
-    return res.status(200).json({
-      errCode: 0,
-      data: {
-        user: userRes.data,
-        access_token,
-        refresh_token,
-      },
-    });
+    const user = await authService.extractToken(token);
+    return res.status(200).json(user);
   } catch (error) {
-    if (error instanceof TokenExpiredError) {
-      // refresh token
-      const rs = await authService.updateToken(refresh_token);
-      if (rs.errCode === 100) {
-        res.cookie('access_token', rs.data.access_token, {
-          httpOnly: true,
-          maxAge: +MAX_AGE * 60000,
-        });
-        res.cookie('refresh_token', rs.data.refresh_token, {
-          httpOnly: true,
-          maxAge: +MAX_AGE * 60000,
-        });
-      }
-      return res.status(200).json(rs);
-    }
     next(error);
   }
 };
@@ -115,22 +101,13 @@ const check = async (req, res, next) => {
 const logout = async (req, res, next) => {
   let access_token = req.cookies['access_token'];
   const refresh_token = req.cookies['refresh_token'];
-  if (!refresh_token || !access_token)
-    return res.status(200).json({
-      errCode: 1,
-      messag: 'No refresh_token & access_token',
-    });
-  try {
-    res.clearCookie('refresh_token');
-    res.clearCookie('access_token');
-    return res.status(200).json({
-      errCode: 0,
-      message: 'Logout user success',
-      data: null,
-    });
-  } catch (error) {
-    next();
+  if (!access_token || !refresh_token) {
+    const error = createError(400, 'Missing required cookies');
+    return next(error);
   }
+  res.clearCookie('refresh_token');
+  res.clearCookie('access_token');
+  return res.status(200).json({ message: 'Logout successfully' });
 };
 
 const resetPassword = async (req, res, next) => {
@@ -164,13 +141,26 @@ const changePassword = async (req, res, next) => {
   }
 };
 
-const verifyIdToken = async (req, res, next) => {
-  const { idToken } = req.query;
-  if (!idToken)
-    throw new createHttpError(400, 'Missing required parameter: idToken');
+const refreshToken = async (req, res, next) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    const error = createError(400, 'Missing required cookies');
+    return next(error);
+  }
   try {
-    let rs = await authService.verifyIdToken(idToken);
-    return res.status(200).json(rs);
+    const response = await authService.updateToken(refreshToken);
+
+    res.cookie('access_token', response.accessToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    res.cookie('refresh_token', response.refreshToken, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
+
+    return res.status(200).json(response);
   } catch (error) {
     next(error);
   }
@@ -178,13 +168,13 @@ const verifyIdToken = async (req, res, next) => {
 
 const authController = {
   register,
-  verifyUser,
   login,
-  check,
+  extractToken,
   logout,
   resetPassword,
   changePassword,
   verifyIdToken,
+  refreshToken,
 };
 
 export default authController;

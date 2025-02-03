@@ -7,7 +7,7 @@ const IntRoutesUsers = (router) => {
 
   router
     .route(appRoutes.INFO)
-    .get(userGuardHandler.checkJWT, userController.findUserById);
+    .get(userGuardHandler.privateRoute, userController.findUserById);
 
   router
     .route(appRoutes.USER_BY_PHONE)
@@ -15,65 +15,68 @@ const IntRoutesUsers = (router) => {
 
   router
     .route(appRoutes.PROFILE)
-    .post(userGuardHandler.checkJWT, userController.createInfoContact)
-    .get(userGuardHandler.checkJWT, userController.getProfileByUserId);
+    .post(userGuardHandler.privateRoute, userController.createInfoContact)
+    .get(userGuardHandler.privateRoute, userController.getProfileByUserId);
 
   router
     .route(appRoutes.DETAIL)
-    .get(userGuardHandler.checkJWT, userController.findUserWithProfileById);
+    .get(userGuardHandler.privateRoute, userController.findUserWithProfileById);
 
   router
     .route(appRoutes.FRIENDSHIP)
-    .get(userGuardHandler.checkJWT, userController.findFriendShip)
+    .get(userGuardHandler.privateRoute, userController.findFriendShip)
     .post(
-      userGuardHandler.checkJWT,
+      userGuardHandler.privateRoute,
       userController.sendRequestAddFriendOrRecall
     )
-    .put(userGuardHandler.checkJWT, userController.acceptRequestAddFriend);
+    .put(userGuardHandler.privateRoute, userController.acceptRequestAddFriend);
 
   router
     .route(appRoutes.FRIENDSHIP_REJECT)
-    .put(userGuardHandler.checkJWT, userController.rejectFriendShip);
+    .put(userGuardHandler.privateRoute, userController.rejectFriendShip);
 
   router
     .route(appRoutes.FRIENDSHIP_UNFRIEND)
-    .put(userGuardHandler.checkJWT, userController.unFriend);
+    .put(userGuardHandler.privateRoute, userController.unFriend);
 
   router
     .route(appRoutes.FRIENDS_LIMIT)
-    .get(userGuardHandler.checkJWT, userController.findFriendsLimit);
+    .get(userGuardHandler.privateRoute, userController.findFriendsLimit);
 
   router
     .route(appRoutes.NOTIFICATION_FRIENDSHIP)
-    .get(userGuardHandler.checkJWT, userController.findAllNotifications)
-    .post(userGuardHandler.checkJWT, userController.updateNotification);
+    .get(userGuardHandler.privateRoute, userController.findAllNotifications)
+    .post(userGuardHandler.privateRoute, userController.updateNotification);
 
   router
     .route(appRoutes.NOTIFICATION_FRIENDSHIP_INVITED)
-    .get(userGuardHandler.checkJWT, userController.findAllInvitedFriend);
+    .get(userGuardHandler.privateRoute, userController.findAllInvitedFriend);
 
   router
     .route(appRoutes.NOTIFICATION_FRIENDSHIP_SENT_INVITED)
-    .get(userGuardHandler.checkJWT, userController.findAllSentInvitedFriend);
+    .get(
+      userGuardHandler.privateRoute,
+      userController.findAllSentInvitedFriend
+    );
 
   router
     .route(appRoutes.UPDATE_INFO)
-    .put(userGuardHandler.checkJWT, userController.updateUserInfor);
+    .put(userGuardHandler.privateRoute, userController.updateUserInfor);
 
   router
     .route(appRoutes.AVATAR)
-    .put(userGuardHandler.checkJWT, userController.updateAvatar);
+    .put(userGuardHandler.privateRoute, userController.updateAvatar);
   router
     .route(appRoutes.ONLINE)
-    .put(userGuardHandler.checkJWT, userController.updateOnline);
+    .put(userGuardHandler.privateRoute, userController.updateOnline);
 
   router
     .route(appRoutes.SEND_VERIFY_EMAIL)
-    .post(userGuardHandler.checkJWT, userController.sendverifyEmail);
+    .post(userGuardHandler.privateRoute, userController.sendverifyEmail);
 
   router
     .route(appRoutes.VERIFY_EMAIL)
-    .post(userGuardHandler.checkJWT, userController.verifyEmail);
+    .post(userGuardHandler.privateRoute, userController.verifyEmail);
   return router;
 };
 

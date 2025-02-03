@@ -5,107 +5,110 @@ import { userGuardHandler } from '@middlewares';
 const InitRoutesChat = (router) => {
   router
     .route(appRoutes.ACCESS)
-    .post(userGuardHandler.checkJWT, chatController.accessChat)
-    .get(userGuardHandler.checkJWT, chatController.getAccessChat);
+    .post(userGuardHandler.privateRoute, chatController.accessChat)
+    .get(userGuardHandler.privateRoute, chatController.getAccessChat);
   router
     .route(appRoutes.PRIVATE)
-    .get(userGuardHandler.checkJWT, chatController.findOneByPrivate);
+    .get(userGuardHandler.privateRoute, chatController.findOneByPrivate);
 
   router
     .route(appRoutes.NOT_READ)
-    .get(userGuardHandler.checkJWT, chatController.findNotReadChat);
+    .get(userGuardHandler.privateRoute, chatController.findNotReadChat);
 
   router
     .route(appRoutes.PAGINATION)
-    .get(userGuardHandler.checkJWT, chatController.findManyChatPagination);
+    .get(userGuardHandler.privateRoute, chatController.findManyChatPagination);
 
   router
     .route(appRoutes.SEEN)
-    .put(userGuardHandler.checkJWT, chatController.seenChat);
+    .put(userGuardHandler.privateRoute, chatController.seenChat);
 
   router
     .route(appRoutes.PIN)
-    .put(userGuardHandler.checkJWT, chatController.pinChat);
+    .put(userGuardHandler.privateRoute, chatController.pinChat);
 
   router
     .route(appRoutes.TOTAL_TOGETHER)
-    .get(userGuardHandler.checkJWT, chatController.getTotalTogether);
+    .get(userGuardHandler.privateRoute, chatController.getTotalTogether);
 
   router
     .route(appRoutes.GROUP)
-    .post(userGuardHandler.checkJWT, chatController.createGroupChat)
-    .put(userGuardHandler.checkJWT, chatController.updateGroupChat)
-    .get(userGuardHandler.checkJWT, chatController.findManyGroups);
+    .post(userGuardHandler.privateRoute, chatController.createGroupChat)
+    .put(userGuardHandler.privateRoute, chatController.updateGroupChat)
+    .get(userGuardHandler.privateRoute, chatController.findManyGroups);
 
   router
     .route(appRoutes.DELETE)
-    .delete(userGuardHandler.checkJWT, chatController.deleteChat);
+    .delete(userGuardHandler.privateRoute, chatController.deleteChat);
 
   router
     .route(appRoutes.GROUP_OUT)
-    .put(userGuardHandler.checkJWT, chatController.outGroupChat);
+    .put(userGuardHandler.privateRoute, chatController.outGroupChat);
 
   router
     .route(appRoutes.MESSAGE)
-    .post(userGuardHandler.checkJWT, chatController.sendMessage);
+    .post(userGuardHandler.privateRoute, chatController.sendMessage);
   router
     .route(appRoutes.MESSAGE_PAGINATION)
-    .get(userGuardHandler.checkJWT, chatController.findManyMessagePagination);
+    .get(
+      userGuardHandler.privateRoute,
+      chatController.findManyMessagePagination
+    );
 
   router
     .route(appRoutes.BACKGROUND)
-    .put(userGuardHandler.checkJWT, chatController.setBackgroundForChat);
+    .put(userGuardHandler.privateRoute, chatController.setBackgroundForChat);
 
   router
-    .route(appRoutes.FEELING, userGuardHandler.checkJWT)
+    .route(appRoutes.FEELING, userGuardHandler.privateRoute)
     .post(chatController.addFeeling)
     .put(chatController.clearReactions);
   router
-    .route(appRoutes.TOTAL, userGuardHandler.checkJWT)
+    .route(appRoutes.TOTAL, userGuardHandler.privateRoute)
     .get(chatController.getTotalMessages);
   router
     .route(appRoutes.RECALL)
-    .put(userGuardHandler.checkJWT, chatController.recallMessage);
+    .put(userGuardHandler.privateRoute, chatController.recallMessage);
   router
     .route(appRoutes.DELETE_MESSAGE)
-    .put(userGuardHandler.checkJWT, chatController.deleteMessage);
+    .put(userGuardHandler.privateRoute, chatController.deleteMessage);
   router
     .route(appRoutes.PIN_MESSAGE)
-    .put(userGuardHandler.checkJWT, chatController.pinMessage);
+    .put(userGuardHandler.privateRoute, chatController.pinMessage);
   router
     .route(appRoutes.UN_PIN_MESSAGE)
-    .put(userGuardHandler.checkJWT, chatController.unPinMessage);
+    .put(userGuardHandler.privateRoute, chatController.unPinMessage);
   router
     .route(appRoutes.ADD_MEMBERS)
-    .put(userGuardHandler.checkJWT, chatController.addMembers);
+    .put(userGuardHandler.privateRoute, chatController.addMembers);
   router
     .route(appRoutes.DELETE_MEMBER)
-    .put(userGuardHandler.checkJWT, chatController.deleteMember);
+    .put(userGuardHandler.privateRoute, chatController.deleteMember);
   router
     .route(appRoutes.GET_ALL_PICTURE)
-    .get(userGuardHandler.checkJWT, chatController.findManyImagePagination);
+    .get(userGuardHandler.privateRoute, chatController.findManyImagePagination);
   router
     .route(appRoutes.GET_ALL_FILE)
-    .get(userGuardHandler.checkJWT, chatController.findManyFilePagination);
+    .get(userGuardHandler.privateRoute, chatController.findManyFilePagination);
   // disband by leader
   router
     .route(appRoutes.GRANT_GROUP_LEADER)
-    .put(userGuardHandler.checkJWT, chatController.disbandByLeader);
+    .put(userGuardHandler.privateRoute, chatController.disbandByLeader);
   router
     .route(appRoutes.GET_LIST_GROUP_MEMBER)
-    .get(userGuardHandler.checkJWT, chatController.getListGroupMember);
+    .get(userGuardHandler.privateRoute, chatController.getListGroupMember);
 
   router
     .route(appRoutes.NOTIFY)
-    .post(userGuardHandler.checkJWT, chatController.notifyMessage);
+    .post(userGuardHandler.privateRoute, chatController.notifyMessage);
 
   router
     .route(appRoutes.GROUP_GRANT)
-    .put(userGuardHandler.checkJWT, chatController.grantGroupChat);
+    .put(userGuardHandler.privateRoute, chatController.grantGroupChat);
 
   router
     .route(appRoutes.GROUP_DISSOLVE)
-    .post(userGuardHandler.checkJWT, chatController.dissolutionGroupChat);
+    .post(userGuardHandler.privateRoute, chatController.dissolutionGroupChat);
 
   return router;
 };

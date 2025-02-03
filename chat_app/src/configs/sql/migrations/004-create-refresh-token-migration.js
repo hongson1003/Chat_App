@@ -1,21 +1,13 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('NotificationFriendShips', {
+    await queryInterface.createTable('Refresh_Tokens', {
       id: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
-        autoIncrement: true,
       },
-      friendShipId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'FriendShips',
-          key: 'id',
-        },
-      },
-      senderId: {
+      userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -23,8 +15,16 @@ module.exports = {
           key: 'id',
         },
       },
-      content: {
-        type: Sequelize.STRING,
+      token: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      deviceInfo: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      expiresAt: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
       createdAt: {
@@ -36,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('NotificationFriendShips');
+    await queryInterface.dropTable('Users');
   },
 };

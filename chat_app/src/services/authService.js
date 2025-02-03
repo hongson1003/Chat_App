@@ -2,9 +2,8 @@ import { admin, db } from '@/configs';
 import { authHandler, jwtHandler, stringHandler, userHandler } from '@/utils';
 import config from '@config';
 import createHttpError from 'http-errors';
-import { v4 as uuidv4 } from 'uuid';
 
-const { secret, expiresIn } = config.jwt;
+const { secret, expiresIn, maxAge } = config.jwt;
 
 const verifyIdToken = async (idToken) => {
   const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -51,7 +50,7 @@ const register = async ({ fullName, phoneNumber, password, idToken }) => {
       fullName,
     },
     secret,
-    expiresIn
+    maxAge
   );
 
   await db.ProfileContact.create({
@@ -63,43 +62,6 @@ const register = async ({ fullName, phoneNumber, password, idToken }) => {
     accessToken,
     refreshToken,
   });
-};
-
-const verifyUser = async (id, phoneNumber) => {
-  try {
-    const userRaw = await db.User.findOne({
-      where: {
-        id: id,
-        phoneNumber: phoneNumber,
-      },
-      raw: false,
-    });
-    let user = userHandler.toUserResponse(userRaw?.dataValues);
-    if (Object.keys(user).length !== 0) {
-      const deletedAvatar = { ...user };
-      delete deletedAvatar.avatar;
-      let accessToken = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
-      let refreshToken = uuidv4();
-      userRaw.refreshToken = refreshToken;
-      userRaw.lastedOnline = null;
-      await userRaw.save();
-      return {
-        errCode: 0,
-        message: 'Verify user success',
-        data: {
-          user,
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-        },
-      };
-    }
-    return {
-      errCode: 1,
-      message: 'Verify fail, Please check your code !',
-    };
-  } catch (error) {
-    throw error;
-  }
 };
 
 const login = async (username, password) => {
@@ -122,7 +84,7 @@ const login = async (username, password) => {
       username,
     },
     secret,
-    expiresIn
+    expiresIn * 1000
   );
 
   const refreshToken = jwtHandler.signJwt(
@@ -130,7 +92,7 @@ const login = async (username, password) => {
       username,
     },
     secret,
-    expiresIn
+    maxAge * 1000
   );
 
   const response = authHandler.toUserResponse({
@@ -142,41 +104,56 @@ const login = async (username, password) => {
   return response;
 };
 
+const extractToken = async (token) => {
+  const decodedToken = jwtHandler.verify(token, secret);
+  const { username, phoneNumber } = decodedToken.data;
+
+  const user = await db.User.findOne({
+    where: {
+      username: username || phoneNumber,
+    },
+  });
+
+  const response = userHandler.toUserResponse(user);
+
+  return response;
+};
+
 const updateToken = async (refresh_token_old) => {
-  try {
-    let userRaw = await db.User.findOne({
-      where: {
-        refreshToken: refresh_token_old,
+  const decoded = jwtHandler.verify(refresh_token_old, secret);
+
+  let user = await db.User.findOne({
+    where: {
+      username: decoded.data.username,
+    },
+  });
+
+  if (user) {
+    const accessToken = jwtHandler.signJwt(
+      {
+        username: user.username,
       },
-      raw: false,
+      secret,
+      expiresIn * 1000
+    );
+
+    const refreshToken = jwtHandler.signJwt(
+      {
+        username: user.username,
+      },
+      secret,
+      maxAge * 1000
+    );
+
+    const response = authHandler.toUserResponse({
+      ...user,
+      accessToken,
+      refreshToken,
     });
-    const user = userRaw?.dataValues;
-    if (user) {
-      const refreshToken = uuidv4();
-      const userClient = userHandler.toUserResponse(user);
-      const deletedAvatar = { ...userClient };
-      delete deletedAvatar.avatar;
-      const token = jwtHandler.signJwt(deletedAvatar, secret, expiresIn);
-      userRaw.refreshToken = refreshToken;
-      userRaw.lastedOnline = null;
-      await userRaw.save();
-      return {
-        errCode: 100,
-        message: 'Refresh token success',
-        data: {
-          user: userClient,
-          refreshToken: refreshToken,
-          accessToken: token,
-        },
-      };
-    } else {
-      return {
-        errCode: 1,
-        message: 'Refresh token fail, Please check !',
-      };
-    }
-  } catch (error) {
-    throw error;
+
+    return response;
+  } else {
+    throw createHttpError(400, 'User not found');
   }
 };
 
@@ -249,12 +226,13 @@ const changePassword = async (id, oldPassword, newPassword) => {
 
 const authService = {
   register,
-  verifyUser,
   login,
+  extractToken,
   updateToken,
   updatePassword,
   changePassword,
   verifyIdToken,
+  updateToken,
 };
 
 export default authService;

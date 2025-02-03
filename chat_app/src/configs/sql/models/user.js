@@ -1,4 +1,3 @@
-'use strict';
 import { userHandler } from '@/utils';
 import { Model } from 'sequelize';
 

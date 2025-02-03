@@ -1,54 +1,48 @@
-import { TokenExpiredError } from 'jsonwebtoken';
-import { jwtHandler } from '@utils';
+import { authHandler, jwtHandler } from '@/utils';
 import config from '@config';
+import createHttpError from 'http-errors';
+import { TokenExpiredError } from 'jsonwebtoken';
 
-const { secret } = config;
+const { secret } = config.jwt;
 
-const checkJWT = async (req, res, next) => {
-  let token = jwtHandler.extractToken(req);
-  const refresh_token = req.cookies['refresh_token'];
-  if (!token || !refresh_token) {
-    return res.status(401).json({
-      errCode: 401,
-      message: 'Not authorization token',
-    });
+const privateRoute = async (req, res, next) => {
+  const headerToken = authHandler.extractToken(req);
+  const { access_token } = req.cookies || {};
+  const isWebRequest = req.headers['user-agent']?.includes('Mozilla');
+  let errors = [];
+
+  if (!headerToken && !access_token) {
+    errors.push('Unauthorized: No token provided');
   }
+
+  if (isWebRequest) {
+    if (headerToken && access_token && headerToken !== access_token) {
+      errors.push('Unauthorized: Token does not match');
+    }
+  } else {
+    if (!headerToken) {
+      errors.push('Unauthorized: No token provided');
+    }
+  }
+
+  if (errors.length > 0) {
+    return next(createHttpError(401, errors.join(', ')));
+  }
+
   try {
-    let decoded = jwtHandler.verify(token, secret);
-    req.user = decoded?.data;
-    if (decoded) {
-      next();
-    } else {
-      return res.status(401).json({
-        errCode: 401,
-        message: 'Not authorization token',
-      });
-    }
+    jwtHandler.verify(headerToken || access_token, secret);
+    req.token = headerToken || access_token;
+    next();
   } catch (error) {
-    // if (error instanceof TokenExpiredError) {
-    //     // refresh token
-    //     const rs = await authService.updateToken(refresh_token);
-    //     if (rs.errCode === 100) {
-    //         res.cookie('access_token', rs.data.access_token, { httpOnly: true, maxAge: +process.env.MAX_AGE * 60000 });
-    //         res.cookie('refresh_token', rs.data.refresh_token, { httpOnly: true, maxAge: +process.env.MAX_AGE * 60000 });
-    //     }
-    //     return res.status(200).json(rs);
-    // }
-    // next();
     if (error instanceof TokenExpiredError) {
-      return res.status(401).json({
-        errCode: 401,
-        message: 'Token expired',
-      });
-    } else {
-      return res.status(401).json({
-        errCode: 401,
-        message: 'Not authorization token',
-      });
+      return next(createHttpError(401, 'Unauthorized: Token expired'));
     }
+    next(error);
   }
 };
 
-module.exports = {
-  checkJWT,
+const userGuardHandler = {
+  privateRoute,
 };
+
+export default userGuardHandler;

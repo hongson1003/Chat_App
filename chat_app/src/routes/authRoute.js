@@ -1,6 +1,6 @@
 import { appRoutes } from '@/constants';
 import { authController } from '@/controllers';
-import { userGuardHandler } from '@middlewares';
+import { userGuardHandler } from '@/middlewares';
 
 const initRoutesAuthentication = (router) => {
   router.route(appRoutes.ROOT).post(authController.register);
@@ -9,16 +9,19 @@ const initRoutesAuthentication = (router) => {
 
   router.route(appRoutes.LOGOUT).post(authController.logout);
 
-  router.route(appRoutes.CHECK).post(authController.check);
+  router
+    .route(appRoutes.CHECK)
+    .post(userGuardHandler.privateRoute, authController.extractToken);
+
+  router.route(appRoutes.REFRESH_TOKEN).post(authController.refreshToken);
 
   router.route(appRoutes.VERIFY_ID_TOKEN).get(authController.verifyIdToken);
 
-  router.route(appRoutes.VERIFY).post(authController.verifyUser);
   router.route(appRoutes.RESET_PASSWORD).post(authController.resetPassword);
 
-  router
-    .route(appRoutes.CHANGE_PASSWORD)
-    .put(userGuardHandler.checkJWT, authController.changePassword);
+  // router
+  //   .route(appRoutes.CHANGE_PASSWORD)
+  //   .put(userGuardHandler.privateRoute, authController.changePassword);
 
   return router;
 };

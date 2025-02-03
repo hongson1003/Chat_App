@@ -10,7 +10,7 @@ async function connectNoSql() {
         .bgBrightGreen
     );
   } catch (err) {
-    throw err;
+    console.log('🚀 ~ connectNoSql ~ err:', err);
   }
 }
 module.exports = connectNoSql;

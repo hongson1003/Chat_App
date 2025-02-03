@@ -1,5 +1,5 @@
 import { appRegex } from '@/constants';
-import { USER_RESPONSE_FIELDS, userHandler } from '.';
+import { USER_RESPONSE_FIELDS } from '.';
 
 const REGISTER_USER_FIELDS = ['phoneNumber', 'password', 'fullName', 'idToken'];
 
@@ -35,11 +35,24 @@ const toUserResponse = (user) => {
   return response;
 };
 
+const extractToken = (req) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    return req.headers.authorization.split(' ')[1];
+  } else if (req.query && req.query.token) {
+    return req.query.token;
+  }
+  return null;
+};
+
 const authHandler = {
   getRegisterFieldsNotValid,
   checkPhoneNumberIsValid,
   getLoginFieldsNotValid,
   toUserResponse,
+  extractToken,
 };
 
 export default authHandler;

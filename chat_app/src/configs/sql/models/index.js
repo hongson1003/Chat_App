@@ -1,11 +1,10 @@
-const configEnv = require('@config');
-
+import configEnv from '@config';
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import process from 'process';
-const basename = path.basename(__filename);
 import { configMySql } from '../connect';
+
+const basename = path.basename(__filename);
 const config = configMySql[configEnv.nodeEnv];
 
 const db = {};

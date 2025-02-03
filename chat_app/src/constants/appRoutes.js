@@ -1,15 +1,16 @@
 export default {
   ROOT: '/',
   HEALTH: '/api/v1/health',
-  LOGIN: '/login',
-  LOGOUT: '/logout',
-  CHECK: '/check',
-  VERIFY: '/verify',
-  RESET_PASSWORD: '/reset-password',
-  CHANGE_PASSWORD: '/change-password',
   AUTH: '/api/v1/auth',
   USERS: '/api/v1/users',
   CHATS: '/api/v1/chats',
+
+  // auth
+  LOGIN: '/login',
+  LOGOUT: '/logout',
+  CHECK: '/check',
+  VERIFY_ID_TOKEN: '/verify-id-token',
+  REFRESH_TOKEN: '/refresh-token',
 
   // chat
   ACCESS: '/access',
@@ -42,6 +43,8 @@ export default {
   GROUP_DISSOLVE: '/group/dissolve',
   // USER
 
+  RESET_PASSWORD: '/reset-password',
+  CHANGE_PASSWORD: '/change-password',
   GET_MANY: '/getMany',
   INFO: '/info',
   USER_BY_PHONE: '/phone',
@@ -59,5 +62,4 @@ export default {
   ONLINE: '/online',
   SEND_VERIFY_EMAIL: '/send-verify-email',
   VERIFY_EMAIL: '/verify-email',
-  VERIFY_ID_TOKEN: '/verify-id-token',
 };
