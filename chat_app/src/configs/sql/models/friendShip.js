@@ -1,57 +1,49 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-    class FriendShip extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
-        static associate(models) {
-            // define association here
-            FriendShip.belongsTo(models.User, {
-                foreignKey: 'user1Id',
-                as: 'sender'
-            });
+  class FriendShip extends Model {
+    static associate(models) {
+      FriendShip.belongsTo(models.User, {
+        foreignKey: 'requesterId',
+        as: 'requester',
+      });
 
-            FriendShip.belongsTo(models.User, {
-                foreignKey: 'user2Id',
-                as: 'receiver'
-            });
-
-
-        }
+      FriendShip.belongsTo(models.User, {
+        foreignKey: 'receiverId',
+        as: 'receiver',
+      });
     }
-    FriendShip.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
+  }
+  FriendShip.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      requesterId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'User',
+          key: 'id',
         },
-        user1Id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'User',
-                key: 'id',
-            }
+      },
+      receiverId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'User',
+          key: 'id',
         },
-        user2Id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'User',
-                key: 'id'
-            }
-        },
-        status: DataTypes.STRING,
-        createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE,
-    }, {
-        sequelize,
-        modelName: 'FriendShip',
-    });
-    return FriendShip;
+      },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+    },
+    {
+      sequelize,
+      modelName: 'FriendShip',
+    }
+  );
+  return FriendShip;
 };

@@ -28,9 +28,7 @@ const RegisterAccountContainer = () => {
     });
   };
 
-  const handleOnOkRegister = (values) => {
-    console.log('handleOnOkRegister', values);
-  };
+  const handleOnOkRegister = (values) => {};
 
   const handleSendOtpSuccess = (confirmationResult) => {
     setRegisterModalState((prev) => ({

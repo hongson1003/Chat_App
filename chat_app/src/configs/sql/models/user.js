@@ -2,13 +2,7 @@
 import { Model } from 'sequelize';
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
       User.hasOne(models.ProfileContact, {
         as: 'userInfo',
         foreignKey: 'userId',
@@ -17,16 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.User, {
         as: 'friends',
         through: 'FriendShip',
-        foreignKey: 'user1Id', // Khóa ngoại của user trong bảng FriendShip
-        otherKey: 'user2Id', // Khóa ngoại của user đích trong bảng FriendShip
-      });
-
-      User.hasMany(models.Post, {
-        foreignKey: 'userId',
-      });
-
-      User.hasMany(models.Comment, {
-        foreignKey: 'userId',
+        foreignKey: 'requesterId',
+        otherKey: 'receiverId',
       });
     }
   }
@@ -38,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         autoIncrement: true,
       },
-      userName: DataTypes.STRING,
+      username: DataTypes.STRING,
       phoneNumber: {
         type: DataTypes.STRING,
         unique: true,
@@ -53,19 +39,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      code: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       refresh_token: DataTypes.STRING,
-      peerId: DataTypes.STRING,
       email: {
         type: DataTypes.STRING,
         allowNull: true,
-      },
-      emailActive: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
       },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

@@ -1,6 +1,6 @@
 import config from '@config';
 import { appService, userService } from '@services';
-import { jwtHandler } from '@utils';
+import { jwtHandler } from '@/utils';
 import {
   default as createError,
   default as createHttpError,
@@ -9,15 +9,16 @@ import { TokenExpiredError } from 'jsonwebtoken';
 
 const { secretKey, expiresIn } = config;
 
+const USER_REGISTER_FIELDS = ['phoneNumber', 'password', 'name', 'idToken'];
+
 const register = async (req, res, next) => {
-  let user = req.body;
-  for (const [key, value] of Object.entries(user)) {
-    if (!value)
-      return res.status(200).json({
-        errCode: 1,
-        message: 'Missing parameter: ' + key,
-      });
-  }
+  let data = req.body;
+
+  USER_REGISTER_FIELDS.forEach((field) => {
+    if (!data[field])
+      throw createError(400, `Missing required parameter: ${field}`);
+  });
+
   try {
     const response = await appService.register(user);
     return res.status(200).json(response);

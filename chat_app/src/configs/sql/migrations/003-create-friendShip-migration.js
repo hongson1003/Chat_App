@@ -5,33 +5,28 @@ const appKeys = require('@constants').appKeys;
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('FriendShip', {
+    await queryInterface.createTable('FriendShips', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.INTEGER,
         autoIncrement: true,
       },
-      user1Id: {
+      requesterId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'User',
+          model: 'Users',
           key: 'id',
         },
       },
-      user2Id: {
+      receiverId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'User',
+          model: 'Users',
           key: 'id',
         },
-      },
-      status: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: appKeys.STATUS_FRIENDSHIP.PENDING,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -42,6 +37,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('FriendShip');
+    await queryInterface.dropTable('FriendShips');
   },
 };

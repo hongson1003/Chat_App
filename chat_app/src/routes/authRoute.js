@@ -1,24 +1,24 @@
 import { appRoutes } from '@/constants';
-import { appController } from '@controllers';
+import { authController } from '@controllers';
 import { userGuardHandler } from '@middlewares';
 
 const InitRoutesAuthentication = (router) => {
-  router.route(appRoutes.ROOT).post(appController.register);
+  router.route(appRoutes.ROOT).post(authController.register);
 
-  router.route(appRoutes.LOGIN).post(appController.login);
+  router.route(appRoutes.LOGIN).post(authController.login);
 
-  router.route(appRoutes.LOGOUT).post(appController.logout);
+  router.route(appRoutes.LOGOUT).post(authController.logout);
 
-  router.route(appRoutes.CHECK).post(appController.check);
+  router.route(appRoutes.CHECK).post(authController.check);
 
-  router.route(appRoutes.VERIFY_ID_TOKEN).get(appController.verifyIdToken);
+  router.route(appRoutes.VERIFY_ID_TOKEN).get(authController.verifyIdToken);
 
-  router.route(appRoutes.VERIFY).post(appController.verifyUser);
-  router.route(appRoutes.RESET_PASSWORD).post(appController.resetPassword);
+  router.route(appRoutes.VERIFY).post(authController.verifyUser);
+  router.route(appRoutes.RESET_PASSWORD).post(authController.resetPassword);
 
   router
     .route(appRoutes.CHANGE_PASSWORD)
-    .put(userGuardHandler.checkJWT, appController.changePassword);
+    .put(userGuardHandler.checkJWT, authController.changePassword);
 
   return router;
 };

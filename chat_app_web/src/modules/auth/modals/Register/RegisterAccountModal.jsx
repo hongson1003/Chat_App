@@ -1,7 +1,7 @@
 import { Modal } from '@/components/common';
 import { appConstants, appRegex } from '@/constants';
 import { stringHandler } from '@/utils';
-import { CheckOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { Alert, Button, Flex, Form, Input, Tooltip } from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import React from 'react';
@@ -121,7 +121,7 @@ const RegisterAccountModal = ({
             />
             {phoneNumberIsValid && (
               <Tooltip title="Số điện thoại hợp lệ">
-                <CheckOutlined style={{ fontSize: '18px' }} />
+                <CheckCircleOutlined style={{ fontSize: '18px' }} />
               </Tooltip>
             )}
           </Flex>
@@ -182,7 +182,8 @@ const RegisterAccountModal = ({
             </Flex>
           </Form.Item>
         ) : (
-          <Flex justify="flex-end">
+          <Flex justify="flex-end" gap={5}>
+            <CheckCircleOutlined style={{ fontSize: '18px' }} />
             <Typography.Text type="success">Đã xác thực OTP</Typography.Text>
           </Flex>
         )}

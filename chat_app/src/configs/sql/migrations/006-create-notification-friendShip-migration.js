@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('NotificationFriendShip', {
+    await queryInterface.createTable('NotificationFriendShips', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -14,17 +14,21 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'FriendShip',
+          model: 'FriendShips',
+          key: 'id',
+        },
+      },
+      senderId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
           key: 'id',
         },
       },
       content: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      status: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -35,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('NotificationFriendShip');
+    await queryInterface.dropTable('NotificationFriendShips');
   },
 };
