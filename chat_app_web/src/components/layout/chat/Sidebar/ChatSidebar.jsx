@@ -9,11 +9,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import './chat-sidebar.scss';
+import React from 'react';
 
 const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   const [chats, setChats] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [status, setStatus] = useState(appTypes.STATE.PENDING);
+  const [status, setStatus] = useState(appConstants.STATE.PENDING);
   const user = useSelector((state) => state.appReducer?.userInfo?.user);
   const dispatch = useDispatch();
   const chat = useSelector((state) => state.appReducer?.subNav);
@@ -63,12 +64,12 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
         }
 
         setChats(filterChats);
-        setStatus(appTypes.STATE.RESOLVE);
+        setStatus(appConstants.STATE.RESOLVE);
       } else {
-        setStatus(appTypes.STATE.REJECT);
+        setStatus(appConstants.STATE.REJECT);
       }
     } catch (error) {
-      setStatus(appTypes.STATE.REJECT);
+      setStatus(appConstants.STATE.REJECT);
       console.log('error', error);
       toast.error('Có lỗi xảy ra');
     }
@@ -108,11 +109,11 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   }, [chats.length]);
 
   // bắn chat đầu tiên
-  useEffect(() => {
-    if (fetchChats) {
-      dispatch(fetchChatsFunc(fetchChats));
-    }
-  }, [fetchChats]);
+  // useEffect(() => {
+  //   if (fetchChats) {
+  //     dispatch(fetchChatsFunc(fetchChats));
+  //   }
+  // }, [fetchChats]);
 
   useEffect(() => {
     if (user) {
@@ -188,35 +189,35 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
     }
   };
 
-  useEffect(() => {
-    if (userState.fetchNotificationChats) {
-      socket.then((socket) => {
-        socket.on('transfer-disband-group', handleTransferDisbandGroupSocket);
-        socket.on('new-chat', handleNewChatSocket);
-        socket.on('add-member', handleAddMemberSocket);
-        socket.on('leave-group', handleLeaveGroupSocket);
-        socket.on('grant', handleGrantSocket);
-        socket.on('receive-message', handleReceiveMessageSocket);
-        socket.on('change-background', handleOnChangeBackgroundSocket);
-        socket.on('delete-member', handleDeletedMemberSocket);
-        socket.on('dissolutionGroupChat', handleDissolutionChat);
-      });
-    }
+  // useEffect(() => {
+  //   if (userState.fetchNotificationChats) {
+  //     socket.then((socket) => {
+  //       socket.on('transfer-disband-group', handleTransferDisbandGroupSocket);
+  //       socket.on('new-chat', handleNewChatSocket);
+  //       socket.on('add-member', handleAddMemberSocket);
+  //       socket.on('leave-group', handleLeaveGroupSocket);
+  //       socket.on('grant', handleGrantSocket);
+  //       socket.on('receive-message', handleReceiveMessageSocket);
+  //       socket.on('change-background', handleOnChangeBackgroundSocket);
+  //       socket.on('delete-member', handleDeletedMemberSocket);
+  //       socket.on('dissolutionGroupChat', handleDissolutionChat);
+  //     });
+  //   }
 
-    return () => {
-      socket.then((socket) => {
-        socket.off('transfer-disband-group', handleTransferDisbandGroupSocket);
-        socket.off('new-chat', handleNewChatSocket);
-        socket.off('add-member', handleAddMemberSocket);
-        socket.off('leave-group', handleLeaveGroupSocket);
-        socket.off('grant', handleGrantSocket);
-        socket.off('receive-message', handleReceiveMessageSocket);
-        socket.off('change-background', handleOnChangeBackgroundSocket);
-        socket.off('delete-member', handleDeletedMemberSocket);
-        socket.off('dissolutionGroupChat', handleDissolutionChat);
-      });
-    };
-  }, [userState]);
+  //   return () => {
+  //     socket.then((socket) => {
+  //       socket.off('transfer-disband-group', handleTransferDisbandGroupSocket);
+  //       socket.off('new-chat', handleNewChatSocket);
+  //       socket.off('add-member', handleAddMemberSocket);
+  //       socket.off('leave-group', handleLeaveGroupSocket);
+  //       socket.off('grant', handleGrantSocket);
+  //       socket.off('receive-message', handleReceiveMessageSocket);
+  //       socket.off('change-background', handleOnChangeBackgroundSocket);
+  //       socket.off('delete-member', handleDeletedMemberSocket);
+  //       socket.off('dissolutionGroupChat', handleDissolutionChat);
+  //     });
+  //   };
+  // }, [userState]);
 
   const handleSelectChat = (nextChat) => {
     dispatch(userActions.accessChat(nextChat));
@@ -238,7 +239,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
   return (
     <div className="chat-sidebar" ref={containerRef}>
       {chats?.length > 0 &&
-        status === appTypes.STATE.RESOLVE &&
+        status === appConstants.STATE.RESOLVE &&
         chats.map((item, index) => {
           return (
             <div
@@ -292,7 +293,7 @@ const ChatSidebar = ({ current: currentSearch, statusChat, setStatusChat }) => {
             </div>
           );
         })}
-      {status === appTypes.STATE.REJECT && (
+      {status === appConstants.STATE.REJECT && (
         <div
           style={{
             padding: '10px',

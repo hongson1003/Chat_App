@@ -1,5 +1,6 @@
 import { axios, socket } from '@/configs';
-import { appActionKeys, userActionKeys, userActions } from '@/redux';
+import { appConstants } from '@/constants';
+import { userActionKeys, userActions } from '@/redux';
 import { chatHandler } from '@/utils';
 import { EditOutlined, InstagramOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Flex, Input, Modal, Radio } from 'antd';
@@ -13,7 +14,6 @@ import { toast } from 'react-toastify';
 import AvatarUser from '../user/components/AvatarUser/AvatarUser';
 import ChooseImageModal from './chooseImage.modal';
 import './inforUser.modal.scss';
-import { appConstants } from '@/constants';
 
 const InforUserModal = ({
   children,
@@ -40,7 +40,7 @@ const InforUserModal = ({
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState(null);
   const [image, setImage] = useState(null);
-  const [editing, setEditing] = useState(appActionKeys.STATE.PENDING);
+  const [editing, setEditing] = useState(appConstants.STATE.PENDING);
   const dateFormat = 'YYYY/MM/DD';
   const [backgroundCoverPreview, setBackgroundCoverPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,8 +79,8 @@ const InforUserModal = ({
   const handleCancel = () => {
     setIsModalOpen(false);
     setAcceptOpenModal(false);
-    setEditing(STATE.PENDING);
-    setNeedAddFriend(STATE.PENDING);
+    setEditing(appConstants.STATE.PENDING);
+    setNeedAddFriend(appConstants, appConstants.STATE.PENDING);
     if (editing) {
       setInfo({
         name: user?.userName,
@@ -153,7 +153,7 @@ const InforUserModal = ({
         );
         fetchInfoUser(user?.id);
       } else toast.error(res.message);
-      setEditing(STATE.PENDING);
+      setEditing(appConstants.STATE.PENDING);
     } catch (error) {
       console.log(error);
     }
@@ -162,9 +162,10 @@ const InforUserModal = ({
   const renderFooter = () => {
     return (
       <React.Fragment>
-        {needAddFriend === false || needAddFriend === STATE.PENDING ? (
+        {needAddFriend === false ||
+        needAddFriend === appConstants.STATE.PENDING ? (
           itsMe &&
-          (editing === false || editing === STATE.PENDING ? (
+          (editing === false || editing === appConstants.STATE.PENDING ? (
             <Flex
               justify="center"
               gap={10}
@@ -259,14 +260,14 @@ const InforUserModal = ({
   };
 
   const handleComeBack = () => {
-    setNeedAddFriend(STATE.PENDING);
+    setNeedAddFriend(appConstants.STATE.PENDING);
     setInfo({
       name: user?.userName,
       dob: profile?.birthdate && dayjs(profile?.birthdate, dateFormat),
       gender: profile?.gender,
     });
     if (editing) {
-      setEditing(STATE.PENDING);
+      setEditing(appConstants.STATE.PENDING);
     }
   };
 
@@ -499,7 +500,8 @@ const InforUserModal = ({
           {!refuseAction &&
             !itsMe &&
             user?.id !== friendData?.id &&
-            (needAddFriend === false || needAddFriend === STATE.PENDING) && (
+            (needAddFriend === false ||
+              needAddFriend === appConstants.STATE.PENDING) && (
               <div
                 className={`add-friends ${needAddFriend === false && 'appear'}`}
                 ref={actionRef}
@@ -512,7 +514,7 @@ const InforUserModal = ({
                   <Button type="default" onClick={() => handleNeedAddFriend()}>
                     Thêm bạn
                   </Button>
-                ) : friendShipData?.status === STATE.PENDING &&
+                ) : friendShipData?.status === appConstants.STATE.PENDING &&
                   friendShipData?.sender?.id === user?.id ? (
                   <Button
                     type="default"
@@ -546,48 +548,49 @@ const InforUserModal = ({
               </div>
             )}
         </div>
-        {needAddFriend === STATE.PENDING && editing === STATE.PENDING && (
-          <div
-            className={`modal-content ${
-              needAddFriend === false || (editing === false && 'appear')
-            }`}
-            ref={modalContentRef}
-          >
-            <div className="title">
-              <p>Thông tin cá nhân</p>
+        {needAddFriend === appConstants.STATE.PENDING &&
+          editing === appConstants.STATE.PENDING && (
+            <div
+              className={`modal-content ${
+                needAddFriend === false || (editing === false && 'appear')
+              }`}
+              ref={modalContentRef}
+            >
+              <div className="title">
+                <p>Thông tin cá nhân</p>
+              </div>
+              <div className="info-detail">
+                <div className="info-item">
+                  <p className="item-label">Giới tính:</p>
+                  <p className="item-value">
+                    {[0, 1].includes(profile?.gender)
+                      ? profile?.gender === 0
+                        ? 'Nam'
+                        : 'Nữ'
+                      : '---'}
+                  </p>
+                </div>
+                <div className="info-item">
+                  <p className="item-label">Ngày sinh:</p>
+                  <p className="item-value">
+                    {profile?.birthdate
+                      ? moment(profile?.birthdate).format('DD/MM/yyyy')
+                      : '---'}
+                  </p>
+                </div>
+                <div className="info-item">
+                  <p className="item-label">Số điện thoại:</p>
+                  <p className="item-value">{friendData?.phoneNumber}</p>
+                </div>
+                <div className="info-item">
+                  <p className="item-label note">
+                    Chỉ bạn bè có lưu số của bạn trong danh bạn máy xem được số
+                    này
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="info-detail">
-              <div className="info-item">
-                <p className="item-label">Giới tính:</p>
-                <p className="item-value">
-                  {[0, 1].includes(profile?.gender)
-                    ? profile?.gender === 0
-                      ? 'Nam'
-                      : 'Nữ'
-                    : '---'}
-                </p>
-              </div>
-              <div className="info-item">
-                <p className="item-label">Ngày sinh:</p>
-                <p className="item-value">
-                  {profile?.birthdate
-                    ? moment(profile?.birthdate).format('DD/MM/yyyy')
-                    : '---'}
-                </p>
-              </div>
-              <div className="info-item">
-                <p className="item-label">Số điện thoại:</p>
-                <p className="item-value">{friendData?.phoneNumber}</p>
-              </div>
-              <div className="info-item">
-                <p className="item-label note">
-                  Chỉ bạn bè có lưu số của bạn trong danh bạn máy xem được số
-                  này
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
       </Modal>
     </>
   );

@@ -102,14 +102,14 @@ const ChatMain = ({ file, fileTypes, drawerMethods }) => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (chat?._id && messages.length === 0) {
-      fetchNotification();
-    }
-    if (chat?._id && chat.seenBy.includes(user?.id) === false) {
-      updateSeenBy();
-    }
-  }, [messages.length, chat, userState.fetchChats]);
+  // useEffect(() => {
+  //   if (chat?._id && messages.length === 0) {
+  //     fetchNotification();
+  //   }
+  //   if (chat?._id && chat.seenBy.includes(user?.id) === false) {
+  //     updateSeenBy();
+  //   }
+  // }, [messages.length, chat, userState.fetchChats]);
 
   useEffect(() => {
     if (!chat._id) {

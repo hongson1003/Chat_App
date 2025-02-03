@@ -133,7 +133,7 @@ export const PrivacySetting = () => {
       const res = await axios.post('/users/send-verify-email', { email: text });
       setIsLoading(false);
       if (res.errCode === 0) {
-        setStatus(STATE.PENDING);
+        setStatus(appConstants.STATE.PENDING);
         toast.success(
           'Đã gửi email xác minh, vui lòng kiểm tra email để nhận mã xác thực !!!',
           {
@@ -224,7 +224,7 @@ export const PrivacySetting = () => {
               Xác minh
             </Button>
           </>
-        ) : status === STATE.PENDING ? (
+        ) : status === appConstants.STATE.PENDING ? (
           <>
             <label>Nhập mã OTP</label>
             <Input value={otp} onChange={(e) => setOtp(e.target.value)} />

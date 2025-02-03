@@ -2,7 +2,7 @@ import { axios } from '@/configs';
 import { appActions } from '@/redux';
 import { PictureOutlined } from '@ant-design/icons';
 import { Button, Modal } from 'antd';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Zoom from 'react-medium-image-zoom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
