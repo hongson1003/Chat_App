@@ -14,7 +14,7 @@ import helmet from 'helmet';
 const app = express();
 
 app.use(function (req, res, next) {
-  const allowedOrigins = ['http://localhost:8096'];
+  const allowedOrigins = ['http://localhost:8096', 'http://192.168.1.8:8096'];
   const origin = req.headers.origin;
 
   res.setHeader(

@@ -72,12 +72,12 @@ const login = async (req, res, next) => {
     let response = await authService.login(username, password);
 
     res.cookie('access_token', response.accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: maxAge * 1000,
     });
 
     res.cookie('refresh_token', response.refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: maxAge * 1000,
     });
 

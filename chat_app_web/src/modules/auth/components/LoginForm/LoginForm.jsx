@@ -1,10 +1,13 @@
+import { appRegex } from '@/constants';
 import { LockOutlined, PhoneOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import React from 'react';
 
-const LoginForm = () => {
-  const handleOnFinish = () => {
-    console.log('handleOnFinish');
+const LoginForm = ({ onLogin }) => {
+  const [form] = Form.useForm();
+
+  const handleOnFinish = (values) => {
+    onLogin(values);
   };
 
   return (
@@ -14,10 +17,17 @@ const LoginForm = () => {
         initialValues={{ remember: true }}
         onFinish={handleOnFinish}
         size="large"
+        form={form}
       >
         <Form.Item
-          name="phoneNumber"
-          rules={[{ required: true, message: 'Please input your phone!' }]}
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your phone!',
+              pattern: new RegExp(appRegex.PHONE_NUMBER),
+            },
+          ]}
         >
           <Input
             style={{ gap: '5px' }}
