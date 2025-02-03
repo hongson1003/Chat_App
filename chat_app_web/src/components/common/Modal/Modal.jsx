@@ -28,13 +28,13 @@ const CommonModal = ({
         <Button key="cancel" onClick={onCancel || onClose}>
           {cancelText}
         </Button>,
-        <>
+        <React.Fragment key="ok">
           {showOkButton && (
-            <Button key="ok" type="primary" onClick={onOk} disabled={disableOk}>
+            <Button type="primary" onClick={onOk} disabled={disableOk}>
               {okText}
             </Button>
           )}
-        </>,
+        </React.Fragment>,
       ]}
     >
       {children}

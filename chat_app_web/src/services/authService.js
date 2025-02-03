@@ -10,6 +10,9 @@ const authService = {
   checkAuth: async () => {
     return await axios.post('/api/v1/auth/check');
   },
+  logout: async () => {
+    return await axios.post('/api/v1/auth/logout');
+  },
 };
 
 export default authService;
