@@ -6,8 +6,9 @@ import SearchMessage from '../../../../pages/sidebar/home.message.search';
 import { ChatSidebar } from '../../chat';
 import './home-sidebar.scss';
 
-const SidebarHome = ({ children }) => {
-  const stateApp = useSelector((state) => state?.appReducer);
+const SidebarHome = () => {
+  const stateApp = useSelector((state) => state?.app);
+  console.log('🚀 ~ SidebarHome ~ stateApp:', stateApp);
   const [current, setCurrent] = useState(appConstants.FILTER.EMPTY);
   const [statusChat, setStatusChat] = useState(appConstants.FILTER.ALL);
 

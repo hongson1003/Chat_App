@@ -5,7 +5,7 @@ const initialState = {
   state: appConstants.STATE.PENDING,
   isLogin: false,
   userInfo: null,
-  nav: appConstants.NAV_ITEMS.MESSAGE,
+  nav: appConstants.NAV_ITEMS_KEY.MESSAGE,
   subNav: null,
   isConnectedSocket: false,
   error: false,

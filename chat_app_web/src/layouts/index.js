@@ -1,4 +1,4 @@
-export { HomeLayout } from './home';
-export { HomeSubLayout } from './sub';
-export { OutsideLayout } from './outside';
-export { AppLayout } from './app';
+export { HomeLayout } from './Home';
+export { HomeSubLayout } from './Sub';
+export { OutsideLayout } from './Outside';
+export { AppLayout } from './App';

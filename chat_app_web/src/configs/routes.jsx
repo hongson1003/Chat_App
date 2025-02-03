@@ -9,8 +9,8 @@ import {
 } from '@/pages';
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import OutsideLayout from '../layouts/outside/outsideLayout';
-import HomeSubLayout from '../layouts/sub/HomeSubLayout';
+import OutsideLayout from '../layouts/Outside/OutsideLayout';
+import HomeSubLayout from '../layouts/Sub/HomeSubLayout';
 import JoinGroup from '../pages/utils/joinGroup';
 
 const routes = [
