@@ -53,6 +53,24 @@ const register = async ({ fullName, phoneNumber, password, idToken }) => {
     maxAge
   );
 
+  await db.RefreshToken.update(
+    {
+      isActive: false,
+    },
+    {
+      where: {
+        userId: user.id,
+        isActive: true,
+      },
+    }
+  );
+
+  await db.RefreshToken.create({
+    userId: user.id,
+    token: refreshToken,
+    expiresAt: new Date(Date.now() + maxAge * 1000),
+  });
+
   await db.ProfileContact.create({
     userId: user.id,
   });
@@ -95,6 +113,24 @@ const login = async (username, password) => {
     maxAge * 1000
   );
 
+  await db.RefreshToken.update(
+    {
+      isActive: false,
+    },
+    {
+      where: {
+        userId: user.id,
+        isActive: true,
+      },
+    }
+  );
+
+  await db.RefreshToken.create({
+    userId: user.id,
+    token: refreshToken,
+    expiresAt: new Date(Date.now() + maxAge * 1000),
+  });
+
   const response = authHandler.toUserResponse({
     ...user,
     accessToken,
@@ -128,100 +164,62 @@ const updateToken = async (refresh_token_old) => {
     },
   });
 
-  if (user) {
-    const accessToken = jwtHandler.signJwt(
-      {
-        username: user.username,
-      },
-      secret,
-      expiresIn * 1000
-    );
-
-    const refreshToken = jwtHandler.signJwt(
-      {
-        username: user.username,
-      },
-      secret,
-      maxAge * 1000
-    );
-
-    const response = authHandler.toUserResponse({
-      ...user,
-      accessToken,
-      refreshToken,
-    });
-
-    return response;
-  } else {
+  if (!user) {
     throw createHttpError(400, 'User not found');
   }
-};
 
-const updatePassword = async (id, phoneNumber, password) => {
-  try {
-    let userDB = await db.User.findOne({
-      where: {
-        phoneNumber: phoneNumber,
-        id: id,
-      },
-      raw: false,
-    });
-    if (userDB) {
-      userDB.password = userHandler.hashPassword(password);
-      await userDB.save();
-      const user = userHandler.toUserResponse(userDB.dataValues);
-      return {
-        errCode: 0,
-        message: 'Update password success',
-        user: user,
-      };
-    } else {
-      return {
-        errCode: 2,
-        message: 'Fail, First, please register account',
-      };
-    }
-  } catch (error) {
-    throw error;
-  }
-};
+  const refreshTokenExists = await db.RefreshToken.findOne({
+    where: {
+      token: refresh_token_old,
+      isActive: false,
+    },
+  });
 
-const changePassword = async (id, oldPassword, newPassword) => {
-  try {
-    let userDB = await db.User.findOne({
-      where: {
-        id: id,
-      },
-      raw: false,
-    });
-    if (userDB) {
-      let checkPassword = userHandler.checkPassword(
-        oldPassword,
-        userDB.password
-      );
-      if (checkPassword) {
-        userDB.password = userHandler.hashPassword(newPassword);
-        await userDB.save();
-        const user = userHandler.toUserResponse(userDB.dataValues);
-        return {
-          errCode: 0,
-          message: 'Change password success',
-          user: user,
-        };
-      }
-      return {
-        errCode: 3,
-        message: 'Not equal password for user. Please check !',
-      };
-    } else {
-      return {
-        errCode: 2,
-        message: 'Fail, First, please register account',
-      };
-    }
-  } catch (error) {
-    throw error;
+  if (refreshTokenExists) {
+    throw createHttpError(403, 'Refresh token is invalid');
   }
+
+  const accessToken = jwtHandler.signJwt(
+    {
+      username: user.username,
+    },
+    secret,
+    expiresIn * 1000
+  );
+
+  const refreshToken = jwtHandler.signJwt(
+    {
+      username: user.username,
+    },
+    secret,
+    maxAge * 1000
+  );
+
+  await db.RefreshToken.update(
+    {
+      isActive: false,
+    },
+    {
+      where: {
+        userId: user.id,
+        isActive: true,
+      },
+    }
+  );
+
+  await db.RefreshToken.create({
+    userId: user.id,
+    token: refreshToken,
+    expiresAt: new Date(Date.now() + maxAge * 1000),
+  });
+
+  const response = authHandler.toUserResponse({
+    ...user,
+    accessToken,
+    refreshToken,
+  });
+
+  return response;
 };
 
 const authService = {
@@ -229,8 +227,6 @@ const authService = {
   login,
   extractToken,
   updateToken,
-  updatePassword,
-  changePassword,
   verifyIdToken,
   updateToken,
 };

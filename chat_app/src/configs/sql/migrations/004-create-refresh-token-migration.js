@@ -19,13 +19,14 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      deviceInfo: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
       expiresAt: {
         type: Sequelize.DATE,
         allowNull: false,
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       createdAt: {
         type: Sequelize.DATE,

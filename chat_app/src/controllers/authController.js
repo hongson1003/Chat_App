@@ -110,37 +110,6 @@ const logout = async (req, res, next) => {
   return res.status(200).json({ message: 'Logout successfully' });
 };
 
-const resetPassword = async (req, res, next) => {
-  try {
-    const { id, phoneNumber, newPassword } = req.body;
-    if (!newPassword || !phoneNumber || !id)
-      return res.status(200).json({
-        errCode: 1,
-        message: 'Missing parameter',
-      });
-    let rs = await authService.updatePassword(id, phoneNumber, newPassword);
-    return res.status(200).json(rs);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const changePassword = async (req, res, next) => {
-  try {
-    const { oldPassword, newPassword } = req.body;
-    const id = req.user.id;
-    if (!newPassword || !oldPassword || !id)
-      return res.status(200).json({
-        errCode: 1,
-        message: 'Missing parameter',
-      });
-    let rs = await authService.changePassword(id, oldPassword, newPassword);
-    return res.status(200).json(rs);
-  } catch (error) {
-    next(error);
-  }
-};
-
 const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
@@ -171,8 +140,6 @@ const authController = {
   login,
   extractToken,
   logout,
-  resetPassword,
-  changePassword,
   verifyIdToken,
   refreshToken,
 };

@@ -1,12 +1,12 @@
 import { Model } from 'sequelize';
 
 module.exports = (sequelize, DataTypes) => {
-  class ProfileContact extends Model {
+  class RefreshToken extends Model {
     static associate(models) {
-      ProfileContact.belongsTo(models.User, { foreignKey: 'userId' });
+      RefreshToken.belongsTo(models.User, { foreignKey: 'userId' });
     }
   }
-  ProfileContact.init(
+  RefreshToken.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -14,27 +14,44 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         autoIncrement: true,
       },
-      birthDate: DataTypes.DATE,
-      gender: DataTypes.BOOLEAN,
-      soundTrack: DataTypes.STRING,
-      coverImage: DataTypes.STRING,
-      description: DataTypes.STRING,
       userId: {
         type: DataTypes.INTEGER,
-        unique: true,
+        allowNull: false,
         references: {
           model: 'Users',
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      token: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      expiresAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
-      modelName: 'ProfileContact',
-      tableName: 'profileContacts',
+      modelName: 'RefreshToken',
+      tableName: 'RefreshTokens',
     }
   );
-  return ProfileContact;
+  return RefreshToken;
 };

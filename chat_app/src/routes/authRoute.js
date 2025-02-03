@@ -17,12 +17,6 @@ const initRoutesAuthentication = (router) => {
 
   router.route(appRoutes.VERIFY_ID_TOKEN).get(authController.verifyIdToken);
 
-  router.route(appRoutes.RESET_PASSWORD).post(authController.resetPassword);
-
-  // router
-  //   .route(appRoutes.CHANGE_PASSWORD)
-  //   .put(userGuardHandler.privateRoute, authController.changePassword);
-
   return router;
 };
 
