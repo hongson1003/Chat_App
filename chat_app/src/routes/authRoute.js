@@ -1,8 +1,8 @@
 import { appRoutes } from '@/constants';
-import { authController } from '@controllers';
+import { authController } from '@/controllers';
 import { userGuardHandler } from '@middlewares';
 
-const InitRoutesAuthentication = (router) => {
+const initRoutesAuthentication = (router) => {
   router.route(appRoutes.ROOT).post(authController.register);
 
   router.route(appRoutes.LOGIN).post(authController.login);
@@ -23,4 +23,4 @@ const InitRoutesAuthentication = (router) => {
   return router;
 };
 
-module.exports = InitRoutesAuthentication;
+module.exports = initRoutesAuthentication;

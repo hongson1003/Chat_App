@@ -27,7 +27,7 @@ const checkJWT = async (req, res, next) => {
   } catch (error) {
     // if (error instanceof TokenExpiredError) {
     //     // refresh token
-    //     const rs = await appService.updateToken(refresh_token);
+    //     const rs = await authService.updateToken(refresh_token);
     //     if (rs.errCode === 100) {
     //         res.cookie('access_token', rs.data.access_token, { httpOnly: true, maxAge: +process.env.MAX_AGE * 60000 });
     //         res.cookie('refresh_token', rs.data.refresh_token, { httpOnly: true, maxAge: +process.env.MAX_AGE * 60000 });

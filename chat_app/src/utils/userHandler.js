@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+
 const saltRounds = 10;
 
 const keyUserRegister = [
@@ -8,7 +9,6 @@ const keyUserRegister = [
   'avatar',
   'lastedOnline',
 ];
-
 const keyProfile = [
   'birthdate',
   'gender',
@@ -17,55 +17,51 @@ const keyProfile = [
   'description',
 ];
 
-const hashPassword = (myPlaintextPassword) => {
-  try {
-    const salt = bcrypt.genSaltSync(saltRounds);
-    return bcrypt.hashSync(myPlaintextPassword, salt);
-  } catch (error) {
-    throw error;
-  }
-};
-
-const checkPassword = (myPlaintextPassword, hashedPassword) => {
-  try {
-    return bcrypt.compareSync(myPlaintextPassword, hashedPassword); // true
-  } catch (error) {
-    throw error;
-  }
-};
-
-const standardUser = (user) => {
-  if (!user) return null;
-
-  try {
-    let myUser = { ...user };
-    if (myUser.avatar) {
-      const avatar = myUser.avatar;
-      const base64 = Buffer.from(avatar, 'base64');
-      myUser.avatar = base64.toString();
+const authHandler = {
+  hashPassword: (password) => {
+    try {
+      const salt = bcrypt.genSaltSync(saltRounds);
+      return bcrypt.hashSync(password, salt);
+    } catch (error) {
+      throw error;
     }
-    for (let key in myUser)
-      if (!keyUserRegister.includes(key)) delete myUser[key];
-    return myUser;
-  } catch (error) {
-    throw error;
-  }
+  },
+
+  checkPassword: (password, hashedPassword) => {
+    try {
+      return bcrypt.compareSync(password, hashedPassword);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  standardUser: (user) => {
+    if (!user) return null;
+
+    try {
+      const myUser = { ...user };
+
+      if (myUser.avatar) {
+        myUser.avatar = Buffer.from(myUser.avatar, 'base64').toString();
+      }
+
+      return Object.fromEntries(
+        Object.entries(myUser).filter(([key]) => keyUserRegister.includes(key))
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  standardProfile: (profile) => {
+    try {
+      return Object.fromEntries(
+        Object.entries(profile).filter(([key]) => keyProfile.includes(key))
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
-const standardProfile = (profile) => {
-  try {
-    let myProfile = { ...profile };
-    for (let key in myProfile)
-      if (!keyProfile.includes(key)) delete myProfile[key];
-    return myProfile;
-  } catch (error) {
-    throw error;
-  }
-};
-
-module.exports = {
-  standardUser,
-  hashPassword,
-  checkPassword,
-  standardProfile,
-};
+export default authHandler;

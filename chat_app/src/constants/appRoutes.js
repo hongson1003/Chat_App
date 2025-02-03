@@ -1,6 +1,6 @@
 export default {
   ROOT: '/',
-  HEALTH: '/health',
+  HEALTH: '/api/v1/health',
   LOGIN: '/login',
   LOGOUT: '/logout',
   CHECK: '/check',

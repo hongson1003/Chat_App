@@ -1,5 +1,5 @@
+import { userService } from '@/services';
 import _ from 'lodash';
-import { userService } from '@services/userService';
 
 const getMapUserTargetId = async (chat) => {
   try {

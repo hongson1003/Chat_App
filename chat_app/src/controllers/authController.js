@@ -1,26 +1,19 @@
-import config from '@config';
-import { appService, userService } from '@services';
-import { jwtHandler } from '@/utils';
+import { authHandler, jwtHandler } from '@/utils';
+import { authService, userService } from '@services';
 import {
   default as createError,
   default as createHttpError,
 } from 'http-errors';
 import { TokenExpiredError } from 'jsonwebtoken';
 
-const { secretKey, expiresIn } = config;
-
-const USER_REGISTER_FIELDS = ['phoneNumber', 'password', 'name', 'idToken'];
-
 const register = async (req, res, next) => {
   let data = req.body;
-
-  USER_REGISTER_FIELDS.forEach((field) => {
-    if (!data[field])
-      throw createError(400, `Missing required parameter: ${field}`);
-  });
+  console.log('🚀 ~ register ~ data:', data);
+  const fieldsValid = authHandler.checkRegisterFields(data);
+  console.log('🚀 ~ register ~ fieldsValid:', fieldsValid);
 
   try {
-    const response = await appService.register(user);
+    const response = await authService.register(user);
     return res.status(200).json(response);
   } catch (error) {
     next(error);
@@ -30,7 +23,7 @@ const register = async (req, res, next) => {
 const verifyUser = async (req, res, next) => {
   const { id, phoneNumber } = req.body;
   try {
-    let rs = await appService.verifyUser(id, phoneNumber);
+    let rs = await authService.verifyUser(id, phoneNumber);
     if (rs.errCode === 0) {
       res.cookie('access_token', rs.data.access_token, {
         httpOnly: true,
@@ -52,7 +45,7 @@ const login = async (req, res, next) => {
   try {
     if (!password || !phoneNumber)
       throw createError(400, 'Missing parameter: password or phoneNumber');
-    let rs = await appService.login(phoneNumber, password);
+    let rs = await authService.login(phoneNumber, password);
     return res.status(200).json(rs);
   } catch (error) {
     next(error);
@@ -82,7 +75,7 @@ const check = async (req, res, next) => {
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       // refresh token
-      const rs = await appService.updateToken(refresh_token);
+      const rs = await authService.updateToken(refresh_token);
       if (rs.errCode === 100) {
         res.cookie('access_token', rs.data.access_token, {
           httpOnly: true,
@@ -128,7 +121,7 @@ const resetPassword = async (req, res, next) => {
         errCode: 1,
         message: 'Missing parameter',
       });
-    let rs = await appService.updatePassword(id, phoneNumber, newPassword);
+    let rs = await authService.updatePassword(id, phoneNumber, newPassword);
     return res.status(200).json(rs);
   } catch (error) {
     next(error);
@@ -144,7 +137,7 @@ const changePassword = async (req, res, next) => {
         errCode: 1,
         message: 'Missing parameter',
       });
-    let rs = await appService.changePassword(id, oldPassword, newPassword);
+    let rs = await authService.changePassword(id, oldPassword, newPassword);
     return res.status(200).json(rs);
   } catch (error) {
     next(error);
@@ -156,14 +149,14 @@ const verifyIdToken = async (req, res, next) => {
   if (!idToken)
     throw new createHttpError(400, 'Missing required parameter: idToken');
   try {
-    let rs = await appService.verifyIdToken(idToken);
+    let rs = await authService.verifyIdToken(idToken);
     return res.status(200).json(rs);
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = {
+const authController = {
   register,
   verifyUser,
   login,
@@ -173,3 +166,5 @@ module.exports = {
   changePassword,
   verifyIdToken,
 };
+
+export default authController;

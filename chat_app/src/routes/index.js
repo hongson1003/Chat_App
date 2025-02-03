@@ -1,8 +1,8 @@
+import { appRoutes } from '@/constants';
 import express from 'express';
-import InitAuthenticationRoutes from './authRoute';
-import InitUserRoutes from './userRoute';
-import InitChatRoutes from './chatRoute';
-import { appRoutes } from '@constants';
+import initRoutesAuthentication from './authRoute';
+import initChatRoutes from './chatRoute';
+import initUserRoutes from './userRoute';
 
 const router = express.Router();
 
@@ -13,9 +13,9 @@ const configRoutes = async (app) => {
       message: 'Server is up and running',
     });
   });
-  app.use(appRoutes.AUTH, InitAuthenticationRoutes(router));
-  app.use(appRoutes.USERS, InitUserRoutes(router));
-  app.use(appRoutes.CHATS, InitChatRoutes(router));
+  app.use(appRoutes.AUTH, initRoutesAuthentication(router));
+  app.use(appRoutes.USERS, initUserRoutes(router));
+  app.use(appRoutes.CHATS, initChatRoutes(router));
 };
 
 module.exports = configRoutes;
