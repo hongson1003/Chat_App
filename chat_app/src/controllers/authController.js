@@ -53,6 +53,7 @@ const verifyUser = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   let data = req.body;
+  const { username, password } = data;
 
   const fieldsNotValid = authHandler.getLoginFieldsNotValid(data);
 
@@ -63,9 +64,10 @@ const login = async (req, res, next) => {
   }
 
   try {
-    let rs = await authService.login(phoneNumber, password);
-    return res.status(200).json(rs);
+    let response = await authService.login(username, password);
+    return res.status(200).json(response);
   } catch (error) {
+    console.log('🚀 ~ login ~ error:', error);
     next(error);
   }
 };

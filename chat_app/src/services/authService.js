@@ -102,22 +102,44 @@ const verifyUser = async (id, phoneNumber) => {
   }
 };
 
-const login = async (phoneNumber, password) => {
-  try {
-    let userDB = await db.User.findOne({
-      where: {
-        phoneNumber: phoneNumber,
-      },
-    });
-    if (userDB) {
-      const user = userHandler.toUserResponse(userDB);
-      let checkPassword = userHandler.checkPassword(password, userDB.password);
-      if (checkPassword) return user;
-      throw createHttpError(400, 'Password not correct');
-    } else throw createHttpError(400, 'User not found');
-  } catch (error) {
-    throw error;
+const login = async (username, password) => {
+  let user = await db.User.findOne({
+    where: {
+      username: username,
+    },
+  });
+  if (!user) {
+    throw createHttpError(400, 'User not found');
   }
+
+  let checkPassword = userHandler.checkPassword(password, user.password);
+  if (!checkPassword) {
+    throw createHttpError(400, 'Password not match');
+  }
+
+  const accessToken = jwtHandler.signJwt(
+    {
+      username,
+    },
+    secret,
+    expiresIn
+  );
+
+  const refreshToken = jwtHandler.signJwt(
+    {
+      username,
+    },
+    secret,
+    expiresIn
+  );
+
+  const response = authHandler.toUserResponse({
+    ...user,
+    accessToken,
+    refreshToken,
+  });
+
+  return response;
 };
 
 const updateToken = async (refresh_token_old) => {
