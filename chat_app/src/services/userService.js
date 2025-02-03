@@ -65,6 +65,7 @@ const getUserByPhoneNumber = async (phoneNumber) => {
     const myUser = userHandler.standardUser(user);
     return myUser;
   } catch (error) {
+    console.log('🚀 ~ getUserByPhoneNumber ~ error:', error);
     throw error;
   }
 };

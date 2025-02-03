@@ -1,14 +1,22 @@
-const REGISTER_USER_FIELDS = ['phoneNumber', 'password', 'name', 'idToken'];
+import { appRegex } from '@/constants';
+
+const REGISTER_USER_FIELDS = ['phoneNumber', 'password', 'fullName', 'idToken'];
 
 const LOGIN_USER_FIELDS = ['username', 'password'];
 
-const checkRegisterFields = (data) => {
-  const keys = Object.keys(data);
-  return REGISTER_USER_FIELDS.every((field) => keys.includes(field));
+const getRegisterFieldsNotValid = (data) => {
+  const fieldsNotValid = REGISTER_USER_FIELDS.filter((field) => !data[field]);
+  if (fieldsNotValid.length) return fieldsNotValid;
+  return null;
+};
+
+const checkPhoneNumberIsValid = (phoneNumber) => {
+  return appRegex.PHONE_NUMBER.test(phoneNumber);
 };
 
 const authHandler = {
-  checkRegisterFields,
+  getRegisterFieldsNotValid,
+  checkPhoneNumberIsValid,
 };
 
 export default authHandler;

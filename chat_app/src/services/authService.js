@@ -1,58 +1,65 @@
-import { admin } from '@/configs/sdk';
-import db from '@/configs/sql/models';
-import { jwtHandler, userHandler } from '@utils';
+import { admin, db } from '@/configs';
+import { jwtHandler, stringHandler, userHandler } from '@/utils';
 import createHttpError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 
 const secret = process.env.SECRET;
 const expiresIn = process.env.EXPIRES_IN;
 
-const register = async ({ userName, phoneNumber, password: plainPassword }) => {
-  try {
-    // check user exists;
-    let userExists = await db.User.findOne({
-      where: {
-        phoneNumber,
-      },
-    });
-    if (userExists)
-      return {
-        errCode: 4,
-        message: 'User is exists, Please use new another phone',
-      };
-    //create new user;
-    const avatarRandom = random_bg_color();
-    let refresh_token = uuidv4();
-    let password = userHandler.hashPassword(plainPassword);
-    const user = await db.User.create({
-      userName,
+const verifyIdToken = async (idToken) => {
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+  return decodedToken;
+};
+
+const register = async ({
+  fullName,
+  phoneNumber,
+  password: plainPassword,
+  idToken,
+}) => {
+  console.log('🚀 ~ idToken:', idToken);
+  let userExists = await db.User.findOne({
+    where: {
       phoneNumber,
-      password,
-      refresh_token,
-      avatar: Buffer.from(avatarRandom, 'utf-8'),
-      lastedOnline: new Date(),
-      peerId: uuidv4(),
-    });
-    // create profile user
-    const profile = await db.ProfileContact.create({
-      userId: user.id,
-      coverImage: host + data[random]?.url + '',
-    });
-    if (user && profile) {
-      let userAfterCustomize = userHandler.standardUser(user.dataValues);
-      return {
-        errCode: 0,
-        message: 'Created',
-        data: userAfterCustomize,
-      };
-    } else {
-      return {
-        errCode: 1,
-        message: 'Do not create',
-      };
-    }
-  } catch (error) {
-    throw error;
+    },
+  });
+  if (userExists)
+    throw createHttpError(400, 'User already exists, please login');
+  // extract idToken from firebase
+  const tokenExtracted = await verifyIdToken(idToken);
+
+  if (
+    tokenExtracted.phone_number !==
+    stringHandler.convertPhoneViToInternational(phoneNumber)
+  ) {
+    throw createHttpError(400, 'Phone number not match');
+  }
+
+  //create new user;
+  let refresh_token = uuidv4();
+  let password = userHandler.hashPassword(plainPassword);
+  const user = await db.User.create({
+    fullName,
+    phoneNumber,
+    password,
+    refresh_token,
+  });
+  // create profile user
+  const profile = await db.ProfileContact.create({
+    userId: user.id,
+  });
+  if (user && profile) {
+    let userAfterCustomize = userHandler.standardUser(user.dataValues);
+    return {
+      errCode: 0,
+      message: 'Created',
+      data: userAfterCustomize,
+    };
+  } else {
+    return {
+      errCode: 1,
+      message: 'Do not create',
+    };
   }
 };
 
@@ -217,12 +224,7 @@ const changePassword = async (id, oldPassword, newPassword) => {
   }
 };
 
-const verifyIdToken = async (idToken) => {
-  const decodedToken = await admin.auth().verifyIdToken(idToken);
-  return decodedToken;
-};
-
-module.exports = {
+const authService = {
   register,
   verifyUser,
   login,
@@ -231,3 +233,5 @@ module.exports = {
   changePassword,
   verifyIdToken,
 };
+
+export default authService;

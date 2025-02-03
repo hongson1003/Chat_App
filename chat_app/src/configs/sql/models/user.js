@@ -1,5 +1,7 @@
 'use strict';
+import { userHandler } from '@/utils';
 import { Model } from 'sequelize';
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -25,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       username: DataTypes.STRING,
+      fullName: DataTypes.STRING,
       phoneNumber: {
         type: DataTypes.STRING,
         unique: true,
@@ -50,6 +53,16 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
+      tableName: 'users',
+      hooks: {
+        beforeCreate: (user) => {
+          if (user.password) {
+            user.password = userHandler.hashPassword(user.password);
+          }
+          user.username = user.phoneNumber;
+          user.lastedOnline = new Date();
+        },
+      },
     }
   );
   return User;

@@ -1,5 +1,5 @@
+import { authService, userService } from '@/services';
 import { authHandler, jwtHandler } from '@/utils';
-import { authService, userService } from '@services';
 import {
   default as createError,
   default as createHttpError,
@@ -8,12 +8,23 @@ import { TokenExpiredError } from 'jsonwebtoken';
 
 const register = async (req, res, next) => {
   let data = req.body;
-  console.log('🚀 ~ register ~ data:', data);
-  const fieldsValid = authHandler.checkRegisterFields(data);
-  console.log('🚀 ~ register ~ fieldsValid:', fieldsValid);
+  const fieldsNotValid = authHandler.getRegisterFieldsNotValid(data);
+
+  if (fieldsNotValid) {
+    const fields = fieldsNotValid.join(', ');
+    const error = createError(400, `Missing required fields: ${fields}`);
+    return next(error);
+  }
+  const phoneNumberIsValid = authHandler.checkPhoneNumberIsValid(
+    data.phoneNumber
+  );
+  if (!phoneNumberIsValid) {
+    const error = createError(400, 'Phone number is not valid');
+    return next(error);
+  }
 
   try {
-    const response = await authService.register(user);
+    const response = await authService.register(data);
     return res.status(200).json(response);
   } catch (error) {
     next(error);
