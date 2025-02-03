@@ -15,6 +15,7 @@ const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
+  const [loading, setLoading] = React.useState(true);
 
   const handleCheckAuth = async () => {
     dispatch(appActions.loginStart());
@@ -33,8 +34,14 @@ const AppLayout = () => {
     handleCheckAuth();
   }, []);
 
+  useEffect(() => {
+    if (appState.state !== appConstants.STATE.PENDING) {
+      setLoading(false);
+    }
+  }, [appState.state]);
+
   if (
-    appState.state === appConstants.STATE.PENDING ||
+    loading ||
     (appState.isLogin && pathname === appRoutes.LOGIN) ||
     (!appState.isLogin && pathname === appRoutes.HOME)
   )

@@ -1,9 +1,9 @@
+import { appConstants } from '@/constants';
 import { appActionKeys } from '../keys';
 
 export const appActions = {
-  loginStart: (userInfo) => ({
+  loginStart: () => ({
     type: appActionKeys.LOGIN_STATUS.LOGIN_START,
-    payload: userInfo,
   }),
 
   loginSuccess: (userInfo) => ({
@@ -15,8 +15,16 @@ export const appActions = {
     type: appActionKeys.LOGIN_STATUS.LOGIN_FAIL,
   }),
 
+  logoutStart: () => ({
+    type: appActionKeys.LOGOUT_STATUS.LOGOUT_START,
+  }),
+
   logoutSuccess: () => ({
     type: appActionKeys.LOGOUT_STATUS.LOGOUT_SUCCESS,
+  }),
+
+  logoutFailure: () => ({
+    type: appActionKeys.LOGOUT_STATUS.LOGOUT_FAIL,
   }),
 
   connectSocketSuccess: () => ({
@@ -24,26 +32,34 @@ export const appActions = {
   }),
 
   setError: () => ({
-    type: appActionKeys.STATE.ERROR,
+    type: appConstants.STATE.ERROR,
   }),
 
-  changeKeyMenu: (key) => ({
-    type: appActionKeys.STATE.CHANGE_KEY_MENU,
+  changeKeyMenuStart: (key) => ({
+    type: appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_START,
+  }),
+
+  changeKeyMenuSuccess: (key) => ({
+    type: appConstants.STATE.CHANGE_KEY_MENU,
     payload: key,
   }),
 
+  changeKeyMenuFailure: () => ({
+    type: appActionKeys.CHANGE_KEY_MENU.CHANGE_KEY_MENU_FAIL,
+  }),
+
   changeKeySubMenu: (key) => ({
-    type: appActionKeys.STATE.CHANGE_SUB_KEY_MENU,
+    type: appConstants.STATE.CHANGE_SUB_KEY_MENU,
     payload: key,
   }),
 
   editUser: (user) => ({
-    type: appActionKeys.STATE.EDIT_USER,
+    type: appConstants.STATE.EDIT_USER,
     payload: user,
   }),
 
   editGroup: (group) => ({
-    type: appActionKeys.STATE.EDIT_GROUP,
+    type: appConstants.STATE.EDIT_GROUP,
     payload: group,
   }),
 };
