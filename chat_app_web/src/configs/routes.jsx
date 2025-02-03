@@ -1,4 +1,5 @@
 import { appRoutes } from '@/constants';
+import { AppLayout, HomeLayout } from '@/layouts';
 import {
   AuthPage,
   ErrorPage,
@@ -8,7 +9,6 @@ import {
 } from '@/pages';
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import HomeLayout from '../layouts/home/HomeLayout';
 import OutsideLayout from '../layouts/outside/outsideLayout';
 import HomeSubLayout from '../layouts/sub/HomeSubLayout';
 import JoinGroup from '../pages/utils/joinGroup';
@@ -16,42 +16,48 @@ import JoinGroup from '../pages/utils/joinGroup';
 const routes = [
   {
     path: appRoutes.ROOT,
-    element: <HomeLayout />,
+    element: <AppLayout />,
     exact: true,
     children: [
       {
         path: appRoutes.HOME,
-        element: <HomeSubLayout />,
+        element: <HomeLayout />,
+        children: [
+          {
+            element: <HomeSubLayout />,
+            exact: true,
+          },
+        ],
       },
       {
         path: 'chat/:id',
         element: <JoinGroup />,
       },
-    ],
-  },
-  {
-    path: appRoutes.LOGIN,
-    element: <AuthPage />,
-  },
-  {
-    path: appRoutes.VERIFY,
-    element: <VerifyPage />,
-  },
-  {
-    path: appRoutes.RESET_PASSWORD,
-    element: <ResetPasswordPage />,
-  },
-  {
-    path: '/*',
-    element: <OutsideLayout />,
-    children: [
       {
-        path: appRoutes.ERROR,
-        element: <ErrorPage />,
+        path: appRoutes.LOGIN,
+        element: <AuthPage />,
       },
       {
-        path: '*',
-        element: <NotFoundPage />,
+        path: appRoutes.VERIFY,
+        element: <VerifyPage />,
+      },
+      {
+        path: appRoutes.RESET_PASSWORD,
+        element: <ResetPasswordPage />,
+      },
+      {
+        path: '/*',
+        element: <OutsideLayout />,
+        children: [
+          {
+            path: appRoutes.ERROR,
+            element: <ErrorPage />,
+          },
+          {
+            path: '*',
+            element: <NotFoundPage />,
+          },
+        ],
       },
     ],
   },
