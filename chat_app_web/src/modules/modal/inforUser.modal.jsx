@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import AvatarUser from '../user/components/AvatarUser/AvatarUser';
 import ChooseImageModal from './chooseImage.modal';
 import './inforUser.modal.scss';
+import { appConstants } from '@/constants';
 
 const InforUserModal = ({
   children,
@@ -29,7 +30,9 @@ const InforUserModal = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [acceptOpenModal, setAcceptOpenModal] = useState(false);
   const user = useSelector((state) => state?.appReducer?.userInfo?.user);
-  const [needAddFriend, setNeedAddFriend] = useState(STATE.PENDING);
+  const [needAddFriend, setNeedAddFriend] = useState(
+    appConstants.STATE.PENDING
+  );
   const modalContentRef = useRef(null);
   const actionRef = useRef(null);
   const updateRef = useRef(null);

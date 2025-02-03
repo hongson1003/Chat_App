@@ -3,7 +3,7 @@ import { LockOutlined, PhoneOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import React from 'react';
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = ({ onLogin, loading }) => {
   const [form] = Form.useForm();
 
   const handleOnFinish = (values) => {
@@ -33,6 +33,7 @@ const LoginForm = ({ onLogin }) => {
             style={{ gap: '5px' }}
             prefix={<PhoneOutlined className="site-form-item-icon" />}
             placeholder="Số điện thoại"
+            disabled={loading}
           />
         </Form.Item>
         <Form.Item
@@ -45,6 +46,7 @@ const LoginForm = ({ onLogin }) => {
             placeholder="Password"
             style={{ gap: '5px' }}
             security="false"
+            disabled={loading}
           />
         </Form.Item>
 
@@ -54,6 +56,7 @@ const LoginForm = ({ onLogin }) => {
             htmlType="submit"
             className="login-form-button"
             block
+            loading={loading}
           >
             <span>Đăng nhập</span>
           </Button>

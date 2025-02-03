@@ -1,8 +1,6 @@
-import { SpinnerLoading } from '@/components/common';
 import { HomeSidebar } from '@/components/layout/home';
 import { axios } from '@/configs';
-import { appConstants } from '@/constants';
-import { Layout, Typography } from 'antd';
+import { Layout } from 'antd';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -101,44 +99,34 @@ const HomeLayout = () => {
   //   }
   // }, [state?.isConnectedSocket]);
 
-  if (loading)
-    return (
-      <div className="spinner-loading-container">
-        <SpinnerLoading />
-        <Typography.Text>Loading...</Typography.Text>
-      </div>
-    );
-
   return (
-    state.isLogin === appConstants.STATE.RESOLVE && (
-      <>
-        <Layout className="home-layout-container">
-          {!pathName.includes('/chat') && (
-            <Sider width={'calc(30px+2vw)'}>
-              <HomeSidebar />
-            </Sider>
-          )}
-          <Layout>
-            <Content>
-              <Outlet />
-            </Content>
-          </Layout>
-          <ToastContainer
-            position="top-right"
-            autoClose={1000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            transition:Bounce
-          />
+    <>
+      <Layout className="home-layout-container">
+        {!pathName.includes('/chat') && (
+          <Sider width={'calc(30px+2vw)'}>
+            <HomeSidebar />
+          </Sider>
+        )}
+        <Layout>
+          <Content>
+            <Outlet />
+          </Content>
         </Layout>
-      </>
-    )
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition:Bounce
+        />
+      </Layout>
+    </>
   );
 };
 

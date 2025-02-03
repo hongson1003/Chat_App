@@ -3,15 +3,3 @@
   height: 100%;
   min-height: 100vh;
 }
-
-.spinner-loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  gap: 1rem;
-
-  span {
-    user-select: none;
-  }
-}

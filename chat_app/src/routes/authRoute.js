@@ -1,6 +1,5 @@
 import { appRoutes } from '@/constants';
 import { authController } from '@/controllers';
-import { userGuardHandler } from '@/middlewares';
 
 const initRoutesAuthentication = (router) => {
   router.route(appRoutes.ROOT).post(authController.register);
@@ -13,9 +12,7 @@ const initRoutesAuthentication = (router) => {
 
   router.route(appRoutes.FORGOT_PASSWORD).post(authController.forgotPassword);
 
-  router
-    .route(appRoutes.CHECK)
-    .post(userGuardHandler.privateRoute, authController.extractToken);
+  router.route(appRoutes.CHECK).post(authController.extractToken);
 
   router.route(appRoutes.REFRESH_TOKEN).post(authController.refreshToken);
 

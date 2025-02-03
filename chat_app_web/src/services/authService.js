@@ -7,6 +7,9 @@ const authService = {
   login: async (username, password) => {
     return await axios.post('/api/v1/auth/login', { username, password });
   },
+  checkAuth: async () => {
+    return await axios.post('/api/v1/auth/check');
+  },
 };
 
 export default authService;

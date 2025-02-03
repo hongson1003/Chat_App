@@ -89,10 +89,15 @@ const login = async (req, res, next) => {
 };
 
 const extractToken = async (req, res, next) => {
-  const token = req.token;
+  const token = req.cookies['access_token'];
+  const refreshToken = req.cookies['refresh_token'];
   try {
     const user = await authService.extractToken(token);
-    return res.status(200).json(user);
+    return res.status(200).json({
+      ...user,
+      accessToken: token,
+      refreshToken,
+    });
   } catch (error) {
     next(error);
   }
